@@ -14,12 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    mdichild.cpp
+    mdichild.cpp \
+    findreplacedialog.cpp
 
 HEADERS  += mainwindow.h \
-    mdichild.h
+    mdichild.h \
+    findreplacedialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    findreplacedialog.ui
 
 RESOURCES += \
     myimage.qrc
