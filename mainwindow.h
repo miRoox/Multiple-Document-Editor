@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QTextEdit>
 
+#include "findreplacedialog.h"
+
 class QMdiSubWindow;
 class MdiChild;
 
@@ -25,6 +27,12 @@ private slots:
     void closeMdiChild(QString fileName);
     void setActiveSubWindow(QWidget * window);
     void showTextRowAndCol();
+    bool findInDocument(QString pattern,
+                        QTextDocument::FindFlags options,
+                        FindReplaceDialog::FindModel model);
+    int counter(QString pattern,
+                QTextDocument::FindFlags options,
+                FindReplaceDialog::FindModel model);
 
     void on_action_New_triggered();
 
@@ -68,6 +76,10 @@ private slots:
 
     void on_action_AboutQt_triggered();
 
+    void on_action_Find_triggered();
+
+    void on_action_Replace_triggered();
+
 private:
     Ui::MainWindow *ui;
     QTextEdit::LineWrapMode lineWrapMode;
@@ -86,6 +98,7 @@ protected:
     void dropEvent(QDropEvent *event);
 
 private:
+    FindReplaceDialog * frDialog;
     static const QStringList codecList /*= {"GB2312","GBK","GB18030",
                                           "Big5","Big5-HKSCS",
                                           "UTF-8",

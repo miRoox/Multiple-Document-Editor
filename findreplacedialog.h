@@ -2,6 +2,8 @@
 #define FINDREPLACEDIALOG_H
 
 #include <QDialog>
+#include <QFlags>
+#include <QTextDocument>
 
 namespace Ui {
 class FindReplaceDialog;
@@ -14,6 +16,26 @@ class FindReplaceDialog : public QDialog
 public:
     explicit FindReplaceDialog(QWidget *parent = 0);
     ~FindReplaceDialog();
+
+    enum FindFlag { RegExp = 1, Loop = 2};
+    typedef QFlags<FindFlag> FindModel;
+
+    void showTab(int index);
+
+signals:
+    void findNext(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel);
+    void count(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel);
+
+private slots:
+    void on_fNextButton_clicked();
+
+    void on_fCancelButton_clicked();
+
+    void on_rNextButton_clicked();
+
+    void on_rCancelButton_clicked();
+
+    void on_fCountButton_clicked();
 
 private:
     Ui::FindReplaceDialog *ui;

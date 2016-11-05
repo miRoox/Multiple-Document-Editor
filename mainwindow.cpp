@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mdichild.h"
+#include "findreplacedialog.h"
 #include <QMdiSubWindow>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -22,6 +23,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setWindowTitle(tr("多文档编辑器"));
 
+    frDialog = new FindReplaceDialog(this);
+    connect(frDialog,SIGNAL(findNext(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)),
+            this,SLOT(findInDocument(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)));
+    connect(frDialog,SIGNAL(count(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)),
+            this,SLOT(counter(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)));
+
     // 我们在工具栏上单击鼠标右键时，可以关闭工具栏
     ui->mainToolBar->setWindowTitle(tr("工具栏"));
 
@@ -37,6 +44,130 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+//活动窗口
+MdiChild * MainWindow::activeMdiChild() //活动窗口
+{
+    // 如果有活动窗口，则将其内的中心部件转换为MdiChild类型
+    if (QMdiSubWindow *activeSubWindow = ui->mdiArea->activeSubWindow())
+        return qobject_cast<MdiChild *>(activeSubWindow->widget());
+    return 0; // 没有活动窗口，直接返回0
+}
+
+// 查找子窗口
+QMdiSubWindow * MainWindow::findMdiChild(const QString &fileName)
+{
+    QString canonicalFilePath = fileName; //文件被删除但其窗口仍打开时
+    if(QFileInfo(fileName).exists()){
+        canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    }
+    // 利用foreach语句遍历子窗口列表，如果其文件路径和要查找的路径相同，则返回该窗口
+    foreach (QMdiSubWindow *window, ui->mdiArea->subWindowList()) {
+        MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
+        if (mdiChild->currentFile() == canonicalFilePath)
+            return window;
+    }
+    return 0;
+}
+
+//打开文件操作
+void MainWindow::openFile(QString fileName)
+{
+    if (!fileName.isEmpty()) // 如果路径不为空，则查看该文件是否已经打开
+    {
+        QMdiSubWindow *existing = findMdiChild(fileName);
+        MdiChild * child;
+        if (existing) // 如果已经存在，则将对应的子窗口设置为活动窗口
+        {
+            child = qobject_cast<MdiChild *>(existing->widget());
+            ui->mdiArea->setActiveSubWindow(existing);
+        }
+        else {
+            child = createMdiChild(); // 如果没有打开，则新建子窗口
+        }
+
+        if (child->loadFile(fileName,existing)) {
+            ui->statusBar->showMessage(tr("打开文件成功"), 2000);
+            if(1 == ui->mdiArea->subWindowList().size()) child->showMaximized();
+            else child->show();
+        }
+        else {
+            child->close();
+        }
+    }
+}
+
+// 写入窗口设置
+void MainWindow::writeSettings()
+{
+    QSettings settings("miroox","myMdi");
+    settings.setValue("pos",pos());
+    settings.setValue("size",size());
+    settings.setValue("tsize",textSize);
+    settings.setValue("lineWrap",lineWrapMode);
+    QList<QMdiSubWindow *> windows = ui->mdiArea->subWindowList();
+    /*int fileNum = windows.size();
+    settings.setValue("fileNum",fileNum);
+    for(int i=0;i<fileNum;i++){
+        MdiChild * child = qobject_cast<MdiChild *>(windows.at(i)->widget());
+        settings.setValue(QString("file_%1").arg(i),child->currentFile());
+    }*/
+}
+
+// 读取窗口设置
+void MainWindow::readSettings()
+{
+    QSettings settings("miroox", "myMdi");
+    QPoint pos = settings.value("pos", QPoint(100, 100)).toPoint();
+    QSize size = settings.value("size", QSize(800, 600)).toSize();
+    textSize = settings.value("tsize",12).toInt();
+    lineWrapMode = static_cast<QTextEdit::LineWrapMode>(settings.value("lineWrap",QTextEdit::NoWrap).toInt());
+    move(pos);
+    resize(size);
+    ui->action_WrapLine->setChecked(QTextEdit::WidgetWidth==lineWrapMode);
+    /*int fileNum = settings.value("fileNum",0).toInt();
+    for(int i=0;i<fileNum;i++){
+        QString fileName = settings.value(QString("file_%1").arg(i),QString(".")).toString();
+        openFile(fileName);
+    }*/
+}
+
+/** 事件处理函数 **/
+
+// 关闭事件
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    ui->mdiArea->closeAllSubWindows();// 先执行多文档区域的关闭操作
+    if(ui->mdiArea->currentSubWindow()){
+        event->ignore();// 如果还有窗口没有关闭，则忽略该事件
+    }
+    else {
+        writeSettings();// 在关闭前写入窗口设置
+        event->accept();
+    }
+}
+
+//拖入事件
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if(event->mimeData()->hasUrls())// 数据中是否包含URL，如果是则接收动作，否则忽略该事件
+        event->acceptProposedAction();
+    else event->ignore();
+}
+
+//放下事件
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    const QMimeData * mimeData = event->mimeData();// 获取MIME数据
+    if(mimeData->hasUrls()) // 如果数据中包含URL
+    {
+        QList<QUrl> urlList = mimeData->urls();// 获取URL列表
+        QString fileName = urlList.at(0).toLocalFile();// 将其中第一个URL表示为本地文件路径
+        openFile(fileName);
+    }
+}
+
+/** 反应槽 **/
 
 //更新菜单
 void MainWindow::updateMenus()
@@ -109,126 +240,6 @@ MdiChild * MainWindow::createMdiChild()
     return child;
 }
 
-//活动窗口
-MdiChild * MainWindow::activeMdiChild() //活动窗口
-{
-    // 如果有活动窗口，则将其内的中心部件转换为MdiChild类型
-    if (QMdiSubWindow *activeSubWindow = ui->mdiArea->activeSubWindow())
-        return qobject_cast<MdiChild *>(activeSubWindow->widget());
-    return 0; // 没有活动窗口，直接返回0
-}
-
-// 查找子窗口
-QMdiSubWindow * MainWindow::findMdiChild(const QString &fileName)
-{
-    QString canonicalFilePath = fileName; //文件被删除但其窗口仍打开时
-    if(QFileInfo(fileName).exists()){
-        canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
-    }
-    // 利用foreach语句遍历子窗口列表，如果其文件路径和要查找的路径相同，则返回该窗口
-    foreach (QMdiSubWindow *window, ui->mdiArea->subWindowList()) {
-        MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
-        if (mdiChild->currentFile() == canonicalFilePath)
-            return window;
-    }
-    return 0;
-}
-
-// 设置活动子窗口
-void MainWindow::setActiveSubWindow(QWidget *window)
-{
-    if (!window) // 如果传递了窗口部件，则将其设置为活动窗口
-        return;
-    ui->mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
-}
-
-//打开文件操作
-void MainWindow::openFile(QString fileName)
-{
-    if (!fileName.isEmpty()) // 如果路径不为空，则查看该文件是否已经打开
-    {
-        QMdiSubWindow *existing = findMdiChild(fileName);
-        MdiChild * child;
-        if (existing) // 如果已经存在，则将对应的子窗口设置为活动窗口
-        {
-            child = qobject_cast<MdiChild *>(existing->widget());
-            ui->mdiArea->setActiveSubWindow(existing);
-        }
-        else {
-            child = createMdiChild(); // 如果没有打开，则新建子窗口
-        }
-
-        if (child->loadFile(fileName,existing)) {
-            ui->statusBar->showMessage(tr("打开文件成功"), 2000);
-            if(1 == ui->mdiArea->subWindowList().size()) child->showMaximized();
-            else child->show();
-        }
-        else {
-            child->close();
-        }
-    }
-}
-
-// 写入窗口设置
-void MainWindow::writeSettings()
-{
-    QSettings settings("miroox","myMdi");
-    settings.setValue("pos",pos());
-    settings.setValue("size",size());
-    settings.setValue("tsize",textSize);
-    settings.setValue("lineWrap",lineWrapMode);
-    QList<QMdiSubWindow *> windows = ui->mdiArea->subWindowList();
-    /*int fileNum = windows.size();
-    settings.setValue("fileNum",fileNum);
-    for(int i=0;i<fileNum;i++){
-        MdiChild * child = qobject_cast<MdiChild *>(windows.at(i)->widget());
-        settings.setValue(QString("file_%1").arg(i),child->currentFile());
-    }*/
-}
-
-// 读取窗口设置
-void MainWindow::readSettings()
-{
-    QSettings settings("miroox", "myMdi");
-    QPoint pos = settings.value("pos", QPoint(100, 100)).toPoint();
-    QSize size = settings.value("size", QSize(800, 600)).toSize();
-    textSize = settings.value("tsize",12).toInt();
-    lineWrapMode = static_cast<QTextEdit::LineWrapMode>(settings.value("lineWrap",QTextEdit::NoWrap).toInt());
-    move(pos);
-    resize(size);
-    ui->action_WrapLine->setChecked(QTextEdit::WidgetWidth==lineWrapMode);
-    /*int fileNum = settings.value("fileNum",0).toInt();
-    for(int i=0;i<fileNum;i++){
-        QString fileName = settings.value(QString("file_%1").arg(i),QString(".")).toString();
-        openFile(fileName);
-    }*/
-}
-
-// 显示文本的行号和列号
-void MainWindow::showTextRowAndCol()
-{
-    // 如果有活动窗口，则显示其中光标所在的位置
-    if(activeMdiChild()){
-        // 获取的行号和列号都是从0开始的
-        int rowNum = activeMdiChild()->textCursor().blockNumber()+1;
-        int colNum = activeMdiChild()->textCursor().columnNumber()+1;
-
-        ui->statusBar->showMessage(tr("%1行 %2列")
-                                   .arg(rowNum).arg(colNum));
-    }
-}
-
-//关闭指定的子窗口
-void MainWindow::closeMdiChild(QString fileName)
-{
-    QMdiSubWindow * child = findMdiChild(fileName);
-    if(0!=child)
-    {
-        ui->mdiArea->setActiveSubWindow(child);
-        ui->mdiArea->closeActiveSubWindow();
-    }
-}
-
 //初始化状态栏
 void MainWindow::initStatusBar()
 {
@@ -260,36 +271,105 @@ void MainWindow::initStatusBar()
     ui->statusBar->showMessage(tr("欢迎使用多文档编辑器"));
 }
 
-// 关闭事件
-void MainWindow::closeEvent(QCloseEvent *event)
+
+// 设置活动子窗口
+void MainWindow::setActiveSubWindow(QWidget *window)
 {
-    ui->mdiArea->closeAllSubWindows();// 先执行多文档区域的关闭操作
-    if(ui->mdiArea->currentSubWindow()){
-        event->ignore();// 如果还有窗口没有关闭，则忽略该事件
+    if (!window) // 如果传递了窗口部件，则将其设置为活动窗口
+        return;
+    ui->mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
+}
+
+// 显示文本的行号和列号
+void MainWindow::showTextRowAndCol()
+{
+    // 如果有活动窗口，则显示其中光标所在的位置
+    if(activeMdiChild()){
+        // 获取的行号和列号都是从0开始的
+        int rowNum = activeMdiChild()->textCursor().blockNumber()+1;
+        int colNum = activeMdiChild()->textCursor().columnNumber()+1;
+
+        ui->statusBar->showMessage(tr("%1行 %2列")
+                                   .arg(rowNum).arg(colNum));
+    }
+}
+
+//关闭指定的子窗口
+void MainWindow::closeMdiChild(QString fileName)
+{
+    QMdiSubWindow * child = findMdiChild(fileName);
+    if(0!=child)
+    {
+        ui->mdiArea->setActiveSubWindow(child);
+        ui->mdiArea->closeActiveSubWindow();
+    }
+}
+
+//按规则查找下一个
+bool MainWindow::findInDocument(QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
+{
+    MdiChild * child = activeMdiChild();
+    bool isFind;
+    if(model & FindReplaceDialog::RegExp)
+    {
+        QRegExp regexp(pattern);
+        if(!regexp.isValid())
+        {
+            QMessageBox::warning(frDialog,tr("正则表达式错误！"),
+                                 tr("原因: %1").arg(regexp.errorString()));
+            return false;
+        }
+        regexp.setCaseSensitivity((options & QTextDocument::FindCaseSensitively)?
+                                      Qt::CaseSensitive : Qt::CaseInsensitive);
+        isFind = child->find(regexp,options);
+        if(!isFind && (model & FindReplaceDialog::Loop))
+        {
+            if(options & QTextDocument::FindBackward)
+                child->moveCursor(QTextCursor::End);
+            else
+                child->moveCursor(QTextCursor::Start);
+            isFind = child->find(regexp,options);
+        }
     }
     else {
-        writeSettings();// 在关闭前写入窗口设置
-        event->accept();
+        isFind = child->find(pattern,options);
+        if(!isFind && (model & FindReplaceDialog::Loop))
+        {
+            if(options & QTextDocument::FindBackward)
+                child->moveCursor(QTextCursor::End);
+            else
+                child->moveCursor(QTextCursor::Start);
+            isFind = child->find(pattern,options);
+        }
     }
+    if(!isFind) ui->statusBar->showMessage(tr("找不到下一个"),10000);
+    return isFind;
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+//按规则计数
+int MainWindow::counter(QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
 {
-    if(event->mimeData()->hasUrls())// 数据中是否包含URL，如果是则接收动作，否则忽略该事件
-        event->acceptProposedAction();
-    else event->ignore();
-}
-
-void MainWindow::dropEvent(QDropEvent *event)
-{
-    const QMimeData * mimeData = event->mimeData();// 获取MIME数据
-    if(mimeData->hasUrls()) // 如果数据中包含URL
+    MdiChild * child = activeMdiChild();
+    if(model & FindReplaceDialog::RegExp)
     {
-        QList<QUrl> urlList = mimeData->urls();// 获取URL列表
-        QString fileName = urlList.at(0).toLocalFile();// 将其中第一个URL表示为本地文件路径
-        openFile(fileName);
+        QRegExp regexp(pattern);
+        if(!regexp.isValid())
+        {
+            QMessageBox::warning(frDialog,tr("正则表达式错误！"),
+                                 tr("原因: %1").arg(regexp.errorString()));
+            return -1;
+        }
     }
+    QTextCursor curCursor = child->textCursor();
+    int count;
+    child->moveCursor(QTextCursor::Start);
+    for(count=0;findInDocument(pattern,options,model);++count);
+    child->setTextCursor(curCursor);
+    ui->statusBar->showMessage(tr("查找：共找到 %1 个").arg(count));
+    return count;
 }
+
+/** 自动关联的槽 **/
 
 void MainWindow::on_action_New_triggered()
 {
@@ -419,4 +499,14 @@ void MainWindow::on_action_ZoomOut_triggered()
 void MainWindow::on_action_AboutQt_triggered()
 {
     QApplication::aboutQt();
+}
+
+void MainWindow::on_action_Find_triggered()
+{
+    frDialog->showTab(0);
+}
+
+void MainWindow::on_action_Replace_triggered()
+{
+    frDialog->showTab(1);
 }
