@@ -20,6 +20,8 @@ public:
     bool saveFile(const QString &fileName); // 保存文件
     QString userFriendlyCurrentFile();      // 提取文件名
     QString currentFile(){return curFile;}  // 返回当前文件路径
+    void setTextSize(int size);           // 设置文本字体大小
+    void setModified(bool is);              // 保持未修改
 
 protected:
     void closeEvent(QCloseEvent *event);    // 关闭事件

@@ -105,8 +105,8 @@ void MainWindow::writeSettings()
     settings.setValue("size",size());
     settings.setValue("tsize",textSize);
     settings.setValue("lineWrap",lineWrapMode);
-    QList<QMdiSubWindow *> windows = ui->mdiArea->subWindowList();
-    /*int fileNum = windows.size();
+    /*QList<QMdiSubWindow *> windows = ui->mdiArea->subWindowList();
+    int fileNum = windows.size();
     settings.setValue("fileNum",fileNum);
     for(int i=0;i<fileNum;i++){
         MdiChild * child = qobject_cast<MdiChild *>(windows.at(i)->widget());
@@ -232,7 +232,7 @@ MdiChild * MainWindow::createMdiChild()
     //自动换行？
     child->setLineWrapMode(lineWrapMode);
     //文字大小
-    child->setFontPointSize(textSize);
+    child->setTextSize(textSize);
 
     //关闭子窗口的拖放接收
     child->setAcceptDrops(false);
@@ -383,7 +383,7 @@ void MainWindow::on_action_Open_triggered()
 {
     // 获取文件路径
     QString fileName = QFileDialog::getOpenFileName(this,tr("打开文件"),".",
-                                                    tr("文本文件(*.txt);;任意文件(*.*)"));
+                                                    tr("文本文件(*.txt);;任意文件(*)"));
     openFile(fileName);
 }
 
@@ -477,22 +477,16 @@ void MainWindow::on_action_ZoomIn_triggered()
     textSize++;
     foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList()){
         MdiChild * child = qobject_cast<MdiChild *>(window->widget());
-        QTextCursor cur = child->textCursor();
-        child->selectAll();
-        child->setFontPointSize(textSize);
-        child->setTextCursor(cur);
+        child->setTextSize(textSize);
     }
 }
 
 void MainWindow::on_action_ZoomOut_triggered()
 {
-    if(textSize) textSize--;
+    if(textSize>1) textSize--;
     foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList()){
         MdiChild * child = qobject_cast<MdiChild *>(window->widget());
-        QTextCursor cur = child->textCursor();
-        child->selectAll();
-        child->setFontPointSize(textSize);
-        child->setTextCursor(cur);
+        child->setTextSize(textSize);
     }
 }
 

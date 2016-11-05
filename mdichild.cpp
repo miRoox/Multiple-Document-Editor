@@ -41,14 +41,6 @@ void MdiChild::newFile()
     connect(document(),SIGNAL(contentsChanged()),this,SLOT(documentWasModified()));
 }
 
-//文档被更改时，窗口显示更改状态标志
-void MdiChild::documentWasModified()
-{
-    // 根据文档的isModified()函数的返回值，判断我们编辑器内容是否被更改了
-    // 如果被更改了，就要在设置了[*]号的地方显示“*”号，这里我们会在窗口标题中显示
-    setWindowModified(document()->isModified());
-}
-
 // 加载文件
 bool MdiChild::loadFile(const QString &fileName,bool re)
 {
@@ -72,24 +64,10 @@ bool MdiChild::loadFile(const QString &fileName,bool re)
         connect(document(),SIGNAL(contentsChanged()),this,SLOT(documentWasModified()));
     }
     else {
-        document()->setModified(false);
-        documentWasModified();
+        setModified(false);
     }
     file.close();
     return true;
-}
-
-// 设置当前文件
-void MdiChild::setCurrentFile(const QString &fileName)
-{
-    // canonicalFilePath()可以除去路径中的符号链接，“.”和“..”等符号
-    curFile = QFileInfo(fileName).canonicalFilePath();
-    if(fWatcher.files().isEmpty()) fWatcher.addPath(fileName);
-    isUntitled = false;
-    document()->setModified(false);
-    setWindowModified(false);
-    // 设置窗口标题，userFriendlyCurrentFile()返回文件名
-    setWindowTitle(userFriendlyCurrentFile() + "[*]");
 }
 
 // 提取文件名
@@ -114,7 +92,7 @@ bool MdiChild::saveAs()
 {
     // 获取文件路径，如果为空，则返回false
     QString fileName = QFileDialog::getSaveFileName(this, tr("另存为"),curFile,
-                                                    tr("文本文件(*.txt);;所有文件(*.*)"));
+                                                    tr("文本文件(*.txt);;所有文件(*)"));
     if (fileName.isEmpty())
         return false;
 
@@ -139,6 +117,36 @@ bool MdiChild::saveFile(const QString &fileName)
     file.close();
     setCurrentFile(fileName);
     return true;
+}
+
+//设置是否有修改
+void MdiChild::setModified(bool is)
+{
+    document()->setModified(is);
+    documentWasModified();
+}
+
+//设置字体大小
+void MdiChild::setTextSize(int size)
+{
+    QFont f = document()->defaultFont();
+    f.setPointSize(size);
+    document()->setDefaultFont(f);
+}
+
+/** 私有方法 **/
+
+// 设置当前文件
+void MdiChild::setCurrentFile(const QString &fileName)
+{
+    // canonicalFilePath()可以除去路径中的符号链接，“.”和“..”等符号
+    curFile = QFileInfo(fileName).canonicalFilePath();
+    if(fWatcher.files().isEmpty()) fWatcher.addPath(fileName);
+    isUntitled = false;
+    document()->setModified(false);
+    setWindowModified(false);
+    // 设置窗口标题，userFriendlyCurrentFile()返回文件名
+    setWindowTitle(userFriendlyCurrentFile() + "[*]");
 }
 
 // 是否需要保存
@@ -170,12 +178,26 @@ bool MdiChild::maybeSave()
     }
 }
 
+/** 共有槽 **/
+
 void MdiChild::setCodec(QTextCodec *codec)
 {
     this->codec = codec;
     loadFile(curFile,true);
 }
 
+/** 私有槽 **/
+
+
+//文档被更改时，窗口显示更改状态标志
+void MdiChild::documentWasModified()
+{
+    // 根据文档的isModified()函数的返回值，判断我们编辑器内容是否被更改了
+    // 如果被更改了，就要在设置了[*]号的地方显示“*”号，这里我们会在窗口标题中显示
+    setWindowModified(document()->isModified());
+}
+
+//文件被外部修改时
 void MdiChild::changeMessage(const QString &fileName)
 {
     if(QFileInfo(fileName).exists())
@@ -193,8 +215,7 @@ void MdiChild::changeMessage(const QString &fileName)
             loadFile(fileName,true);
         }
         else {
-            document()->setModified(true);
-            documentWasModified();
+            setModified(true);
         }
     }
     else {
@@ -208,19 +229,21 @@ void MdiChild::changeMessage(const QString &fileName)
         box.exec();
         if(box.clickedButton()==yesBtn)
         {
-            document()->setModified(false);
+            setModified(false);
             emit closeThis(fileName);
         }
         else {
-            document()->setModified(true);
-            documentWasModified();
+            setModified(true);
         }
     }
 }
 
+/** 事件处理函数 **/
+
 void MdiChild::closeEvent(QCloseEvent *event)
 {
-    if (maybeSave()) { // 如果maybeSave()函数返回true，则关闭窗口
+    if (maybeSave()) // 如果maybeSave()函数返回true，则关闭窗口
+    {
         event->accept();
     }
     else {   // 否则忽略该事件
