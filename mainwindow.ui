@@ -96,9 +96,6 @@
     <addaction name="action_Close"/>
     <addaction name="action_CloseAll"/>
     <addaction name="separator"/>
-    <addaction name="action_Tile"/>
-    <addaction name="action_Cascade"/>
-    <addaction name="separator"/>
     <addaction name="action_Next"/>
     <addaction name="action_Previous"/>
    </widget>
@@ -306,22 +303,6 @@
    </property>
    <property name="toolTip">
     <string>关闭所有(A)</string>
-   </property>
-  </action>
-  <action name="action_Tile">
-   <property name="text">
-    <string>平铺(&amp;T)</string>
-   </property>
-   <property name="toolTip">
-    <string>平铺(T)</string>
-   </property>
-  </action>
-  <action name="action_Cascade">
-   <property name="text">
-    <string>层叠(&amp;C)</string>
-   </property>
-   <property name="toolTip">
-    <string>层叠(C)</string>
    </property>
   </action>
   <action name="action_Next">

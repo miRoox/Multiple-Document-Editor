@@ -35,7 +35,7 @@ void MdiChild::newFile()
     // 将当前文件命名为未命名文档加编号，编号先使用再加1
     curFile = tr("未命名文档 %1").arg(sequenceNum++);
     // 设置窗口标题，使用[*]可以在文档被更改后在文件名称后显示”*“号
-    setWindowTitle(curFile + "[*]" + tr(" - 多文档编辑器"));
+    setWindowTitle(curFile + "[*]");
     // 当文档被更改时发射contentsChanged()信号，
     // 执行我们的documentWasModified()槽函数
     connect(document(),SIGNAL(contentsChanged()),this,SLOT(documentWasModified()));

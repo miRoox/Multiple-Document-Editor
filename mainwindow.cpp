@@ -232,8 +232,6 @@ void MainWindow::updateMenus()
     ui->action_ZoomOut->setEnabled(hasMdiChild);
     ui->action_Close->setEnabled(hasMdiChild);
     ui->action_CloseAll->setEnabled(hasMdiChild);
-    ui->action_Tile->setEnabled(hasMdiChild);
-    ui->action_Cascade->setEnabled(hasMdiChild);
     ui->action_Next->setEnabled(hasMdiChild);
     ui->action_Previous->setEnabled(hasMdiChild);
 
@@ -310,8 +308,6 @@ void MainWindow::initStatusBar()
     ui->action_ZoomOut->setStatusTip(tr("缩小文本显示的大小"));
     ui->action_Close->setStatusTip(tr("关闭活动窗口"));
     ui->action_CloseAll->setStatusTip(tr("关闭所有窗口"));
-    ui->action_Tile->setStatusTip(tr("平铺所有窗口"));
-    ui->action_Cascade->setStatusTip(tr("层叠所有窗口"));
     ui->action_Next->setStatusTip(tr("将焦点移动到下一个窗口"));
     ui->action_Previous->setStatusTip(tr("将焦点移动到前一个窗口"));
     ui->action_About->setStatusTip(tr("显示本软件的介绍"));
@@ -548,16 +544,6 @@ void MainWindow::on_action_Close_triggered()
 void MainWindow::on_action_CloseAll_triggered()
 {
     ui->mdiArea->closeAllSubWindows();
-}
-
-void MainWindow::on_action_Tile_triggered()
-{
-    ui->mdiArea->tileSubWindows();
-}
-
-void MainWindow::on_action_Cascade_triggered()
-{
-    ui->mdiArea->cascadeSubWindows();
 }
 
 void MainWindow::on_action_Next_triggered()

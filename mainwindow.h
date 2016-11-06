@@ -64,10 +64,6 @@ private slots:
 
     void on_action_CloseAll_triggered();
 
-    void on_action_Tile_triggered();
-
-    void on_action_Cascade_triggered();
-
     void on_action_Next_triggered();
 
     void on_action_Previous_triggered();
