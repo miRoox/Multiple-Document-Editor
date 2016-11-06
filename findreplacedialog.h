@@ -25,6 +25,8 @@ public:
 signals:
     void findNext(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel);
     void count(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel);
+    void replace(QString,QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel);
+    void replaceAll(QString,QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel);
 
 private slots:
     void on_fNextButton_clicked();
@@ -36,6 +38,10 @@ private slots:
     void on_rCancelButton_clicked();
 
     void on_fCountButton_clicked();
+
+    void on_rReplaceButton_clicked();
+
+    void on_rReplaceAllButton_clicked();
 
 private:
     Ui::FindReplaceDialog *ui;

@@ -58,6 +58,32 @@ void FindReplaceDialog::on_fCountButton_clicked()
     emit count(pattern,flag,model);
 }
 
+void FindReplaceDialog::on_rReplaceButton_clicked()
+{
+    QTextDocument::FindFlags flag;
+    if(ui->rUpButton->isChecked()) flag |= QTextDocument::FindBackward;
+    if(ui->rCapitalBox->isChecked()) flag |= QTextDocument::FindCaseSensitively;
+    if(ui->rWholeBox->isChecked()) flag |= QTextDocument::FindWholeWords;
+    FindModel model;
+    if(ui->rRegexpButton->isChecked()) model |= RegExp;
+    if(ui->rLoopBox->isChecked()) model |= Loop;
+    QString pattern = ui->rLineEdit->text();
+    QString to = ui->rpLineEdit->text();
+    emit replace(to,pattern,flag,model);
+}
+
+void FindReplaceDialog::on_rReplaceAllButton_clicked()
+{
+    QTextDocument::FindFlags flag;
+    if(ui->rCapitalBox->isChecked()) flag |= QTextDocument::FindCaseSensitively;
+    if(ui->rWholeBox->isChecked()) flag |= QTextDocument::FindWholeWords;
+    FindModel model;
+    if(ui->rRegexpButton->isChecked()) model |= RegExp;
+    QString pattern = ui->rLineEdit->text();
+    QString to = ui->rpLineEdit->text();
+    emit replaceAll(to,pattern,flag,model);
+}
+
 void FindReplaceDialog::on_fCancelButton_clicked()
 {
     close();

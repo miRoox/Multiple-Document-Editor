@@ -27,12 +27,20 @@ private slots:
     void closeMdiChild(QString fileName);
     void setActiveSubWindow(QWidget * window);
     void showTextRowAndCol();
-    bool findInDocument(QString pattern,
-                        QTextDocument::FindFlags options,
-                        FindReplaceDialog::FindModel model);
+    bool findByCursor(QString pattern,
+                      QTextDocument::FindFlags options,
+                      FindReplaceDialog::FindModel model);
     int counter(QString pattern,
                 QTextDocument::FindFlags options,
                 FindReplaceDialog::FindModel model);
+    bool replace(QString to,
+                 QString pattern,
+                 QTextDocument::FindFlags options,
+                 FindReplaceDialog::FindModel model);
+    int replaceAll(QString to,
+                   QString pattern,
+                   QTextDocument::FindFlags options,
+                   FindReplaceDialog::FindModel model);
 
     void on_action_New_triggered();
 
@@ -91,6 +99,10 @@ private:
     void openFile(QString fileName);
     MdiChild * activeMdiChild();
     QMdiSubWindow * findMdiChild(const QString &fileName);
+    bool findInDocuent(QTextCursor &cur,
+                       QString pattern,
+                       QTextDocument::FindFlags options,
+                       FindReplaceDialog::FindModel model);
 
 protected:
     void closeEvent(QCloseEvent *event);

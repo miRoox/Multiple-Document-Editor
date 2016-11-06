@@ -23,11 +23,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setWindowTitle(tr("多文档编辑器"));
 
-    frDialog = new FindReplaceDialog(this);
+    frDialog = new FindReplaceDialog(this);//查找与替换
     connect(frDialog,SIGNAL(findNext(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)),
-            this,SLOT(findInDocument(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)));
+            this,SLOT(findByCursor(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)));
     connect(frDialog,SIGNAL(count(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)),
             this,SLOT(counter(QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)));
+    connect(frDialog,SIGNAL(replace(QString,QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)),
+            this,SLOT(replace(QString,QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)));
+    connect(frDialog,SIGNAL(replaceAll(QString,QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)),
+            this,SLOT(replaceAll(QString,QString,QTextDocument::FindFlags,FindReplaceDialog::FindModel)));
 
     // 我们在工具栏上单击鼠标右键时，可以关闭工具栏
     ui->mainToolBar->setWindowTitle(tr("工具栏"));
@@ -131,6 +135,50 @@ void MainWindow::readSettings()
         openFile(fileName);
     }*/
 }
+
+
+//在文档中查找
+bool MainWindow::findInDocuent(QTextCursor &cur, QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
+{
+    QTextDocument * document = activeMdiChild()->document();
+    bool isFind;
+    if(model & FindReplaceDialog::RegExp)
+    {
+        QRegExp regexp(pattern);
+        if(!regexp.isValid())
+        {
+            QMessageBox::warning(frDialog,tr("正则表达式错误！"),
+                                 tr("原因: %1").arg(regexp.errorString()));
+            return false;
+        }
+        regexp.setCaseSensitivity((options & QTextDocument::FindCaseSensitively)?
+                                      Qt::CaseSensitive : Qt::CaseInsensitive);
+        cur = document->find(regexp,cur,options);
+        isFind = cur.isNull()==false;
+        /*if(!isFind && (model & FindReplaceDialog::Loop))
+        {
+            if(options & QTextDocument::FindBackward)
+                cur.movePosition(QTextCursor::End);
+            else
+                cur.movePosition(QTextCursor::Start);
+            isFind = document->find(regexp,cur,options).isNull()==false;
+        }*/
+    }
+    else {
+        cur = document->find(pattern,cur,options);
+        isFind = cur.isNull()==false;
+        /*if(!isFind && (model & FindReplaceDialog::Loop))
+        {
+            if(options & QTextDocument::FindBackward)
+                cur.movePosition(QTextCursor::End);
+            else
+                cur.movePosition(QTextCursor::Start);
+            isFind = document->find(pattern,cur,options).isNull()==false;
+        }*/
+    }
+    return isFind;
+}
+
 
 /** 事件处理函数 **/
 
@@ -305,8 +353,8 @@ void MainWindow::closeMdiChild(QString fileName)
     }
 }
 
-//按规则查找下一个
-bool MainWindow::findInDocument(QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
+//按规则在编辑器查找下一个
+bool MainWindow::findByCursor(QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
 {
     MdiChild * child = activeMdiChild();
     bool isFind;
@@ -360,12 +408,81 @@ int MainWindow::counter(QString pattern, QTextDocument::FindFlags options, FindR
             return -1;
         }
     }
-    QTextCursor curCursor = child->textCursor();
-    int count;
-    child->moveCursor(QTextCursor::Start);
-    for(count=0;findInDocument(pattern,options,model);++count);
-    child->setTextCursor(curCursor);
+    ui->statusBar->showMessage(tr("查找：正在计数..."));
+    int count=0;
+    for(QTextCursor cur(child->document());
+        findInDocuent(cur,pattern,options,model);
+        ++count);
     ui->statusBar->showMessage(tr("查找：共找到 %1 个").arg(count));
+    return count;
+}
+
+//替换
+bool MainWindow::replace(QString to, QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
+{
+    MdiChild * child = activeMdiChild();
+    QString select = child->textCursor().selectedText();
+    Qt::CaseSensitivity cs = (options & QTextDocument::FindCaseSensitively)?
+                Qt::CaseSensitive : Qt::CaseInsensitive;
+    if(model & FindReplaceDialog::RegExp)
+    {
+        QRegularExpression regexp(pattern);
+        if(!regexp.isValid())
+        {
+            QMessageBox::warning(frDialog,tr("正则表达式错误！"),
+                                 tr("原因: %1").arg(regexp.errorString()));
+            return false;
+        }
+        QRegularExpression::PatternOptions patternOption = regexp.patternOptions();
+        if(!(options & QTextDocument::FindCaseSensitively))
+            regexp.setPatternOptions(patternOption | QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch match;//确保所选文本与要替换的相符
+        if(0==select.indexOf(regexp,0,&match)){
+            if(0==select.compare(match.captured(),cs)){
+                child->textCursor().insertText(to);
+            }
+            else {
+                return findByCursor(pattern,options,model);
+            }
+        }
+        else {
+            return findByCursor(pattern,options,model);
+        }
+    }
+    else {
+        if(0==select.compare(pattern,cs))//确保所选文本与要替换的相符
+        {
+            child->textCursor().insertText(to);
+        }
+        else {
+            return findByCursor(pattern,options,model);
+        }
+    }
+    return true;
+}
+
+//替换全部
+int MainWindow::replaceAll(QString to, QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
+{
+    MdiChild * child = activeMdiChild();
+    if(model & FindReplaceDialog::RegExp)
+    {
+        QRegExp regexp(pattern);
+        if(!regexp.isValid())
+        {
+            QMessageBox::warning(frDialog,tr("正则表达式错误！"),
+                                 tr("原因: %1").arg(regexp.errorString()));
+            return -1;
+        }
+    }
+    ui->statusBar->showMessage(tr("替换：正在替换..."));
+    int count=0;
+    for(QTextCursor cur(child->document());
+        findInDocuent(cur,pattern,options,model);
+        ++count){
+        cur.insertText(to);
+    }
+    ui->statusBar->showMessage(tr("替换：共替换了 %1 个").arg(count));
     return count;
 }
 
