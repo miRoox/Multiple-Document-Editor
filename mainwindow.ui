@@ -85,9 +85,6 @@
     <addaction name="separator"/>
     <addaction name="action_Find"/>
     <addaction name="action_Replace"/>
-    <addaction name="separator"/>
-    <addaction name="action_Codec"/>
-    <addaction name="action_Transcode"/>
    </widget>
    <widget class="QMenu" name="menu_W">
     <property name="title">
@@ -115,9 +112,16 @@
     <addaction name="action_ZoomIn"/>
     <addaction name="action_ZoomOut"/>
    </widget>
+   <widget class="QMenu" name="menu_C">
+    <property name="title">
+     <string>格式(&amp;C)</string>
+    </property>
+    <addaction name="action_Bom"/>
+   </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_E"/>
    <addaction name="menu_V"/>
+   <addaction name="menu_C"/>
    <addaction name="menu_W"/>
    <addaction name="menu_H"/>
   </widget>
@@ -212,6 +216,9 @@
    </property>
    <property name="toolTip">
     <string>退出(X)</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="action_Undo">
@@ -346,6 +353,9 @@
    <property name="toolTip">
     <string>关于(A)</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
   </action>
   <action name="action_WrapLine">
    <property name="checkable">
@@ -399,6 +409,9 @@
    <property name="toolTip">
     <string>关于Qt(Q)</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::AboutQtRole</enum>
+   </property>
   </action>
   <action name="action_Find">
    <property name="icon">
@@ -424,20 +437,15 @@
     <string>替换(L)</string>
    </property>
   </action>
-  <action name="action_Codec">
+  <action name="action_Bom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>选择编码(&amp;D)</string>
+    <string>保存时添加&amp;BOM</string>
    </property>
    <property name="toolTip">
-    <string>选择编码(D)</string>
-   </property>
-  </action>
-  <action name="action_Transcode">
-   <property name="text">
-    <string>转换编码(&amp;A)</string>
-   </property>
-   <property name="toolTip">
-    <string>转换编码(A)</string>
+    <string>保存时添加BOM</string>
    </property>
   </action>
  </widget>

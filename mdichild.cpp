@@ -22,6 +22,7 @@ MdiChild::MdiChild(QWidget *parent) :
     isUntitled = true;
 
     codec = QTextCodec::codecForLocale();
+    bom = true;
 
     connect(&fWatcher,SIGNAL(fileChanged(QString)),this,SLOT(changeMessage(QString)));
     connect(&fWatcher,SIGNAL(directoryChanged(QString)),this,SLOT(changeMessage(QString)));
@@ -53,7 +54,8 @@ bool MdiChild::loadFile(const QString &fileName,bool re)
     }
     QTextStream in(&file);
     in.setAutoDetectUnicode(true);
-    codec = in.codec();
+    //codec = in.codec();
+    //bom = in.generateByteOrderMark();
     in.setCodec(codec);
     QGuiApplication::setOverrideCursor(Qt::WaitCursor);// 设置鼠标状态为等待状态
     setPlainText(in.readAll());// 读取文件的全部文本内容，并添加到编辑器中
@@ -111,6 +113,7 @@ bool MdiChild::saveFile(const QString &fileName)
     }
     QTextStream out(&file);
     out.setCodec(codec);
+    out.setGenerateByteOrderMark(bom);
     QGuiApplication::setOverrideCursor(Qt::WaitCursor);
     out << toPlainText(); // 以纯文本文件写入
     QGuiApplication::restoreOverrideCursor();
@@ -183,7 +186,28 @@ bool MdiChild::maybeSave()
 void MdiChild::setCodec(QTextCodec *codec)
 {
     this->codec = codec;
-    loadFile(curFile,true);
+    QByteArray org = document()->toPlainText().toLocal8Bit();
+    document()->setPlainText(codec->toUnicode(org));
+    //loadFile(curFile,true);
+}
+
+void MdiChild::setBom(bool bom)
+{
+    this->bom = bom;
+}
+
+void MdiChild::transCodec(QTextCodec *codec)
+{
+    if(QMessageBox::Ok==QMessageBox::warning(this,tr("可能丢失信息！"),
+                         tr("转换编码可能导致信息丢失，确定要转换吗？"),
+                         QMessageBox::Ok,QMessageBox::Cancel))
+    {
+        this->codec = codec;
+        QString content = document()->toPlainText();
+        QTextStream in(&content);
+        in.setCodec(codec);
+        document()->setPlainText(in.readAll());
+    }
 }
 
 /** 私有槽 **/
@@ -230,7 +254,7 @@ void MdiChild::changeMessage(const QString &fileName)
         if(box.clickedButton()==yesBtn)
         {
             setModified(false);
-            emit closeThis(fileName);
+            emit closeWindow(fileName);
         }
         else {
             setModified(true);

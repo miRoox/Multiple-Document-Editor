@@ -6,7 +6,13 @@
 
 #include "findreplacedialog.h"
 
+QT_BEGIN_NAMESPACE
 class QMdiSubWindow;
+class QMenu;
+class QAction;
+class QActionGroup;
+QT_END_NAMESPACE
+
 class MdiChild;
 
 namespace Ui {
@@ -26,7 +32,7 @@ private slots:
     MdiChild * createMdiChild();
     void closeMdiChild(QString fileName);
     void setActiveSubWindow(QWidget * window);
-    void showTextRowAndCol();
+    void showTextInfo();
     bool findByCursor(QString pattern,
                       QTextDocument::FindFlags options,
                       FindReplaceDialog::FindModel model);
@@ -41,6 +47,8 @@ private slots:
                    QString pattern,
                    QTextDocument::FindFlags options,
                    FindReplaceDialog::FindModel model);
+    void setCurrentCode(QAction * act);
+    void transCurrentCode(QAction * act);
 
     void on_action_New_triggered();
 
@@ -84,6 +92,8 @@ private slots:
 
     void on_action_Replace_triggered();
 
+    void on_action_Bom_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
     QTextEdit::LineWrapMode lineWrapMode;
@@ -92,6 +102,7 @@ private:
     void readSettings();
     void writeSettings();
     void initStatusBar();
+    void initMenu();
     void openFile(QString fileName);
     MdiChild * activeMdiChild();
     QMdiSubWindow * findMdiChild(const QString &fileName);
@@ -107,11 +118,11 @@ protected:
 
 private:
     FindReplaceDialog * frDialog;
-    static const QStringList codecList /*= {"GB2312","GBK","GB18030",
-                                          "Big5","Big5-HKSCS",
-                                          "UTF-8",
-                                          "UTF-16","UTF-16BE","UTF-16LE",
-                                          "UTF-32","UTF-32BE","UTF-32LE",0}*/;
+    QMenu * menuCodec;
+    QMenu * menuTranscode;
+    QActionGroup * codecGroup;
+    QActionGroup * transcodeGroup;
+
 };
 
 #endif // MAINWINDOW_H

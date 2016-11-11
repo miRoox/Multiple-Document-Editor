@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include <QMimeData>
+#include <cstring>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -15,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    initMenu();
+
     updateMenus();
     connect(ui->mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
                 this, SLOT(updateMenus()));           //当有活动窗口时更新菜单
@@ -39,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // 当多文档区域的内容超出可视区域后，出现滚动条
     ui->mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     ui->mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
     initStatusBar();
 
     setAcceptDrops(true); //打开主窗口的拖放接收
@@ -99,6 +103,61 @@ void MainWindow::openFile(QString fileName)
             child->close();
         }
     }
+}
+
+void MainWindow::initMenu()
+{
+    menuCodec = new QMenu(tr("选择编码"),this);
+    menuTranscode = new QMenu(tr("转换编码"),this);
+    codecGroup = new QActionGroup(this);
+    transcodeGroup = new QActionGroup(this);
+    ui->menu_C->addMenu(menuCodec);
+    ui->menu_C->addMenu(menuTranscode);
+    QList<QByteArray> codeNames = QTextCodec::availableCodecs();
+    foreach (QByteArray name, codeNames) {
+        QAction * codecAction = new QAction(name,codecGroup);
+        QAction * transcAction = new QAction(name,transcodeGroup);
+        codecAction->setData(name);
+        codecAction->setCheckable(true);
+        if(name=="System") codecAction->setChecked(true);
+        transcAction->setData(name);
+    }
+    menuCodec->addActions(codecGroup->actions());
+    menuTranscode->addActions(transcodeGroup->actions());
+    connect(codecGroup,SIGNAL(triggered(QAction*)),
+             this,SLOT(setCurrentCode(QAction*)));
+    connect(transcodeGroup,SIGNAL(triggered(QAction*)),
+            this,SLOT(transCurrentCode(QAction*)));
+}
+
+
+//初始化状态栏
+void MainWindow::initStatusBar()
+{
+    ui->action_New->setStatusTip(tr("创建一个文件"));
+    ui->action_Open->setStatusTip(tr("打开一个已经存在的文件"));
+    ui->action_Save->setStatusTip(tr("保存文档到硬盘"));
+    ui->action_SaveAs->setStatusTip(tr("以新的名称保存文档"));
+    ui->action_Exit->setStatusTip(tr("退出应用程序"));
+    ui->action_Undo->setStatusTip(tr("撤销先前的操作"));
+    ui->action_Redo->setStatusTip(tr("恢复先前的操作"));
+    ui->action_Cut->setStatusTip(tr("剪切选中的内容到剪贴板"));
+    ui->action_Copy->setStatusTip(tr("复制选中的内容到剪贴板"));
+    ui->action_Paste->setStatusTip(tr("粘贴剪贴板的内容到当前位置"));
+    ui->action_Find->setStatusTip(tr("在当前文件中查找"));
+    ui->action_Replace->setStatusTip(tr("在当前文件中替换字符或字符串"));
+    ui->action_WrapLine->setStatusTip(tr("选择是否自动换行"));
+    ui->action_ZoomIn->setStatusTip(tr("放大文本显示的大小"));
+    ui->action_ZoomOut->setStatusTip(tr("缩小文本显示的大小"));
+    ui->action_Close->setStatusTip(tr("关闭活动窗口"));
+    ui->action_CloseAll->setStatusTip(tr("关闭所有窗口"));
+    ui->action_Next->setStatusTip(tr("将焦点移动到下一个窗口"));
+    ui->action_Previous->setStatusTip(tr("将焦点移动到前一个窗口"));
+    ui->action_About->setStatusTip(tr("显示本软件的介绍"));
+    ui->action_AboutQt->setStatusTip(tr("显示Qt帮助"));
+    ui->statusBar->showMessage(tr("欢迎使用多文档编辑器"));
+    menuCodec->setStatusTip(tr("选择当前文件的编码格式"));
+    menuTranscode->setStatusTip(tr("将当前文件的编码转化为特定编码格式"));
 }
 
 // 写入窗口设置
@@ -220,35 +279,52 @@ void MainWindow::dropEvent(QDropEvent *event)
 //更新菜单
 void MainWindow::updateMenus()
 {
-    bool hasMdiChild = (activeMdiChild() != 0); //是否有活动窗口
+    MdiChild * child = activeMdiChild();
+    bool hasMdiChild = (child != 0); //是否有活动窗口
     ui->action_Save->setEnabled(hasMdiChild);    //设置各个动作是否可用
     ui->action_SaveAs->setEnabled(hasMdiChild);
     ui->action_Paste->setEnabled(hasMdiChild);
     ui->action_Find->setEnabled(hasMdiChild);
     ui->action_Replace->setEnabled(hasMdiChild);
-    ui->action_Codec->setEnabled(hasMdiChild);
-    ui->action_Transcode->setEnabled(hasMdiChild);
     ui->action_ZoomIn->setEnabled(hasMdiChild);
     ui->action_ZoomOut->setEnabled(hasMdiChild);
     ui->action_Close->setEnabled(hasMdiChild);
     ui->action_CloseAll->setEnabled(hasMdiChild);
     ui->action_Next->setEnabled(hasMdiChild);
     ui->action_Previous->setEnabled(hasMdiChild);
+    ui->action_Bom->setEnabled(hasMdiChild);
+    menuCodec->setEnabled(hasMdiChild);
+    menuTranscode->setEnabled(hasMdiChild);
 
-    bool hasSelection = (activeMdiChild()
-                         && activeMdiChild()->textCursor().hasSelection());
+    bool hasSelection = (hasMdiChild
+                         && child->textCursor().hasSelection());
 
     // 有活动窗口且有被选择的文本，剪切复制才可用
     ui->action_Cut->setEnabled(hasSelection);
     ui->action_Copy->setEnabled(hasSelection);
 
     // 有活动窗口且文档有可撤销操作
-    ui->action_Undo->setEnabled(activeMdiChild()
-                          && activeMdiChild()->document()->isUndoAvailable());
+    ui->action_Undo->setEnabled(hasMdiChild
+                          && child->document()->isUndoAvailable());
 
     // 有活动窗口且文档有可恢复操作
-    ui->action_Redo->setEnabled(activeMdiChild()
-                          && activeMdiChild()->document()->isRedoAvailable());
+    ui->action_Redo->setEnabled(hasMdiChild
+                          && child->document()->isRedoAvailable());
+
+    // 有活动窗口且根据活动窗口的信息更新
+    ui->action_Bom->setChecked(hasMdiChild
+                               && child->hasBom());
+
+    if(hasMdiChild){
+        if(codecGroup->checkedAction()->data().toByteArray()!=child->textCodec()->name()){
+            QList<QAction*> acts =  codecGroup->actions();
+            QByteArray codeName = child->textCodec()->name();
+            foreach (QAction * act, acts) {
+                if(act->data().toByteArray()==codeName)
+                    act->setChecked(true);
+            }
+        }
+    }
 }
 
 // 创建子窗口部件
@@ -258,7 +334,7 @@ MdiChild * MainWindow::createMdiChild()
 
     //向多文档区域添加子窗口，child为中心部件
     ui->mdiArea->addSubWindow(child);
-    connect(child,SIGNAL(closeThis(QString)),this,SLOT(closeMdiChild(QString)),Qt::QueuedConnection);
+    connect(child,SIGNAL(closeWindow(QString)),this,SLOT(closeMdiChild(QString)),Qt::QueuedConnection);
 
     // 根据QTextEdit类的是否可以复制信号设置剪切复制动作是否可用
     connect(child,SIGNAL(copyAvailable(bool)),ui->action_Cut,
@@ -273,7 +349,7 @@ MdiChild * MainWindow::createMdiChild()
             ui->action_Redo,SLOT(setEnabled(bool)));
 
     // 每当编辑器中的光标位置改变，就重新显示行号和列号
-    connect(child,SIGNAL(cursorPositionChanged()),this,SLOT(showTextRowAndCol()));
+    connect(child,SIGNAL(cursorPositionChanged()),this,SLOT(showTextInfo()));
 
     //自动换行？
     child->setLineWrapMode(lineWrapMode);
@@ -286,36 +362,6 @@ MdiChild * MainWindow::createMdiChild()
     return child;
 }
 
-//初始化状态栏
-void MainWindow::initStatusBar()
-{
-    ui->action_New->setStatusTip(tr("创建一个文件"));
-    ui->action_Open->setStatusTip(tr("打开一个已经存在的文件"));
-    ui->action_Save->setStatusTip(tr("保存文档到硬盘"));
-    ui->action_SaveAs->setStatusTip(tr("以新的名称保存文档"));
-    ui->action_Exit->setStatusTip(tr("退出应用程序"));
-    ui->action_Undo->setStatusTip(tr("撤销先前的操作"));
-    ui->action_Redo->setStatusTip(tr("恢复先前的操作"));
-    ui->action_Cut->setStatusTip(tr("剪切选中的内容到剪贴板"));
-    ui->action_Copy->setStatusTip(tr("复制选中的内容到剪贴板"));
-    ui->action_Paste->setStatusTip(tr("粘贴剪贴板的内容到当前位置"));
-    ui->action_Find->setStatusTip(tr("在当前文件中查找"));
-    ui->action_Replace->setStatusTip(tr("在当前文件中替换字符或字符串"));
-    ui->action_Codec->setStatusTip(tr("选择当前文件的编码格式"));
-    ui->action_Transcode->setStatusTip(tr("将当前文件的编码转化为特定编码格式"));
-    ui->action_WrapLine->setStatusTip(tr("选择是否自动换行"));
-    ui->action_ZoomIn->setStatusTip(tr("放大文本显示的大小"));
-    ui->action_ZoomOut->setStatusTip(tr("缩小文本显示的大小"));
-    ui->action_Close->setStatusTip(tr("关闭活动窗口"));
-    ui->action_CloseAll->setStatusTip(tr("关闭所有窗口"));
-    ui->action_Next->setStatusTip(tr("将焦点移动到下一个窗口"));
-    ui->action_Previous->setStatusTip(tr("将焦点移动到前一个窗口"));
-    ui->action_About->setStatusTip(tr("显示本软件的介绍"));
-    ui->action_AboutQt->setStatusTip(tr("显示Qt帮助"));
-    ui->statusBar->showMessage(tr("欢迎使用多文档编辑器"));
-}
-
-
 // 设置活动子窗口
 void MainWindow::setActiveSubWindow(QWidget *window)
 {
@@ -325,7 +371,7 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 }
 
 // 显示文本的行号和列号
-void MainWindow::showTextRowAndCol()
+void MainWindow::showTextInfo()
 {
     // 如果有活动窗口，则显示其中光标所在的位置
     if(activeMdiChild()){
@@ -482,6 +528,30 @@ int MainWindow::replaceAll(QString to, QString pattern, QTextDocument::FindFlags
     return count;
 }
 
+void MainWindow::setCurrentCode(QAction *act)
+{
+    if(0!=activeMdiChild()){
+        QByteArray name = act->data().toByteArray();
+        if(0==std::strncmp(name,"System",strlen("System")+1))
+        {
+            activeMdiChild()->setCodec(QTextCodec::codecForLocale());
+        }
+        else {
+            QTextCodec * code = QTextCodec::codecForName(name);
+            if(code!=0) activeMdiChild()->setCodec(code);
+        }
+    }
+}
+
+void MainWindow::transCurrentCode(QAction *act)
+{
+    if(0!=activeMdiChild()){
+        QByteArray name = act->data().toByteArray();
+        QTextCodec * code = QTextCodec::codecForName(name);
+        if(code!=0) activeMdiChild()->transCodec(code);
+    }
+}
+
 /** 自动关联的槽 **/
 
 void MainWindow::on_action_New_triggered()
@@ -606,4 +676,11 @@ void MainWindow::on_action_Find_triggered()
 void MainWindow::on_action_Replace_triggered()
 {
     frDialog->showTab(1);
+}
+
+void MainWindow::on_action_Bom_toggled(bool checked)
+{
+    if(activeMdiChild()!=0)
+        if(activeMdiChild()->hasBom()!=checked)
+            activeMdiChild()->setBom(checked);
 }
