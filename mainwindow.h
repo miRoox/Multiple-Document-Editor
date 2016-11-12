@@ -27,9 +27,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void openFile(QString fileName);
+
 private slots:
     void updateMenus();
     MdiChild * createMdiChild();
+    void openFile(QAction * action);
     void closeMdiChild(QString fileName);
     void setActiveSubWindow(QWidget * window);
     void showTextInfo();
@@ -49,6 +53,7 @@ private slots:
                    FindReplaceDialog::FindModel model);
     void setCurrentCode(QAction * act);
     void transCurrentCode(QAction * act);
+    void clearHistory();
 
     void on_action_New_triggered();
 
@@ -98,18 +103,19 @@ private:
     Ui::MainWindow *ui;
     QTextEdit::LineWrapMode lineWrapMode;
     int textSize;
+    QStringList history;
 
     void readSettings();
     void writeSettings();
     void initStatusBar();
     void initMenu();
-    void openFile(QString fileName);
     MdiChild * activeMdiChild();
     QMdiSubWindow * findMdiChild(const QString &fileName);
     bool findInDocuent(QTextCursor &cur,
                        QString pattern,
                        QTextDocument::FindFlags options,
                        FindReplaceDialog::FindModel model);
+    void addToHistory(QString fileName);
 
 protected:
     void closeEvent(QCloseEvent *event);

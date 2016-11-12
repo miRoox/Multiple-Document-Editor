@@ -16,13 +16,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    readSettings();
+
     initMenu();
 
     updateMenus();
     connect(ui->mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
                 this, SLOT(updateMenus()));           //当有活动窗口时更新菜单
-
-    readSettings();
 
     setWindowTitle(tr("多文档编辑器"));
 
@@ -95,6 +96,7 @@ void MainWindow::openFile(QString fileName)
         }
 
         if (child->loadFile(fileName,existing)) {
+            addToHistory(fileName);
             ui->statusBar->showMessage(tr("打开文件成功"), 2000);
             if(1 == ui->mdiArea->subWindowList().size()) child->showMaximized();
             else child->show();
@@ -107,12 +109,29 @@ void MainWindow::openFile(QString fileName)
 
 void MainWindow::initMenu()
 {
+    //历史记录
+    ui->menu_History->removeAction(ui->menu_History->actions().first());
+    foreach (QString name, history) {
+        QAction * action = new QAction(name,this);
+        action->setData(name);
+        ui->menu_History->addAction(action);
+    }
+    ui->menu_History->addSeparator();
+    ui->menu_History->addAction(tr("清空历史记录"),this,SLOT(clearHistory()));
+    connect(ui->menu_History,SIGNAL(triggered(QAction*)),
+            this,SLOT(openFile(QAction*)));
+
+    //自动换行
+    ui->action_WrapLine->setChecked(QTextEdit::WidgetWidth==lineWrapMode);
+
+    //选择编码与转换编码
     menuCodec = new QMenu(tr("选择编码"),this);
     menuTranscode = new QMenu(tr("转换编码"),this);
     codecGroup = new QActionGroup(this);
     transcodeGroup = new QActionGroup(this);
     ui->menu_C->addMenu(menuCodec);
     ui->menu_C->addMenu(menuTranscode);
+    //遍历可用编码
     QList<QByteArray> codeNames = QTextCodec::availableCodecs();
     foreach (QByteArray name, codeNames) {
         QAction * codecAction = new QAction(name,codecGroup);
@@ -136,6 +155,7 @@ void MainWindow::initStatusBar()
 {
     ui->action_New->setStatusTip(tr("创建一个文件"));
     ui->action_Open->setStatusTip(tr("打开一个已经存在的文件"));
+    ui->menu_History->setStatusTip(tr("选择曾经打开过的文件"));
     ui->action_Save->setStatusTip(tr("保存文档到硬盘"));
     ui->action_SaveAs->setStatusTip(tr("以新的名称保存文档"));
     ui->action_Exit->setStatusTip(tr("退出应用程序"));
@@ -163,36 +183,23 @@ void MainWindow::initStatusBar()
 // 写入窗口设置
 void MainWindow::writeSettings()
 {
-    QSettings settings("miroox","myMdi");
-    settings.setValue("pos",pos());
-    settings.setValue("size",size());
+    QSettings settings("miroox","MDE");
+    settings.setValue("winState",saveState());
+    settings.setValue("geometry", saveGeometry());
     settings.setValue("tsize",textSize);
     settings.setValue("lineWrap",lineWrapMode);
-    /*QList<QMdiSubWindow *> windows = ui->mdiArea->subWindowList();
-    int fileNum = windows.size();
-    settings.setValue("fileNum",fileNum);
-    for(int i=0;i<fileNum;i++){
-        MdiChild * child = qobject_cast<MdiChild *>(windows.at(i)->widget());
-        settings.setValue(QString("file_%1").arg(i),child->currentFile());
-    }*/
+    settings.setValue("history",history);
 }
 
 // 读取窗口设置
 void MainWindow::readSettings()
 {
-    QSettings settings("miroox", "myMdi");
-    QPoint pos = settings.value("pos", QPoint(100, 100)).toPoint();
-    QSize size = settings.value("size", QSize(800, 600)).toSize();
+    QSettings settings("miroox", "MDE");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("winState").toByteArray());
     textSize = settings.value("tsize",12).toInt();
-    lineWrapMode = static_cast<QTextEdit::LineWrapMode>(settings.value("lineWrap",QTextEdit::NoWrap).toInt());
-    move(pos);
-    resize(size);
-    ui->action_WrapLine->setChecked(QTextEdit::WidgetWidth==lineWrapMode);
-    /*int fileNum = settings.value("fileNum",0).toInt();
-    for(int i=0;i<fileNum;i++){
-        QString fileName = settings.value(QString("file_%1").arg(i),QString(".")).toString();
-        openFile(fileName);
-    }*/
+    lineWrapMode = static_cast<QTextEdit::LineWrapMode>(settings.value("lineWrap",QTextEdit::NoWrap).toUInt());
+    history = settings.value("history",QStringList()).toStringList();
 }
 
 
@@ -236,6 +243,26 @@ bool MainWindow::findInDocuent(QTextCursor &cur, QString pattern, QTextDocument:
         }*/
     }
     return isFind;
+}
+
+//将文件路径添加到历史
+void MainWindow::addToHistory(QString fileName)
+{
+    int index = history.indexOf(fileName);
+    if(index<0){
+        history.prepend(fileName);
+        QAction * action = new QAction(fileName,this);
+        action->setData(fileName);
+        ui->menu_History->insertAction(ui->menu_History->actions().first(),
+                                       action);
+    }
+    else {
+        history.move(index,0);
+        QAction * action = ui->menu_History->actions().value(index);
+        ui->menu_History->removeAction(action);
+        ui->menu_History->insertAction(ui->menu_History->actions().first(),
+                                       action);
+    }
 }
 
 
@@ -395,6 +422,25 @@ void MainWindow::closeMdiChild(QString fileName)
     }
 }
 
+//打开文件
+void MainWindow::openFile(QAction *action)
+{
+    if(!action->data().isNull()){
+        QString fileName = action->data().toString();
+        if(!QFileInfo(fileName).exists()){
+            if(QMessageBox::Yes==QMessageBox::warning(this,tr("路径不存在！"),
+                                 tr("是否删除该记录"),
+                                 QMessageBox::Yes,QMessageBox::No))
+            {
+                history.removeOne(fileName);
+                ui->menu_History->removeAction(action);
+            }
+            return;
+        }
+        openFile(fileName);
+    }
+}
+
 //按规则在编辑器查找下一个
 bool MainWindow::findByCursor(QString pattern, QTextDocument::FindFlags options, FindReplaceDialog::FindModel model)
 {
@@ -528,6 +574,7 @@ int MainWindow::replaceAll(QString to, QString pattern, QTextDocument::FindFlags
     return count;
 }
 
+//设置当前文件的编码方式
 void MainWindow::setCurrentCode(QAction *act)
 {
     if(0!=activeMdiChild()){
@@ -543,12 +590,22 @@ void MainWindow::setCurrentCode(QAction *act)
     }
 }
 
+//将当前文件的编码方式转换为
 void MainWindow::transCurrentCode(QAction *act)
 {
     if(0!=activeMdiChild()){
         QByteArray name = act->data().toByteArray();
         QTextCodec * code = QTextCodec::codecForName(name);
         if(code!=0) activeMdiChild()->transCodec(code);
+    }
+}
+
+//清空文件历史
+void MainWindow::clearHistory()
+{
+    for (;!history.isEmpty();history.removeFirst()){
+        QAction * act = ui->menu_History->actions().first();
+        ui->menu_History->removeAction(act);
     }
 }
 
@@ -572,14 +629,20 @@ void MainWindow::on_action_Open_triggered()
 
 void MainWindow::on_action_Save_triggered()
 {
-    if(activeMdiChild() && activeMdiChild()->save())
+    MdiChild *child = activeMdiChild();
+    if(child && child->save()){
         ui->statusBar->showMessage(tr("文件保存成功"),2000);
+        addToHistory(child->currentFile());
+    }
 }
 
 void MainWindow::on_action_SaveAs_triggered()
 {
-    if(activeMdiChild() && activeMdiChild()->saveAs())
+    MdiChild *child = activeMdiChild();
+    if(child && child->saveAs()){
         ui->statusBar->showMessage(tr("文件保存成功"),2000);
+        addToHistory(child->currentFile());
+    }
 }
 
 void MainWindow::on_action_Undo_triggered()
@@ -628,7 +691,8 @@ void MainWindow::on_action_Previous_triggered()
 
 void MainWindow::on_action_About_triggered()
 {
-    QMessageBox::about(this,tr("关于本软件"),tr("以后再补"));
+    QMessageBox::about(this,tr("关于本软件"),
+                       tr("源码地址：<html><body><a href=\"https://github.com/miRoox/Multiple-Document-Editor\">GitHub</a></body></html>"));
 }
 
 void MainWindow::on_action_Exit_triggered()

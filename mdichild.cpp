@@ -186,9 +186,14 @@ bool MdiChild::maybeSave()
 void MdiChild::setCodec(QTextCodec *codec)
 {
     this->codec = codec;
-    QByteArray org = document()->toPlainText().toLocal8Bit();
-    document()->setPlainText(codec->toUnicode(org));
-    //loadFile(curFile,true);
+    if(QFileInfo(curFile).exists() && !document()->isModified()){
+        loadFile(curFile,true);
+    }
+    else {
+        QByteArray org = document()->toPlainText().toLocal8Bit();
+        document()->setPlainText(codec->toUnicode(org));
+        //setModified(false);
+    }
 }
 
 void MdiChild::setBom(bool bom)

@@ -64,8 +64,15 @@
     <property name="title">
      <string>文件(&amp;F)</string>
     </property>
+    <widget class="QMenu" name="menu_History">
+     <property name="title">
+      <string>历史记录(&amp;H)</string>
+     </property>
+     <addaction name="separator"/>
+    </widget>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
+    <addaction name="menu_History"/>
     <addaction name="separator"/>
     <addaction name="action_Save"/>
     <addaction name="action_SaveAs"/>
