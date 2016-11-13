@@ -1,13 +1,18 @@
 #include "singleapplication.h"
 #include "mainwindow.h"
 #include <QApplication>
+#include <QTranslator>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
 int main(int argc, char *argv[])
 {
     SingleApplication app(argc, argv,"miroox-MDE");
-    QApplication::setApplicationDisplayName("多文档编辑器");
+    QTranslator translator;
+    if(translator.load("current.qm","./translations")){
+        app.installTranslator(&translator);
+    }
+    QApplication::setApplicationDisplayName(QApplication::translate("main","多文档编辑器"));
     QApplication::setApplicationName(QApplication::translate("main","Multiple Document Editor"));
     QApplication::setApplicationVersion("1.0");
 

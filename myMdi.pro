@@ -32,3 +32,6 @@ RESOURCES += \
     myimage.qrc
 
 RC_FILE += myico.rc
+
+TRANSLATIONS = zh_cn.ts \
+    en_us.ts
