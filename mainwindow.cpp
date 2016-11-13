@@ -313,6 +313,7 @@ void MainWindow::updateMenus()
     ui->action_Paste->setEnabled(hasMdiChild);
     ui->action_Find->setEnabled(hasMdiChild);
     ui->action_Replace->setEnabled(hasMdiChild);
+    ui->action_WrapLine->setEnabled(hasMdiChild);
     ui->action_ZoomIn->setEnabled(hasMdiChild);
     ui->action_ZoomOut->setEnabled(hasMdiChild);
     ui->action_Close->setEnabled(hasMdiChild);

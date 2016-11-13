@@ -78,6 +78,12 @@ QString MdiChild::userFriendlyCurrentFile()
     return QFileInfo(curFile).fileName(); // 从文件路径中提取文件名
 }
 
+//返回当前文件完整路径
+QString MdiChild::currentFile()
+{
+    return QDir::toNativeSeparators(QFileInfo(curFile).canonicalFilePath());
+}
+
 // 保存操作
 bool MdiChild::save()
 {
