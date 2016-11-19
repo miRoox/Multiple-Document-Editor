@@ -18,6 +18,8 @@ MdiChild::MdiChild(QWidget *parent) :
     // 这样可以在子窗口关闭时销毁这个类的对象
     setAttribute(Qt::WA_DeleteOnClose);
 
+    setAcceptRichText(false);//不从用户处接收富文本
+
     // 初始isUntitled为true
     isUntitled = true;
 
@@ -26,6 +28,10 @@ MdiChild::MdiChild(QWidget *parent) :
 
     connect(&fWatcher,SIGNAL(fileChanged(QString)),this,SLOT(changeMessage(QString)));
     connect(&fWatcher,SIGNAL(directoryChanged(QString)),this,SLOT(changeMessage(QString)));
+
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
+
+    highlightCurrentLine();
 }
 
 // 新建文件操作
@@ -69,6 +75,7 @@ bool MdiChild::loadFile(const QString &fileName,bool re)
         setModified(false);
     }
     file.close();
+    //highlightCurrentLine();
     return true;
 }
 
@@ -273,6 +280,34 @@ void MdiChild::changeMessage(const QString &fileName)
     }
 }
 
+//高亮当前行
+void MdiChild::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    QTextCursor cur = textCursor();
+    cur.movePosition(QTextCursor::StartOfBlock);
+    cur.clearSelection(); //避免选择多行时高亮错误的行
+    int curBlock = cur.blockNumber();
+    for (bool succ=true;
+         cur.blockNumber()==curBlock && succ;
+         succ=cur.movePosition(QTextCursor::Down))
+    {
+        QTextEdit::ExtraSelection selection;
+
+        QColor lineColor = QColor(Qt::blue).lighter(190);//浅蓝色
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+
+        selection.cursor = cur;
+        //selection.cursor.clearSelection();
+        extraSelections.append(selection);
+    }
+
+    setExtraSelections(extraSelections);
+}
+
 /** 事件处理函数 **/
 
 void MdiChild::closeEvent(QCloseEvent *event)
@@ -311,4 +346,12 @@ void MdiChild::contextMenuEvent(QContextMenuEvent *e) // 右键菜单事件
     select->setEnabled(!document()->isEmpty());
     menu->exec(e->globalPos()); // 获取鼠标的位置，然后在这个位置显示菜单
     delete menu; // 最后销毁这个菜单
+}
+
+void MdiChild::resizeEvent(QResizeEvent *event)
+{
+    QTextEdit::resizeEvent(event);
+
+    highlightCurrentLine();//改变大小时也能正确绘制
+
 }

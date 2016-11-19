@@ -29,6 +29,7 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);    // 关闭事件
     void contextMenuEvent(QContextMenuEvent *e); //右键菜单事件
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE; //调整大小事件
 
 public slots:
     void setCodec(QTextCodec * codec);      //设置编码方式
@@ -38,6 +39,7 @@ public slots:
 private slots:
     void documentWasModified();             // 文档被更改时，显示更改状态标志
     void changeMessage(const QString &fileName); //文件被外部更改时
+    void highlightCurrentLine();            //光标移动时
 
 signals:
     void closeWindow(QString);             //向主窗口发射的关闭此窗口信号

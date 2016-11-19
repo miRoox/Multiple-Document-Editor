@@ -68,7 +68,7 @@ QMdiSubWindow * MainWindow::findMdiChild(const QString &fileName)
 {
     QString canonicalFilePath = fileName; //文件被删除但其窗口仍打开时
     if(QFileInfo(fileName).exists()){
-        canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+        canonicalFilePath = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
     }
     // 利用foreach语句遍历子窗口列表，如果其文件路径和要查找的路径相同，则返回该窗口
     foreach (QMdiSubWindow *window, ui->mdiArea->subWindowList()) {
@@ -96,7 +96,7 @@ void MainWindow::openFile(QString fileName)
         }
 
         if (child->loadFile(fileName,existing)) {
-            addToHistory(fileName);
+            addToHistory(child->currentFile());
             ui->statusBar->showMessage(tr("打开文件成功"), 2000);
             if(1 == ui->mdiArea->subWindowList().size()) child->showMaximized();
             else child->show();
@@ -405,7 +405,7 @@ void MainWindow::showTextInfo()
     if(activeMdiChild()){
         // 获取的行号和列号都是从0开始的
         int rowNum = activeMdiChild()->textCursor().blockNumber()+1;
-        int colNum = activeMdiChild()->textCursor().columnNumber()+1;
+        int colNum = activeMdiChild()->textCursor().positionInBlock()+1;
 
         ui->statusBar->showMessage(tr("%1行 %2列")
                                    .arg(rowNum).arg(colNum));
