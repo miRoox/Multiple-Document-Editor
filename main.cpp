@@ -35,11 +35,11 @@ int main(int argc, char *argv[])
         MainWindow w;
         QObject::connect(&app,SIGNAL(messageAvailable(QString)),
                          &w,SLOT(openFile(QString)));
+        w.show();
         if(!parser.positionalArguments().isEmpty())
         {
             w.openFile(parser.positionalArguments().at(0));
         }
-        w.show();
 
         return app.exec();
     }
