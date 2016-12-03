@@ -125,11 +125,17 @@
     </property>
     <addaction name="action_Bom"/>
    </widget>
+   <widget class="QMenu" name="menu_P">
+    <property name="title">
+     <string>插件(&amp;P)</string>
+    </property>
+   </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_E"/>
    <addaction name="menu_V"/>
    <addaction name="menu_C"/>
    <addaction name="menu_W"/>
+   <addaction name="menu_P"/>
    <addaction name="menu_H"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

@@ -53,7 +53,8 @@ bool MdiChild::loadFile(const QString &fileName,bool re)
 {
     QFile file(fileName);
     // 只读方式打开文件，出错则提示，并返回false
-    if(! file.open(QFile::ReadOnly | QFile::Text)){
+    if(! file.open(QFile::ReadOnly | QFile::Text))
+    {
         QMessageBox::warning(this,tr("多文档编辑器"),
                              tr("无法读取文件 %1:\n%2").arg(fileName).arg(file.errorString()));
         return false;
@@ -94,10 +95,12 @@ QString MdiChild::currentFile()
 // 保存操作
 bool MdiChild::save()
 {
-    if (isUntitled) { // 如果文件未被保存过，则执行另存为操作
+    if (isUntitled)
+    { // 如果文件未被保存过，则执行另存为操作
         return saveAs();
     }
-    else {
+    else
+    {
         return saveFile(curFile); //否则直接保存文件
     }
 }
@@ -119,7 +122,8 @@ bool MdiChild::saveFile(const QString &fileName)
 {
     fWatcher.removePath(curFile);
     QFile file(fileName);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+    if (!file.open(QFile::WriteOnly | QFile::Text))
+    {
         QMessageBox::warning(this, tr("多文档编辑器"),
                              tr("无法写入文件 %1:\n%2.").arg(fileName).arg(file.errorString()));
         return false;
@@ -179,17 +183,21 @@ bool MdiChild::maybeSave()
         QPushButton * noBtn = box.addButton(tr("否(&N)"),QMessageBox::NoRole);
         box.addButton(tr("取消(&C)"),QMessageBox::RejectRole);
         box.exec();
-        if(box.clickedButton() == yesBtn){
+        if(box.clickedButton() == yesBtn)
+        {
             return save();
         }
-        else if (box.clickedButton() == noBtn) {
+        else if (box.clickedButton() == noBtn)
+        {
             return true;
         }
-        else {
+        else
+        {
             return false;
         }
     }
-    else {
+    else
+    {
         return true;
     }
 }
@@ -199,10 +207,12 @@ bool MdiChild::maybeSave()
 void MdiChild::setCodec(QTextCodec *codec)
 {
     this->codec = codec;
-    if(QFileInfo(curFile).exists() && !document()->isModified()){
+    if(QFileInfo(curFile).exists() && !document()->isModified())
+    {
         loadFile(curFile,true);
     }
-    else {
+    else
+    {
         QByteArray org = document()->toPlainText().toLocal8Bit();
         document()->setPlainText(codec->toUnicode(org));
         //setModified(false);
@@ -256,11 +266,13 @@ void MdiChild::changeMessage(const QString &fileName)
         {
             loadFile(fileName,true);
         }
-        else {
+        else
+        {
             setModified(true);
         }
     }
-    else {
+    else
+    {
         QMessageBox box;
         box.setWindowTitle(tr("多文档编辑器"));
         box.setText(tr("文档 \"%1\" 已不存在\n是否关闭？")
@@ -274,7 +286,8 @@ void MdiChild::changeMessage(const QString &fileName)
             setModified(false);
             emit closeWindow(fileName);
         }
-        else {
+        else
+        {
             setModified(true);
         }
     }
@@ -316,7 +329,8 @@ void MdiChild::closeEvent(QCloseEvent *event)
     {
         event->accept();
     }
-    else {   // 否则忽略该事件
+    else
+    {   // 否则忽略该事件
         event->ignore();
     }
 }

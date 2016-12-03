@@ -5,6 +5,7 @@
 #include <QTextEdit>
 
 #include "findreplacedialog.h"
+#include "plugininterface.h"
 
 QT_BEGIN_NAMESPACE
 class QMdiSubWindow;
@@ -29,6 +30,7 @@ public:
 
 public slots:
     void openFile(QString fileName);
+    unsigned int loadPlugins();
 
 private slots:
     void updateMenus();
@@ -54,6 +56,7 @@ private slots:
     void setCurrentCode(QAction * act);
     void transCurrentCode(QAction * act);
     void clearHistory();
+    void pluginAct();
 
     void on_action_New_triggered();
 
@@ -104,6 +107,7 @@ private:
     QTextEdit::LineWrapMode lineWrapMode;
     int textSize;
     QStringList history;
+    QString recentDir;
 
     void readSettings();
     void writeSettings();
@@ -128,6 +132,7 @@ private:
     QMenu * menuTranscode;
     QActionGroup * codecGroup;
     QActionGroup * transcodeGroup;
+    QList<PluginInferface *> plugins;
 
 };
 

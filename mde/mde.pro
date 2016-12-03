@@ -10,7 +10,8 @@ QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = myMdi
+TARGET = MDE
+DESTDIR    = ..
 TEMPLATE = app
 
 
@@ -23,7 +24,8 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     mdichild.h \
     findreplacedialog.h \
-    singleapplication.h
+    singleapplication.h \
+    plugininterface.h
 
 FORMS    += mainwindow.ui \
     findreplacedialog.ui
@@ -35,3 +37,5 @@ RC_FILE += myico.rc
 
 TRANSLATIONS = zh_cn.ts \
     en_us.ts
+
+

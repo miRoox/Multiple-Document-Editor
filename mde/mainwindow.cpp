@@ -10,6 +10,7 @@
 #include <QMimeData>
 #include <cstring>
 #include <QDebug>
+#include <QPluginLoader>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -54,30 +55,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//活动窗口
-MdiChild * MainWindow::activeMdiChild() //活动窗口
-{
-    // 如果有活动窗口，则将其内的中心部件转换为MdiChild类型
-    if (QMdiSubWindow *activeSubWindow = ui->mdiArea->activeSubWindow())
-        return qobject_cast<MdiChild *>(activeSubWindow->widget());
-    return 0; // 没有活动窗口，直接返回0
-}
-
-// 查找子窗口
-QMdiSubWindow * MainWindow::findMdiChild(const QString &fileName)
-{
-    QString canonicalFilePath = fileName; //文件被删除但其窗口仍打开时
-    if(QFileInfo(fileName).exists()){
-        canonicalFilePath = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
-    }
-    // 利用foreach语句遍历子窗口列表，如果其文件路径和要查找的路径相同，则返回该窗口
-    foreach (QMdiSubWindow *window, ui->mdiArea->subWindowList()) {
-        MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
-        if (mdiChild->currentFile() == canonicalFilePath)
-            return window;
-    }
-    return 0;
-}
+/** 共有槽 **/
 
 //打开文件操作
 void MainWindow::openFile(QString fileName)
@@ -91,27 +69,113 @@ void MainWindow::openFile(QString fileName)
             child = qobject_cast<MdiChild *>(existing->widget());
             ui->mdiArea->setActiveSubWindow(existing);
         }
-        else {
+        else
+        {
             child = createMdiChild(); // 如果没有打开，则新建子窗口
         }
 
-        if (child->loadFile(fileName,existing)) {
+        if (child->loadFile(fileName,existing))
+        {
             addToHistory(child->currentFile());
             ui->statusBar->showMessage(tr("打开文件成功"), 2000);
             if(1 == ui->mdiArea->subWindowList().size()) child->showMaximized();
             else child->show();
         }
-        else {
+        else
+        {
             child->close();
         }
     }
+}
+
+//加载插件
+unsigned int MainWindow::loadPlugins()
+{
+    unsigned int count = 0;
+    QDir pluginsDir(qApp->applicationDirPath());
+#if defined(Q_OS_WIN)
+    if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+        pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+    if (pluginsDir.dirName() == "MacOS")
+    {
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
+        pluginsDir.cdUp();
+    }
+#endif
+    if(pluginsDir.cd("plugins"))
+    {
+        foreach (QString fileName, pluginsDir.entryList(QDir::Files))
+        {
+            QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
+            QObject *plug = pluginLoader.instance();
+            qDebug() << pluginLoader.errorString();
+            if(plug)
+            {
+                PluginInferface *plugin = qobject_cast<PluginInferface *>(plug);
+                if(plugin)
+                {
+                    plugins.append(plugin);
+                    QMenu *menu = ui->menu_P->addMenu(plugin->name());
+                    QStringList texts = plugin->operators();
+                    foreach (QString text, texts)
+                    {
+                        QAction *action = new QAction(text, plug);
+                        connect(action,SIGNAL(triggered()),
+                                this,SLOT(pluginAct()));
+                        menu->addAction(action);
+                    }
+                    ++count;
+                }
+            }
+        }
+        qDebug() << count;
+    }
+    else
+    {
+        QMessageBox::warning(this,tr("错误"),
+                             tr("插件路径不存在"),QMessageBox::Ok);
+    }
+    if(0==count) ui->menu_P->setEnabled(false);
+    return count;
+}
+
+/** 私有方法 **/
+
+//活动窗口
+MdiChild * MainWindow::activeMdiChild() //活动窗口
+{
+    // 如果有活动窗口，则将其内的中心部件转换为MdiChild类型
+    if (QMdiSubWindow *activeSubWindow = ui->mdiArea->activeSubWindow())
+        return qobject_cast<MdiChild *>(activeSubWindow->widget());
+    return 0; // 没有活动窗口，直接返回0
+}
+
+// 查找子窗口
+QMdiSubWindow * MainWindow::findMdiChild(const QString &fileName)
+{
+    QString canonicalFilePath = fileName; //文件被删除但其窗口仍打开时
+    if(QFileInfo(fileName).exists())
+    {
+        canonicalFilePath = QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
+    }
+    // 利用foreach语句遍历子窗口列表，如果其文件路径和要查找的路径相同，则返回该窗口
+    foreach (QMdiSubWindow *window, ui->mdiArea->subWindowList())
+    {
+        MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
+        if (mdiChild->currentFile() == canonicalFilePath)
+            return window;
+    }
+    return 0;
 }
 
 void MainWindow::initMenu()
 {
     //历史记录
     ui->menu_History->removeAction(ui->menu_History->actions().first());
-    foreach (QString name, history) {
+    foreach (QString name, history)
+    {
         QAction * action = new QAction(name,this);
         action->setData(name);
         ui->menu_History->addAction(action);
@@ -133,7 +197,8 @@ void MainWindow::initMenu()
     ui->menu_C->addMenu(menuTranscode);
     //遍历可用编码
     QList<QByteArray> codeNames = QTextCodec::availableCodecs();
-    foreach (QByteArray name, codeNames) {
+    foreach (QByteArray name, codeNames)
+    {
         QAction * codecAction = new QAction(name,codecGroup);
         QAction * transcAction = new QAction(name,transcodeGroup);
         codecAction->setData(name);
@@ -189,6 +254,7 @@ void MainWindow::writeSettings()
     settings.setValue("tsize",textSize);
     settings.setValue("lineWrap",lineWrapMode);
     settings.setValue("history",history);
+    settings.setValue("recentDir",recentDir);
 }
 
 // 读取窗口设置
@@ -200,6 +266,7 @@ void MainWindow::readSettings()
     textSize = settings.value("tsize",12).toInt();
     lineWrapMode = static_cast<QTextEdit::LineWrapMode>(settings.value("lineWrap",QTextEdit::NoWrap).toUInt());
     history = settings.value("history",QStringList()).toStringList();
+    recentDir = settings.value("recentDir",QString(".")).toString();
 }
 
 
@@ -249,14 +316,16 @@ bool MainWindow::findInDocuent(QTextCursor &cur, QString pattern, QTextDocument:
 void MainWindow::addToHistory(QString fileName)
 {
     int index = history.indexOf(fileName);
-    if(index<0){
+    if(index<0)
+    {
         history.prepend(fileName);
         QAction * action = new QAction(fileName,this);
         action->setData(fileName);
         ui->menu_History->insertAction(ui->menu_History->actions().first(),
                                        action);
     }
-    else {
+    else
+    {
         history.move(index,0);
         QAction * action = ui->menu_History->actions().value(index);
         ui->menu_History->removeAction(action);
@@ -272,10 +341,12 @@ void MainWindow::addToHistory(QString fileName)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     ui->mdiArea->closeAllSubWindows();// 先执行多文档区域的关闭操作
-    if(ui->mdiArea->currentSubWindow()){
+    if(ui->mdiArea->currentSubWindow())
+    {
         event->ignore();// 如果还有窗口没有关闭，则忽略该事件
     }
-    else {
+    else
+    {
         writeSettings();// 在关闭前写入窗口设置
         event->accept();
     }
@@ -301,7 +372,7 @@ void MainWindow::dropEvent(QDropEvent *event)
     }
 }
 
-/** 反应槽 **/
+/** 私有槽 **/
 
 //更新菜单
 void MainWindow::updateMenus()
@@ -343,14 +414,21 @@ void MainWindow::updateMenus()
     ui->action_Bom->setChecked(hasMdiChild
                                && child->hasBom());
 
-    if(hasMdiChild){
-        if(codecGroup->checkedAction()->data().toByteArray()!=child->textCodec()->name()){
+    if(hasMdiChild)
+    {
+        if(codecGroup->checkedAction()->data().toByteArray()!=child->textCodec()->name())
+        {
             QList<QAction*> acts =  codecGroup->actions();
             QByteArray codeName = child->textCodec()->name();
-            foreach (QAction * act, acts) {
+            foreach (QAction * act, acts)
+            {
                 if(act->data().toByteArray()==codeName)
                     act->setChecked(true);
             }
+        }
+        if(!child->currentFile().isEmpty())
+        {
+            recentDir = child->currentFile();
         }
     }
 }
@@ -402,7 +480,8 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 void MainWindow::showTextInfo()
 {
     // 如果有活动窗口，则显示其中光标所在的位置
-    if(activeMdiChild()){
+    if(activeMdiChild())
+    {
         // 获取的行号和列号都是从0开始的
         int rowNum = activeMdiChild()->textCursor().blockNumber()+1;
         int colNum = activeMdiChild()->textCursor().positionInBlock()+1;
@@ -426,9 +505,11 @@ void MainWindow::closeMdiChild(QString fileName)
 //打开文件
 void MainWindow::openFile(QAction *action)
 {
-    if(!action->data().isNull()){
+    if(!action->data().isNull())
+    {
         QString fileName = action->data().toString();
-        if(!QFileInfo(fileName).exists()){
+        if(!QFileInfo(fileName).exists())
+        {
             if(QMessageBox::Yes==QMessageBox::warning(this,tr("路径不存在！"),
                                  tr("是否删除该记录"),
                                  QMessageBox::Yes,QMessageBox::No))
@@ -526,15 +607,19 @@ bool MainWindow::replace(QString to, QString pattern, QTextDocument::FindFlags o
         if(!(options & QTextDocument::FindCaseSensitively))
             regexp.setPatternOptions(patternOption | QRegularExpression::CaseInsensitiveOption);
         QRegularExpressionMatch match;//确保所选文本与要替换的相符
-        if(0==select.indexOf(regexp,0,&match)){
-            if(0==select.compare(match.captured(),cs)){
+        if(0==select.indexOf(regexp,0,&match))
+        {
+            if(0==select.compare(match.captured(),cs))
+            {
                 child->textCursor().insertText(to);
             }
-            else {
+            else
+            {
                 return findByCursor(pattern,options,model);
             }
         }
-        else {
+        else
+        {
             return findByCursor(pattern,options,model);
         }
     }
@@ -543,7 +628,8 @@ bool MainWindow::replace(QString to, QString pattern, QTextDocument::FindFlags o
         {
             child->textCursor().insertText(to);
         }
-        else {
+        else
+        {
             return findByCursor(pattern,options,model);
         }
     }
@@ -568,7 +654,8 @@ int MainWindow::replaceAll(QString to, QString pattern, QTextDocument::FindFlags
     int count=0;
     for(QTextCursor cur(child->document());
         findInDocuent(cur,pattern,options,model);
-        ++count){
+        ++count)
+    {
         cur.insertText(to);
     }
     ui->statusBar->showMessage(tr("替换：共替换了 %1 个").arg(count));
@@ -578,13 +665,15 @@ int MainWindow::replaceAll(QString to, QString pattern, QTextDocument::FindFlags
 //设置当前文件的编码方式
 void MainWindow::setCurrentCode(QAction *act)
 {
-    if(0!=activeMdiChild()){
+    if(0!=activeMdiChild())
+    {
         QByteArray name = act->data().toByteArray();
         if(0==std::strncmp(name,"System",strlen("System")+1))
         {
             activeMdiChild()->setCodec(QTextCodec::codecForLocale());
         }
-        else {
+        else
+        {
             QTextCodec * code = QTextCodec::codecForName(name);
             if(code!=0) activeMdiChild()->setCodec(code);
         }
@@ -594,7 +683,8 @@ void MainWindow::setCurrentCode(QAction *act)
 //将当前文件的编码方式转换为
 void MainWindow::transCurrentCode(QAction *act)
 {
-    if(0!=activeMdiChild()){
+    if(0!=activeMdiChild())
+    {
         QByteArray name = act->data().toByteArray();
         QTextCodec * code = QTextCodec::codecForName(name);
         if(code!=0) activeMdiChild()->transCodec(code);
@@ -604,10 +694,61 @@ void MainWindow::transCurrentCode(QAction *act)
 //清空文件历史
 void MainWindow::clearHistory()
 {
-    for (;!history.isEmpty();history.removeFirst()){
+    for (;!history.isEmpty();history.removeFirst())
+    {
         QAction * act = ui->menu_History->actions().first();
         ui->menu_History->removeAction(act);
     }
+}
+
+//插件动作
+void MainWindow::pluginAct()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    PluginInferface *plugin =qobject_cast<PluginInferface *>(action->parent());
+    QStringList descs = plugin->descriptions(action->text());
+    if(descs.contains("currentFile"))/* QString */
+    {
+        if(activeMdiChild())
+            plugin->getData("currentFile",activeMdiChild()->currentFile());
+        else
+            plugin->getData("currentFile",QString());
+    }
+    if (descs.contains("currentCodec"))/* QByteArray */
+    {
+        if(activeMdiChild())
+            plugin->getData("currentCodec",activeMdiChild()->textCodec()->name());
+        else
+            plugin->getData("currentFile",QByteArray());
+    }
+    if (descs.contains("currentText")) /* QString */
+    {
+        if(activeMdiChild())
+            plugin->getData("currentText",activeMdiChild()->toPlainText());
+        else
+            plugin->getData("currentFile",QString());
+    }
+    if (descs.contains("textSize")) /* int */
+    {
+        plugin->getData("textSize",textSize);
+    }
+    if (descs.contains("history")) /* QString */
+    {
+        plugin->getData("history",history);
+    }
+    if (descs.contains("mainWinPos"))
+    {
+        plugin->getData("mainWinPos",pos());
+    }
+    if (descs.contains("mainWinSize"))
+    {
+        plugin->getData("mainWinSize",size());
+    }
+    if (descs.contains("save"))
+    {
+        on_action_Save_triggered();
+    }
+    plugin->apply(this, action->text());
 }
 
 /** 自动关联的槽 **/
@@ -623,7 +764,7 @@ void MainWindow::on_action_New_triggered()
 void MainWindow::on_action_Open_triggered()
 {
     // 获取文件路径
-    QString fileName = QFileDialog::getOpenFileName(this,tr("打开文件"),".",
+    QString fileName = QFileDialog::getOpenFileName(this,tr("打开文件"),recentDir,
                                                     tr("文本文件(*.txt);;任意文件(*)"));
     openFile(fileName);
 }
@@ -631,7 +772,8 @@ void MainWindow::on_action_Open_triggered()
 void MainWindow::on_action_Save_triggered()
 {
     MdiChild *child = activeMdiChild();
-    if(child && child->save()){
+    if(child && child->save())
+    {
         ui->statusBar->showMessage(tr("文件保存成功"),2000);
         addToHistory(child->currentFile());
     }
@@ -640,7 +782,8 @@ void MainWindow::on_action_Save_triggered()
 void MainWindow::on_action_SaveAs_triggered()
 {
     MdiChild *child = activeMdiChild();
-    if(child && child->saveAs()){
+    if(child && child->saveAs())
+    {
         ui->statusBar->showMessage(tr("文件保存成功"),2000);
         addToHistory(child->currentFile());
     }
@@ -693,7 +836,9 @@ void MainWindow::on_action_Previous_triggered()
 void MainWindow::on_action_About_triggered()
 {
     QMessageBox::about(this,tr("关于本软件"),
-                       tr("源码地址：<html><body><a href=\"https://github.com/miRoox/Multiple-Document-Editor\">GitHub</a></body></html>"));
+                       tr("源码地址："
+                          "<html><body><a href=\"https://github.com/miRoox/Multiple-Document-Editor\">GitHub</a></body></html>\n"
+                          ""));
 }
 
 void MainWindow::on_action_Exit_triggered()
@@ -704,7 +849,8 @@ void MainWindow::on_action_Exit_triggered()
 void MainWindow::on_action_WrapLine_toggled(bool checked)
 {
     lineWrapMode = checked ? QTextEdit::WidgetWidth : QTextEdit::NoWrap;
-    foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList()){
+    foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList())
+    {
         MdiChild * child = qobject_cast<MdiChild *>(window->widget());
         child->setLineWrapMode(lineWrapMode);
     }
@@ -713,7 +859,8 @@ void MainWindow::on_action_WrapLine_toggled(bool checked)
 void MainWindow::on_action_ZoomIn_triggered()
 {
     textSize++;
-    foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList()){
+    foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList())
+    {
         MdiChild * child = qobject_cast<MdiChild *>(window->widget());
         child->setTextSize(textSize);
     }
@@ -722,7 +869,8 @@ void MainWindow::on_action_ZoomIn_triggered()
 void MainWindow::on_action_ZoomOut_triggered()
 {
     if(textSize>1) textSize--;
-    foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList()){
+    foreach(QMdiSubWindow * window,ui->mdiArea->subWindowList())
+    {
         MdiChild * child = qobject_cast<MdiChild *>(window->widget());
         child->setTextSize(textSize);
     }
