@@ -110,7 +110,7 @@ unsigned int MainWindow::loadPlugins()
         {
             QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
             QObject *plug = pluginLoader.instance();
-            qDebug() << pluginLoader.errorString();
+            if(plug==0) qDebug() << pluginLoader.errorString();
             if(plug)
             {
                 PluginInferface *plugin = qobject_cast<PluginInferface *>(plug);
@@ -130,7 +130,7 @@ unsigned int MainWindow::loadPlugins()
                 }
             }
         }
-        qDebug() << count;
+        qDebug() << "Number of plugins:" << count;
     }
     else
     {

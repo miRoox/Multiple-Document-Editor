@@ -1,7 +1,7 @@
 
 TEMPLATE      = lib
 CONFIG       += plugin
-QT           += core widgets
+QT           += core widgets gui printsupport
 INCLUDEPATH  += ../../mde
 HEADERS       = htmlviewer.h
 SOURCES       = htmlviewer.cpp

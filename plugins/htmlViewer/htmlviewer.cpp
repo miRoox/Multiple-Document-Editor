@@ -2,6 +2,10 @@
 #include <QTextBrowser>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QFileDialog>
+#include <QDir>
 
 QString HtmlViewer::name() const
 {
@@ -11,6 +15,7 @@ QString HtmlViewer::name() const
 QStringList HtmlViewer::operators() const
 {
     return QStringList() << tr("预览当前文件")
+                         << tr("输出为 PDF")
                          << tr("关于");
 }
 
@@ -20,6 +25,12 @@ QStringList HtmlViewer::descriptions(QString opName) const
     {
         return QStringList() << "currentText"
                              << "currentFile";
+    }
+    else if (opName==tr("输出为 PDF"))
+    {
+        return QStringList() << "currentText"
+                             << "currentFile"
+                             << "save";
     }
     else if (opName==tr("关于"))
     {
@@ -47,30 +58,66 @@ QStringList HtmlViewer::apply(QWidget * parent ,QString opName)
 {
     if(opName==tr("预览当前文件"))
     {
-        if(file.isNull())
-        {
-            QMessageBox::warning(parent,tr("文件不存在！"),
-                                 tr("没有可用的文件。"),QMessageBox::Ok);
-        }
-        else
-        {
-            QTextBrowser *viewer = new QTextBrowser(parent);
-            viewer->setWindowFlags(Qt::Window);
-            viewer->resize(600,480);
-            viewer->setWindowTitle(QFileInfo(file).fileName() + " - HTML Viewer");
-            viewer->setOpenLinks(false);
-            viewer->setOpenExternalLinks(true);
-            viewer->setSearchPaths(QStringList(file));
-            viewer->setWordWrapMode(QTextOption::NoWrap);
-            viewer->setHtml(content);
-            if(!viewer->documentTitle().isEmpty())
-                viewer->setWindowTitle(viewer->documentTitle() + " - HTML Viewer");
-            viewer->show();
-        }
+        viewer(parent);
+    }
+    else if (opName==tr("输出为 PDF"))
+    {
+        printPdf(parent);
     }
     else if (opName==tr("关于"))
         QMessageBox::about(parent,tr("关于本插件"),
                            tr("插件名称：HTML Viewer\n"
                               "插件功能：将HTML文件内容以富文本的方式呈现出来"));
     return QStringList();
+}
+
+void HtmlViewer::viewer(QWidget *parent)
+{
+    if(file.isNull())
+    {
+        QMessageBox::warning(parent,tr("文件不存在！"),
+                             tr("没有可用的文件。"),QMessageBox::Ok);
+    }
+    else
+    {
+        QTextBrowser *viewer = new QTextBrowser(parent);
+        viewer->setWindowFlags(Qt::Window);
+        viewer->resize(600,480);
+        viewer->setWindowTitle(QFileInfo(file).fileName() + " - HTML Viewer");
+        viewer->setOpenLinks(false);
+        viewer->setOpenExternalLinks(true);
+        viewer->setSearchPaths(QStringList(file));
+        viewer->setWordWrapMode(QTextOption::NoWrap);
+        viewer->setHtml(content);
+        if(!viewer->documentTitle().isEmpty())
+            viewer->setWindowTitle(viewer->documentTitle() + " - HTML Viewer");
+        viewer->show();
+    }
+}
+
+void HtmlViewer::printPdf(QWidget *parent)
+{
+    if(file.isNull())
+    {
+        QMessageBox::warning(parent,tr("文件不存在！"),
+                             tr("没有可用的文件。"),QMessageBox::Ok);
+    }
+    else
+    {
+        QPrinter printer;
+        printer.setPageSize(QPrinter::A4);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        QString filepath = QFileDialog::getSaveFileName(parent, tr("保存为..."),
+                                                        QFileInfo(file).absoluteDir().
+                                                        filePath(QFileInfo(file).completeBaseName()),
+                                                        tr("PDF格式(*.pdf)"));
+        if(!filepath.isNull())
+        {
+            printer.setOutputFileName(filepath);
+            QTextDocument textDocument;
+            textDocument.setHtml(content);
+            textDocument.print(&printer);
+            QMessageBox::about(parent, tr("提示"), tr("保存成功"));
+        }
+    }
 }

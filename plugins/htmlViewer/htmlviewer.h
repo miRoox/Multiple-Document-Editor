@@ -28,6 +28,9 @@ public:
 private:
     QString content;
     QString file;
+
+    void viewer(QWidget * parent);
+    void printPdf(QWidget * parent);
 };
 
 #endif // HTMLVIEWER_H
