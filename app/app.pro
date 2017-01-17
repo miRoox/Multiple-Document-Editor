@@ -11,19 +11,18 @@ QT       += core \
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = MDE
-DESTDIR    = ..
 TEMPLATE = app
 
 
-SOURCES += main.cpp
-
-HEADERS  += \
-    interface.h
+SOURCES += main.cpp \
+    singleapplication.cpp
 
 RESOURCES += \
     myimage.qrc
 
-RC_ICON = notepad.ico
+RC_ICONS = notepad.ico
 
-
+HEADERS += \
+    ../interface.h \
+    singleapplication.h
 

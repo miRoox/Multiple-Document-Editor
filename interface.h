@@ -14,22 +14,22 @@ QT_END_NAMESPACE
 class DataInterface
 {
 public:
-	struct FileData
-	{
-		QDir dir;
-		QString name;
-		QTextDocument * doc;
-	}
-	virtual FileData currentFile() = 0;
-	virtual QVector<FileData> files() = 0;
-}
+    struct FileData
+    {
+        QDir dir;
+        QString name;
+        QTextDocument * doc;
+    };
+    virtual FileData currentFile() = 0;
+    virtual QVector<FileData> files() = 0;
+};
 
 class PluginInferface
 {
 public:
     virtual ~PluginInferface() { }
     virtual bool install(QMainWindow * win, DataInterface * dat) = 0;
-	virtual bool uninstall() = 0;
+    virtual bool uninstall() = 0;
 };
 
 QT_BEGIN_NAMESPACE
