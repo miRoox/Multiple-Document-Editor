@@ -15,7 +15,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    singleapplication.cpp
+    singleapplication.cpp \
+    mdemanager.cpp \
+    mdewindow.cpp
 
 RESOURCES += \
     myimage.qrc
@@ -24,5 +26,10 @@ RC_ICONS = notepad.ico
 
 HEADERS += \
     ../interface.h \
-    singleapplication.h
+    singleapplication.h \
+    mdemanager.h \
+    mdewindow.h
+
+FORMS += \
+    mdewindow.ui
 

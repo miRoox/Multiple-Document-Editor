@@ -2,6 +2,7 @@
 
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QStringList>
 
 SingleApplication::SingleApplication(int &argc, char *argv[], const QString uniqueKey)
     : QApplication(argc, argv), _uniqueKey(uniqueKey)
