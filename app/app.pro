@@ -13,11 +13,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = MDE
 TEMPLATE = app
 
+include(../shared/qtsingleapplication/qtsingleapplication.pri)
 
 SOURCES += main.cpp \
-    singleapplication.cpp \
-    mdemanager.cpp \
-    mdewindow.cpp
+    mdewindow.cpp \
+    plaintexteditor.cpp
 
 RESOURCES += \
     myimage.qrc
@@ -26,9 +26,8 @@ RC_ICONS = notepad.ico
 
 HEADERS += \
     ../interface.h \
-    singleapplication.h \
-    mdemanager.h \
-    mdewindow.h
+    mdewindow.h \
+    plaintexteditor.h
 
 FORMS += \
     mdewindow.ui
