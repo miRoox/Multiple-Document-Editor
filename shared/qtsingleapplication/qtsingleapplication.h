@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of Qt Creator.
+** This file was part of Qt Creator.
 **
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
@@ -50,6 +50,8 @@ public:
 
     bool sendMessage(const QString &message, int timeout = 5000, qint64 pid = -1);
     void activateWindow();
+
+    bool removeCurrentPid(); //miroox: I add this. It shall be used just before quit
 
 Q_SIGNALS:
     void messageReceived(const QString &message, QObject *socket);

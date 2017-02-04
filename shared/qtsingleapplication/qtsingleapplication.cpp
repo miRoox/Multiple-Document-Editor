@@ -3,7 +3,7 @@
 ** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
-** This file is part of Qt Creator.
+** This file was part of Qt Creator.
 **
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
@@ -98,21 +98,7 @@ QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char *
 
 QtSingleApplication::~QtSingleApplication()
 {
-    if (!instances)
-        return;
-    const qint64 appPid = QCoreApplication::applicationPid();
-    QtLockedFile lockfile(instancesLockFilename(QtLocalPeer::appSessionId(appId)));
-    lockfile.open(QtLockedFile::ReadWrite);
-    lockfile.lock(QtLockedFile::WriteLock);
-    // Rewrite array, removing current pid and previously crashed ones
-    qint64 *pids = static_cast<qint64 *>(instances->data());
-    qint64 *newpids = pids;
-    for (; *pids; ++pids) {
-        if (*pids != appPid && isRunning(*pids))
-            *newpids++ = *pids;
-    }
-    *newpids = 0;
-    lockfile.unlock();
+    removeCurrentPid();
 }
 
 bool QtSingleApplication::event(QEvent *event)
@@ -184,6 +170,27 @@ void QtSingleApplication::activateWindow()
         actWin->raise();
         actWin->activateWindow();
     }
+}
+
+bool QtSingleApplication::removeCurrentPid()
+{
+    if (!instances)
+        return false;
+    const qint64 appPid = QCoreApplication::applicationPid();
+    QtLockedFile lockfile(instancesLockFilename(QtLocalPeer::appSessionId(appId)));
+    lockfile.open(QtLockedFile::ReadWrite);
+    lockfile.lock(QtLockedFile::WriteLock);
+    // Rewrite array, removing current pid and previously crashed ones
+    qint64 *pids = static_cast<qint64 *>(instances->data());
+    qint64 *newpids = pids;
+    for (; *pids; ++pids) {
+        if (*pids != appPid && isRunning(*pids))
+            *newpids++ = *pids;
+    }
+    *newpids = 0;
+    lockfile.unlock();
+    instances = 0;
+    return true;
 }
 
 } // namespace SharedTools
