@@ -83,6 +83,7 @@
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionReload"/>
     <addaction name="menuHistory"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
@@ -114,14 +115,6 @@
      <addaction name="actionNext"/>
      <addaction name="actionPrevious"/>
     </widget>
-    <widget class="QMenu" name="menuZoom">
-     <property name="title">
-      <string>Zoom</string>
-     </property>
-     <addaction name="actionZoomIn"/>
-     <addaction name="actionZoomOut"/>
-    </widget>
-    <addaction name="menuZoom"/>
     <addaction name="menuTab"/>
    </widget>
    <widget class="QMenu" name="menu_Tools">
@@ -139,6 +132,7 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionCmdlParam"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
    </widget>
@@ -172,8 +166,6 @@
    <addaction name="actionUndo"/>
    <addaction name="actionRedo"/>
    <addaction name="separator"/>
-   <addaction name="actionZoomIn"/>
-   <addaction name="actionZoomOut"/>
   </widget>
   <action name="actionNew">
    <property name="icon">
@@ -188,9 +180,6 @@
    </property>
    <property name="statusTip">
     <string>Create a new document</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -207,9 +196,6 @@
    <property name="statusTip">
     <string>Open an existing file</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
-   </property>
   </action>
   <action name="actionSave">
    <property name="icon">
@@ -225,9 +211,6 @@
    <property name="statusTip">
     <string>Save current document</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
   </action>
   <action name="actionSaveAs">
    <property name="icon">
@@ -242,9 +225,6 @@
    </property>
    <property name="statusTip">
     <string>Save current document as a new file</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+S</string>
    </property>
   </action>
   <action name="actionExit">
@@ -277,9 +257,6 @@
    <property name="statusTip">
     <string>Open all the history files</string>
    </property>
-   <property name="shortcut">
-    <string>Alt+H</string>
-   </property>
   </action>
   <action name="actionClose">
    <property name="text">
@@ -290,9 +267,6 @@
    </property>
    <property name="statusTip">
     <string>Close the current tab</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionCloseAll">
@@ -317,9 +291,6 @@
    <property name="statusTip">
     <string>Undo the previous action</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
   </action>
   <action name="actionRedo">
    <property name="icon">
@@ -331,9 +302,6 @@
    </property>
    <property name="statusTip">
     <string>Redo the previous operation</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Y</string>
    </property>
   </action>
   <action name="actionCut">
@@ -347,9 +315,6 @@
    <property name="statusTip">
     <string>Cut the selected content to the clipboard</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="actionCopy">
    <property name="icon">
@@ -362,9 +327,6 @@
    <property name="statusTip">
     <string>Copy the selected content to the clipboard</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="actionPaste">
    <property name="icon">
@@ -376,9 +338,6 @@
    </property>
    <property name="statusTip">
     <string>Paste the contents of the clipboard to the current location</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -394,9 +353,6 @@
    </property>
    <property name="statusTip">
     <string>About this application</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+?</string>
    </property>
    <property name="menuRole">
     <enum>QAction::AboutRole</enum>
@@ -431,9 +387,6 @@
    <property name="statusTip">
     <string>Next tab</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Tab</string>
-   </property>
   </action>
   <action name="actionPrevious">
    <property name="icon">
@@ -449,39 +402,6 @@
    <property name="statusTip">
     <string>Previous tab</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+Backtab</string>
-   </property>
-  </action>
-  <action name="actionZoomIn">
-   <property name="icon">
-    <iconset resource="myimage.qrc">
-     <normaloff>:/myImage/images/zoomIn.png</normaloff>:/myImage/images/zoomIn.png</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom In</string>
-   </property>
-   <property name="statusTip">
-    <string>Enlarge the text size</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl++</string>
-   </property>
-  </action>
-  <action name="actionZoomOut">
-   <property name="icon">
-    <iconset resource="myimage.qrc">
-     <normaloff>:/myImage/images/zoomOut.png</normaloff>:/myImage/images/zoomOut.png</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom Out</string>
-   </property>
-   <property name="statusTip">
-    <string>Reduce the text size</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+-</string>
-   </property>
   </action>
   <action name="actionPreferences">
    <property name="text">
@@ -489,6 +409,22 @@
    </property>
    <property name="statusTip">
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionCmdlParam">
+   <property name="text">
+    <string>CommandLine Parameters</string>
+   </property>
+   <property name="toolTip">
+    <string>Command Line Parameters</string>
+   </property>
+   <property name="statusTip">
+    <string>Command Line Parameters</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>Reload</string>
    </property>
   </action>
  </widget>

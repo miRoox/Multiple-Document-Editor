@@ -17,7 +17,8 @@ include(../shared/qtsingleapplication/qtsingleapplication.pri)
 
 SOURCES += main.cpp \
     mdewindow.cpp \
-    plaintexteditor.cpp
+    pluginmanager.cpp \
+    mdisubwindow.cpp
 
 RESOURCES += \
     myimage.qrc
@@ -25,9 +26,11 @@ RESOURCES += \
 RC_ICONS = notepad.ico
 
 HEADERS += \
-    ../interface.h \
     mdewindow.h \
-    plaintexteditor.h
+    ipluginbase.h \
+    ieditor.h \
+    pluginmanager.h \
+    mdisubwindow.h
 
 FORMS += \
     mdewindow.ui

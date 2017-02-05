@@ -5,9 +5,12 @@
 
 QT_BEGIN_NAMESPACE
 class QLabel;
+class QMenu;
 QT_END_NAMESPACE
 
-class PlainTextEditor;
+class IEditor;
+class PluginManager;
+class MdiSubWindow;
 
 namespace Ui {
 class MdeWindow;
@@ -20,22 +23,31 @@ class MdeWindow : public QMainWindow
 public:
     explicit MdeWindow(QWidget *parent = 0);
     ~MdeWindow();
-    PlainTextEditor * createPTE();
+    QMenu * menuFile();
+    QMenu * menuEdit();
+    QMenu * menuView();
+    QMenu * menuTools();
+    QMenu * menuSettings();
+    QMenu * menuHelp();
+
+protected:
+
+signals:
+
+public slots:
+    MdiSubWindow * addToSubWindow(IEditor * editor);
+    void newDoc();
+    bool openFile(QString file);
+    quint32 openFiles(QString file);
+
+private:
+    void initActions();
 
 private:
     Ui::MdeWindow *ui;
 
-    QLabel * summaryLabel;
-    QLabel * cursorLabel;
+    PluginManager * plugManager;
 
-protected:
-    void closeEvent(QCloseEvent *event);
-
-signals:
-    void closed(MdeWindow *);
-
-private:
-    void initStatusBar();
 };
 
 #endif // MDEWINDOW_H
