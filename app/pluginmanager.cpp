@@ -2,6 +2,7 @@
 #include "ipluginbase.h"
 #include "ieditor.h"
 #include "mdewindow.h"
+#include <QSettings>
 #include <QDir>
 #include <QPluginLoader>
 #include <QMenu>
@@ -11,13 +12,65 @@
 PluginManager::PluginManager(MdeWindow *parent) : QObject(parent),
     win(parent)
 {
-    plugins = QList<IPluginBase*>();
-    editors = QList<IEditorPlugin*>();
+    plugins = QHash<PluginSpec, QObject*>();
+    disabledPlugins = QSet<PluginSpec>();
+    editors = QSet<PluginSpec>();
+    mapper = QHash<QString, PluginSpec>();
 }
 
 void PluginManager::extraInitialize()
 {
     win->menuSettings()->addAction(tr("Plugin Manager"));
+}
+
+void PluginManager::loadSettings()
+{
+    QSettings settings;
+    settings.beginGroup("PluginManager");
+    //disabled plugins
+    int size = settings.beginReadArray("disabled");
+    for(int i=0; i<size; ++i) {
+        settings.setArrayIndex(i);
+        PluginSpec spec = settings.value("spec").toStringList();
+        disabledPlugins.insert(spec);
+    }
+    settings.endArray();
+    //editor mapper
+    size = settings.beginReadArray("mapper");
+    for(int i=0; i<size; ++i) {
+        settings.setArrayIndex(i);
+        PluginSpec spec = settings.value("spec").toStringList();
+        if(disabledPlugins.contains(spec))
+            continue;
+        QString suffix = settings.value("suffix");
+        mapper.insert(suffix,spec);
+    }
+    settings.endArray();
+    settings.endGroup();
+}
+
+void PluginManager::saveSettings()
+{
+    QSettings settings;
+    settings.beginGroup("PluginManager");
+    //disabled plugins
+    settings.beginWriteArray("disabled");
+    int i = 0;
+    foreach (PluginSpec spec, disabledPlugins) {
+        settings.setArrayIndex(i++);
+        settings.setValue("spec",spec);
+    }
+    settings.endArray();
+    //editor mapper
+    settings.beginWriteArray("mapper");
+    i = 0;
+    foreach (QString suffix, mapper.keys()) {
+        settings.setArrayIndex(i++);
+        settings.setValue("suffix",suffix);
+        settings.setValue("spec",mapper.value(suffix));
+    }
+    settings.endArray();
+    settings.endGroup();
 }
 
 void PluginManager::loadPlugins()
@@ -40,13 +93,25 @@ void PluginManager::loadPlugins()
         QObject * obj = loader.instance();
         qDebug() << loader.errorString();
         if(obj) {
-            IPluginBase * plugin = qobject_cast<IPluginBase *>(obj);
+            auto plugin = qobject_cast<IPluginBase *>(obj);
             if(plugin) {
+                PluginSpec spec;
+                spec << plugin->name();
+                spec << plugin->version();
+                spec << plugin->vendor();
+                if(plugins.contains(spec) || disabledPlugins.contains(spec))
+                    continue;
                 plugin->install(win);
-                plugins.append(plugin);
-                IEditorPlugin * editorPlug = qobject_cast<IEditorPlugin *>(obj);
-                if(editorPlug)
-                    editors.append(editorPlug);
+                plugins.insert(spec,obj);
+                auto editorPlug = qobject_cast<IEditorPlugin *>(obj);
+                if(editorPlug) {
+                    QStringList suffixes = editorPlug->designedTypes();
+                    foreach (QString suffix, suffixes) {
+                        if(!mapper.contains(suffix))
+                            mapper.insert(suffix,spec);
+                    }
+                    editors.insert(spec);
+                }
             }
         }
     }

@@ -39,6 +39,7 @@ class IEditorPlugin
 public:
     virtual ~IEditorPlugin() { }
     virtual IEditor * create() = 0;
+    virtual QStringList designedTypes() = 0;
 };
 
 QT_BEGIN_NAMESPACE
