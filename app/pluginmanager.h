@@ -17,25 +17,26 @@ class PluginManager : public QObject
     using PluginSpec = QStringList;
 public:
     explicit PluginManager(MdeWindow *parent = 0);
-    void extraInitialize();
-    IEditor * defaultEditor();
-    IEditor * defaultBrowser();
-    IEditor * editor(QString file);
+    void loadSettings();
+    void saveSettings();//before close
+    void initViewer();
+    IEditor * defaultEditor() const;
+    IEditor * defaultBrowser() const;
+    IEditor * editor(QString file) const;
     IEditor * selectEditor();
 
 signals:
 
 public slots:
-    void setDisabled(PluginSpec spec);
-    void setDefaultEditor(PluginSpec spec);
-    void setDefaultBrowser(PluginSpec spec);
-    void setEditor(QString suffix, PluginSpec spec);
+    void setDisabled(const PluginSpec spec);//restart to make effect
+    void setEnabled(const PluginSpec spec);//restart to make effect
+    void setDefaultEditor(const PluginSpec spec);
+    void setDefaultBrowser(const PluginSpec spec);
+    void setEditor(const QString suffix, const PluginSpec spec);
     void loadPlugins();
-    void unloadPlugins();
-
-private:
-    void loadSettings();
-    void saveSettings();
+    void unloadPlugins();//before  close
+    void checkDisabled();
+    void checkMapper();
 
 private:
     MdeWindow * win;

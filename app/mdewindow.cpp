@@ -7,9 +7,9 @@
 #include <QLabel>
 #include <QStatusBar>
 #include <QMdiArea>
-#include <QMdiSubWindow>
 #include <QProcess>
 #include <QKeySequence>
+#include <QSettings>
 
 MdeWindow::MdeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,7 +18,11 @@ MdeWindow::MdeWindow(QWidget *parent) :
     plugManager = new PluginManager(this);
     ui->setupUi(this);
     initActions();
-    plugManager->extraInitialize();
+    loadSettings();
+    plugManager->loadPlugins();
+    plugManager->checkDisabled();
+    plugManager->checkMapper();
+    plugManager->initViewer();
     setAcceptDrops(true);
 }
 
@@ -55,6 +59,41 @@ void MdeWindow::newDoc()
     editor->newFile();
 }
 
+bool MdeWindow::openFile(QString file)
+{
+    return false;
+}
+
+quint32 MdeWindow::openFiles(QString file)
+{
+    return 0;
+}
+
+QMenu * MdeWindow::menuFile() const
+{
+    return ui->menu_File;
+}
+QMenu * MdeWindow::menuEdit() const
+{
+    return ui->menu_Edit;
+}
+QMenu * MdeWindow::menuView() const
+{
+    return ui->menu_View;
+}
+QMenu * MdeWindow::menuTools() const
+{
+    return ui->menu_Tools;
+}
+QMenu * MdeWindow::menuSettings() const
+{
+    return ui->menu_Settings;
+}
+QMenu * MdeWindow::menuHelp() const
+{
+    return ui->menu_Help;
+}
+
 void MdeWindow::initActions()
 {
     ui->actionNew->setShortcut(QKeySequence::New);
@@ -83,27 +122,35 @@ void MdeWindow::initActions()
     connect(ui->actionAboutQt,QAction::triggered,qApp,QApplication::aboutQt);
 }
 
-QMenu * MdeWindow::menuFile()
+void MdeWindow::loadSettings()
 {
-    return ui->menu_File;
+    QSettings settings;
+    settings.beginGroup("MainWindow");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("state").toByteArray());
+    settings.endGroup();
+    plugManager->loadSettings();
 }
-QMenu * MdeWindow::menuEdit()
+
+void MdeWindow::saveSettings()
 {
-    return ui->menu_Edit;
+    QSettings settings;
+    settings.beginGroup("MainWindow");
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("state",saveState());
+    settings.endGroup();
+    plugManager->saveSettings();
 }
-QMenu * MdeWindow::menuView()
+
+void MdeWindow::closeEvent(QCloseEvent *event)
 {
-    return ui->menu_View;
-}
-QMenu * MdeWindow::menuTools()
-{
-    return ui->menu_Tools;
-}
-QMenu * MdeWindow::menuSettings()
-{
-    return ui->menu_Settings;
-}
-QMenu * MdeWindow::menuHelp()
-{
-    return ui->menu_Help;
+    ui->mdiArea->closeAllSubWindows();
+    if(ui->mdiArea->currentSubWindow()) {
+        event->ignore();
+    }
+    else {
+        saveSettings();
+        plugManager->unloadPlugins();
+        event->accept();
+    }
 }

@@ -97,12 +97,6 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo"/>
-    <addaction name="actionRedo"/>
-    <addaction name="separator"/>
-    <addaction name="actionCut"/>
-    <addaction name="actionCopy"/>
-    <addaction name="actionPaste"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -156,16 +150,8 @@
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
-   <addaction name="actionSave"/>
    <addaction name="actionSaveAs"/>
-   <addaction name="separator"/>
-   <addaction name="actionCut"/>
-   <addaction name="actionCopy"/>
-   <addaction name="actionPaste"/>
-   <addaction name="separator"/>
-   <addaction name="actionUndo"/>
-   <addaction name="actionRedo"/>
-   <addaction name="separator"/>
+   <addaction name="actionSave"/>
   </widget>
   <action name="actionNew">
    <property name="icon">
@@ -278,66 +264,6 @@
    </property>
    <property name="statusTip">
     <string>Close all tabs</string>
-   </property>
-  </action>
-  <action name="actionUndo">
-   <property name="icon">
-    <iconset resource="myimage.qrc">
-     <normaloff>:/myImage/images/undo.png</normaloff>:/myImage/images/undo.png</iconset>
-   </property>
-   <property name="text">
-    <string>Undo</string>
-   </property>
-   <property name="statusTip">
-    <string>Undo the previous action</string>
-   </property>
-  </action>
-  <action name="actionRedo">
-   <property name="icon">
-    <iconset resource="myimage.qrc">
-     <normaloff>:/myImage/images/redo.png</normaloff>:/myImage/images/redo.png</iconset>
-   </property>
-   <property name="text">
-    <string>Redo</string>
-   </property>
-   <property name="statusTip">
-    <string>Redo the previous operation</string>
-   </property>
-  </action>
-  <action name="actionCut">
-   <property name="icon">
-    <iconset resource="myimage.qrc">
-     <normaloff>:/myImage/images/cut.png</normaloff>:/myImage/images/cut.png</iconset>
-   </property>
-   <property name="text">
-    <string>Cut</string>
-   </property>
-   <property name="statusTip">
-    <string>Cut the selected content to the clipboard</string>
-   </property>
-  </action>
-  <action name="actionCopy">
-   <property name="icon">
-    <iconset resource="myimage.qrc">
-     <normaloff>:/myImage/images/copy.png</normaloff>:/myImage/images/copy.png</iconset>
-   </property>
-   <property name="text">
-    <string>Copy</string>
-   </property>
-   <property name="statusTip">
-    <string>Copy the selected content to the clipboard</string>
-   </property>
-  </action>
-  <action name="actionPaste">
-   <property name="icon">
-    <iconset resource="myimage.qrc">
-     <normaloff>:/myImage/images/paste.png</normaloff>:/myImage/images/paste.png</iconset>
-   </property>
-   <property name="text">
-    <string>Paste</string>
-   </property>
-   <property name="statusTip">
-    <string>Paste the contents of the clipboard to the current location</string>
    </property>
   </action>
   <action name="actionAbout">

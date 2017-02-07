@@ -23,14 +23,15 @@ class MdeWindow : public QMainWindow
 public:
     explicit MdeWindow(QWidget *parent = 0);
     ~MdeWindow();
-    QMenu * menuFile();
-    QMenu * menuEdit();
-    QMenu * menuView();
-    QMenu * menuTools();
-    QMenu * menuSettings();
-    QMenu * menuHelp();
+    QMenu * menuFile() const;
+    QMenu * menuEdit() const;
+    QMenu * menuView() const;
+    QMenu * menuTools() const;
+    QMenu * menuSettings() const;
+    QMenu * menuHelp() const;
 
 protected:
+    void closeEvent(QCloseEvent * event) override;
 
 signals:
 
@@ -42,6 +43,8 @@ public slots:
 
 private:
     void initActions();
+    void loadSettings();
+    void saveSettings();
 
 private:
     Ui::MdeWindow *ui;
