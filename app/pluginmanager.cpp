@@ -3,17 +3,20 @@
 #include "ieditor.h"
 #include "mdewindow.h"
 #include <QSettings>
+#include <QStringList>
 #include <QFileInfo>
 #include <QDir>
 #include <QPluginLoader>
+#include <QLibrary>
 #include <QMenu>
 #include <QApplication>
 #include <QDebug>
 
 PluginManager::PluginManager(MdeWindow *parent) : QObject(parent),
-    win(parent), plugins(), editors(), disabledPlugins(), mapper()
+    win(parent), plugins(), editors(), disabledPlugins(), mapper(),
+    suffixDesc()
 {
-    ;
+    suffixDesc += tr("Any file") + "(*)";
 }
 
 void PluginManager::initViewer()
@@ -90,6 +93,11 @@ void PluginManager::setEditor(const QString suffix, const PluginSpec spec)
         mapper.insert(suffix,spec);
 }
 
+QString PluginManager::fileNameFilter()
+{
+    return suffixDesc.join(";;");
+}
+
 void PluginManager::loadSettings()
 {
     QSettings settings;
@@ -156,6 +164,8 @@ void PluginManager::loadPlugins()
     pluginsDir.cd("plugins");
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
+        if(!QLibrary::isLibrary(fileName))
+            continue;
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject * obj = loader.instance();
         qDebug() << loader.errorString();
@@ -214,4 +224,24 @@ void PluginManager::checkMapper()
         if(mapper.contains("txt"))
             setDefaultEditor(mapper.value("txt"));
     }
+}
+
+
+void PluginManager::loadSuffixDescription()
+{
+    QStringList descs;
+    foreach (QString suffix, mapper.keys()) {
+        if(suffix=="*" || suffix==".")
+            continue;
+        IEditorPlugin * plug = qobject_cast<IEditorPlugin*>(mapper.value(suffix));
+        QString desc = plug->typeDescription(suffix);
+        if(desc.isEmpty()) {
+            desc = suffix.toUpper() + tr(" file");
+        }
+        desc = desc + "(*." + suffix + ")";
+        qDebug() << "Add suffix description:" << desc;
+        descs += desc;
+    }
+    descs.sort(Qt::CaseInsensitive);
+    suffixDesc += descs;
 }

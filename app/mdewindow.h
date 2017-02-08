@@ -38,13 +38,15 @@ signals:
 public slots:
     MdiSubWindow * addToSubWindow(IEditor * editor);
     void newDoc();
-    bool openFile(QString file);
-    quint32 openFiles(QString file);
+    bool openFile(QString fileName);
+    quint32 openFilesRecursively(QString fileName);
+    void openWithDialog();
 
 private:
     void initActions();
     void loadSettings();
     void saveSettings();
+    MdiSubWindow * findSubWindow(QString fileName);
 
 private:
     Ui::MdeWindow *ui;

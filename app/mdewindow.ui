@@ -13,9 +13,6 @@
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
-  <property name="windowTitle">
-   <string>Multiple Document Editor</string>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
@@ -184,6 +181,9 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="myimage.qrc">
      <normaloff>:/myImage/images/save.png</normaloff>:/myImage/images/save.png</iconset>
@@ -199,6 +199,9 @@
    </property>
   </action>
   <action name="actionSaveAs">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="myimage.qrc">
      <normaloff>:/myImage/images/saveAs.png</normaloff>:/myImage/images/saveAs.png</iconset>
@@ -300,6 +303,9 @@
    </property>
   </action>
   <action name="actionNext">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="myimage.qrc">
      <normaloff>:/myImage/images/next.png</normaloff>:/myImage/images/next.png</iconset>
@@ -315,6 +321,9 @@
    </property>
   </action>
   <action name="actionPrevious">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="myimage.qrc">
      <normaloff>:/myImage/images/previous.png</normaloff>:/myImage/images/previous.png</iconset>
@@ -349,6 +358,9 @@
    </property>
   </action>
   <action name="actionReload">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Reload</string>
    </property>

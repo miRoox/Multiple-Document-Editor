@@ -18,6 +18,8 @@ const char Recus_OPT1[] = "r";
 const char Recus_OPT2[] = "recus";
 
 QMessageBox::StandardButton askMsgSendFailed();
+void initRemoteCmdlParser(QCommandLineParser & parser);
+void dealRemoteCmdlOptions(QCommandLineParser & parser, MdeWindow * win);
 
 int main(int argc, char *argv[])
 {
@@ -41,13 +43,7 @@ int main(int argc, char *argv[])
            QApplication::translate("CommandLine","Block until editor is closed")}
     });
     //Options that can use in remote arguments
-    parser.addOptions({
-          {{Recus_OPT1,Recus_OPT2},
-           QApplication::translate("CommandLine","Open files recursively."
-                                   "This argument will be ignored if [file] contain no wildcard character")},
-    });
-    parser.addPositionalArgument("file",
-                                 QApplication::translate("CommandLine","file path to open"));
+    initRemoteCmdlParser(parser);
 
     parser.parse(app.arguments());
     qDebug() << parser.errorText();
@@ -93,8 +89,36 @@ int main(int argc, char *argv[])
 
     MdeWindow win;
     app.setActivationWindow(&win);
+    QApplication::connect(&app,SharedTools::QtSingleApplication::messageReceived,[&win](QString args){
+        QCommandLineParser remoteParser;
+        initRemoteCmdlParser(remoteParser);
+        remoteParser.parse(args.split(' '));
+        dealRemoteCmdlOptions(remoteParser,&win);
+    });
+    dealRemoteCmdlOptions(parser,&win);
     win.show();
     return app.exec();
+}
+
+void initRemoteCmdlParser(QCommandLineParser &parser)
+{
+    parser.addOptions({
+          {{Recus_OPT1,Recus_OPT2},
+           QApplication::translate("CommandLine","Open files recursively."
+                                   "This argument will be ignored if [file] contain no wildcard character")},
+    });
+    parser.addPositionalArgument("file",
+                                 QApplication::translate("CommandLine","file path to open"),"[file]");
+}
+
+void dealRemoteCmdlOptions(QCommandLineParser & parser, MdeWindow *win)
+{
+    if(parser.isSet(Recus_OPT1)) {
+        win->openFilesRecursively(parser.positionalArguments().first());
+    }
+    else {
+        win->openFile(parser.positionalArguments().first());
+    }
 }
 
 QMessageBox::StandardButton askMsgSendFailed()

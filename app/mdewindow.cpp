@@ -10,6 +10,7 @@
 #include <QProcess>
 #include <QKeySequence>
 #include <QSettings>
+#include <QFileDialog>
 
 MdeWindow::MdeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -24,6 +25,10 @@ MdeWindow::MdeWindow(QWidget *parent) :
     plugManager->checkMapper();
     plugManager->initViewer();
     setAcceptDrops(true);
+    connect(ui->mdiArea,QMdiArea::subWindowActivated,[](QMdiSubWindow * active){
+            if(active) setWindowTitle(active->windowTitle());
+            else setWindowTitle("");
+    });
 }
 
 MdeWindow::~MdeWindow()
@@ -34,16 +39,11 @@ MdeWindow::~MdeWindow()
 
 MdiSubWindow *MdeWindow::addToSubWindow(IEditor *editor)
 {
-    QWidget * widget = editor->widget();
-    widget->setAttribute(Qt::WA_DeleteOnClose);
     MdiSubWindow * tab = new MdiSubWindow(ui->mdiArea);
-    tab->setWidget(widget);
+    tab->setEditor(editor);
     ui->mdiArea->addSubWindow(tab);
-    connect(ui->mdiArea,QMdiArea::subWindowActivated,tab,
-            [&tab,&editor](QMdiSubWindow * active){
-        if(active==tab) editor->activate();
-        else editor->deactivate();
-    });//lambda make it easier
+    connect(ui->mdiArea,QMdiArea::subWindowActivated,
+            tab,MdiSubWindow::subWindowActivated);
     return tab;
 }
 
@@ -54,19 +54,67 @@ void MdeWindow::newDoc()
     if(!editor)
         return;
     MdiSubWindow * tab = addToSubWindow(editor);
-    tab->setWindowTitle(tr("Untitled %1").arg(sequence++));
-    editor->extraInitialize(tab);
+    tab->setEditor(editor);
     editor->newFile();
+    tab->setWindowTitle(tr("Untitled %1").arg(sequence++));
+    tab->show();
+    qDebug() << "create a new document.";
 }
 
-bool MdeWindow::openFile(QString file)
+bool MdeWindow::openFile(QString fileName)
 {
-    return false;
+    if(fileName.isEmpty())
+        return false;
+    MdiSubWindow * tab = findSubWindow(fileName);
+    if(tab) {
+        ui->mdiArea->setActiveSubWindow(tab);
+    }
+    else {
+        IEditor * editor = plugManager->editor(fileName);
+        if(!editor)
+            editor = plugManager->defaultBrowser();
+        if(!editor)
+            return false;
+        tab = addToSubWindow(editor);
+        editor->loadFile(fileName);
+        tab->setWindowTitle(editor->title());
+        tab->show();
+    }
+    qDebug() << "open file:"
+             << QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
+    return true;
 }
 
-quint32 MdeWindow::openFiles(QString file)
+quint32 MdeWindow::openFilesRecursively(QString fileName)
 {
-    return 0;
+    quint32 count = 0;
+    QStringList filter(QFileInfo(fileName).fileName());
+    QString path = QFileInfo(fileName).absolutePath();
+    QDir dir(path);
+    foreach (QString file, dir.entryList(filter,QDir::Files)) {
+        if(openFile(dir.absoluteFilePath(file)))
+            ++count;
+    }
+    if(filter.first().startsWith('*'))
+        foreach (QString sdir, dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+            dir.cd(sdir);
+            count += openFilesRecursively(dir.path() + "/" + filter.first());
+            dir.cdUp();
+        }
+    return count;
+}
+
+void MdeWindow::openWithDialog()
+{
+    QString filter = plugManager->fileNameFilter();
+    QStringList fileNames = QFileDialog::getOpenFileNames(this,
+                                                          tr("Select one or more files to open"),
+                                                          ".",
+                                                          filter);
+    foreach (QString fileName, fileNames) {
+        if(!fileName.isEmpty())
+            openFile(fileName);
+    }
 }
 
 QMenu * MdeWindow::menuFile() const
@@ -103,22 +151,32 @@ void MdeWindow::initActions()
     ui->actionSaveAs->setShortcut(QKeySequence::SaveAs);
     ui->actionClose->setShortcut(QKeySequence::Close);
     ui->actionExit->setShortcut(QKeySequence::Quit);
-    /*ui->actionUndo->setShortcut(QKeySequence::Undo);
-    ui->actionRedo->setShortcut(QKeySequence::Redo);
-    ui->actionCut->setShortcut(QKeySequence::Cut);
-    ui->actionCopy->setShortcut(QKeySequence::Copy);
-    ui->actionPaste->setShortcut(QKeySequence::Paste);*/
     ui->actionNext->setShortcut(QKeySequence::NextChild);
     ui->actionPrevious->setShortcut(QKeySequence::PreviousChild);
     ui->actionPreferences->setShortcut(QKeySequence::Preferences);
     ui->actionAbout->setShortcut(QKeySequence::HelpContents);
+    connect(ui->mdiArea,QMdiArea::subWindowActivated,[ui](QMdiSubWindow * sub){
+        bool hasSubWindow = sub!=0;
+        ui->actionReload->setEnabled(hasSubWindow);
+        ui->actionSave->setEnabled(hasSubWindow);
+        ui->actionSaveAs->setEnabled(hasSubWindow);
+        ui->actionNext->setEnabled(hasSubWindow);
+        ui->actionPrevious->setEnabled(hasSubWindow);
+    });
+    connect(ui->actionNew,QAction::trigger,this,newDoc);
+    connect(ui->actionOpen,QAction::trigger,this,openWithDialog);
+    connect(ui->actionReload,QAction::trigger, [ui]{
+        QMdiSubWindow * active = ui->mdiArea->activateSubWindow();
+        if(active) qobject_cast<MdiSubWindow*>(active)->editor()->reload();
+    });
     connect(ui->actionClose,QAction::triggered,ui->mdiArea,QMdiArea::closeActiveSubWindow);
     connect(ui->actionCloseAll,QAction::triggered,ui->mdiArea,QMdiArea::closeAllSubWindows);
     connect(ui->actionExit,QAction::triggered,qApp,QApplication::closeAllWindows);
     connect(ui->actionNext,QAction::triggered,ui->mdiArea,QMdiArea::activateNextSubWindow);
     connect(ui->actionPrevious,QAction::triggered,ui->mdiArea,QMdiArea::activatePreviousSubWindow);
-    connect(ui->actionCmdlParam,QAction::triggered,
-            [](){QProcess::startDetached(QApplication::applicationFilePath(),QStringList("-h"));});
+    connect(ui->actionCmdlParam,QAction::triggered,[]{
+        QProcess::startDetached(QApplication::applicationFilePath(),QStringList("-h"));
+    });
     connect(ui->actionAboutQt,QAction::triggered,qApp,QApplication::aboutQt);
 }
 
@@ -140,6 +198,20 @@ void MdeWindow::saveSettings()
     settings.setValue("state",saveState());
     settings.endGroup();
     plugManager->saveSettings();
+}
+
+MdiSubWindow * MdeWindow::findSubWindow(QString fileName)
+{
+    QFileInfo file(fileName);
+    if(file.exists()) {
+        QMdiSubWindow * sub;
+        foreach (sub, ui->mdiArea->subWindowList()) {
+            auto tab = qobject_cast<MdiSubWindow*>(sub);
+            if(file==tab->editor()->file())
+                return tab;
+        }
+    }
+    return 0;
 }
 
 void MdeWindow::closeEvent(QCloseEvent *event)

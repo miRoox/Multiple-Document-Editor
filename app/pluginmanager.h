@@ -5,6 +5,11 @@
 #include <QList>
 #include <QHash>
 
+QT_BEGIN_NAMESPACE
+class QString;
+class QStringList;
+QT_END_NAMESPACE
+
 class MdeWindow;
 class IPluginBase;
 class IEditorPlugin;
@@ -24,6 +29,7 @@ public:
     IEditor * defaultBrowser() const;
     IEditor * editor(QString file) const;
     IEditor * selectEditor();
+    QString fileNameFilter() const;
 
 signals:
 
@@ -37,6 +43,7 @@ public slots:
     void unloadPlugins();//before  close
     void checkDisabled();
     void checkMapper();
+    void loadSuffixDescription();
 
 private:
     MdeWindow * win;
@@ -44,6 +51,7 @@ private:
     QSet<PluginSpec> editors;
     QSet<PluginSpec> disabledPlugins;
     QHash<QString, PluginSpec> mapper;
+    QStringList suffixDesc;
 };
 
 #endif // PLUGINMANAGER_H

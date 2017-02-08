@@ -6,6 +6,7 @@
 QT_BEGIN_NAMESPACE
 class QWidget;
 class QString;
+class QStringList;
 class QFileInfo;
 QT_END_NAMESPACE
 
@@ -39,7 +40,8 @@ class IEditorPlugin
 public:
     virtual ~IEditorPlugin() { }
     virtual IEditor * create() = 0;
-    virtual QStringList designedTypes() = 0;
+    virtual QStringList designedTypes() const = 0;
+    virtual QString typeDescription(QString) const = 0;
 };
 
 QT_BEGIN_NAMESPACE
