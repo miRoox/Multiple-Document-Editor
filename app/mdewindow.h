@@ -47,6 +47,7 @@ private:
     void loadSettings();
     void saveSettings();
     MdiSubWindow * findSubWindow(QString fileName);
+    void warningNoEditor(bool noEditor = true);
 
 private:
     Ui::MdeWindow *ui;

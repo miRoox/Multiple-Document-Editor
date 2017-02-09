@@ -11,21 +11,25 @@
 #include <QKeySequence>
 #include <QSettings>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QDebug>
 
 MdeWindow::MdeWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MdeWindow)
 {
     plugManager = new PluginManager(this);
+    qInfo() << "Set up User Interface";
     ui->setupUi(this);
     initActions();
     loadSettings();
     plugManager->loadPlugins();
     plugManager->checkDisabled();
     plugManager->checkMapper();
+    plugManager->loadSuffixDescription();
     plugManager->initViewer();
     setAcceptDrops(true);
-    connect(ui->mdiArea,QMdiArea::subWindowActivated,[](QMdiSubWindow * active){
+    connect(ui->mdiArea,QMdiArea::subWindowActivated,[this](QMdiSubWindow * active){
             if(active) setWindowTitle(active->windowTitle());
             else setWindowTitle("");
     });
@@ -43,7 +47,7 @@ MdiSubWindow *MdeWindow::addToSubWindow(IEditor *editor)
     tab->setEditor(editor);
     ui->mdiArea->addSubWindow(tab);
     connect(ui->mdiArea,QMdiArea::subWindowActivated,
-            tab,MdiSubWindow::subWindowActivated);
+            tab,MdiSubWindow::slotSubWindowActivated);
     return tab;
 }
 
@@ -52,19 +56,21 @@ void MdeWindow::newDoc()
     static quint64 sequence = 1;
     IEditor * editor = plugManager->defaultEditor();
     if(!editor)
-        return;
+        return warningNoEditor();
     MdiSubWindow * tab = addToSubWindow(editor);
     tab->setEditor(editor);
     editor->newFile();
     tab->setWindowTitle(tr("Untitled %1").arg(sequence++));
     tab->show();
-    qDebug() << "create a new document.";
+    warningNoEditor(false);
+    qInfo() << "Create a new document.";
 }
 
 bool MdeWindow::openFile(QString fileName)
 {
     if(fileName.isEmpty())
         return false;
+    qInfo() << "Attempt to open file:" << fileName;
     MdiSubWindow * tab = findSubWindow(fileName);
     if(tab) {
         ui->mdiArea->setActiveSubWindow(tab);
@@ -73,15 +79,18 @@ bool MdeWindow::openFile(QString fileName)
         IEditor * editor = plugManager->editor(fileName);
         if(!editor)
             editor = plugManager->defaultBrowser();
-        if(!editor)
+        if(!editor) {
+            warningNoEditor();
             return false;
+        }
         tab = addToSubWindow(editor);
         editor->loadFile(fileName);
         tab->setWindowTitle(editor->title());
         tab->show();
+        warningNoEditor(false);
     }
-    qDebug() << "open file:"
-             << QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
+    qInfo() << "Open file:"
+            << QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
     return true;
 }
 
@@ -91,6 +100,9 @@ quint32 MdeWindow::openFilesRecursively(QString fileName)
     QStringList filter(QFileInfo(fileName).fileName());
     QString path = QFileInfo(fileName).absolutePath();
     QDir dir(path);
+    if(filter.first().isEmpty()) {
+        filter[0] = QString("*");
+    }
     foreach (QString file, dir.entryList(filter,QDir::Files)) {
         if(openFile(dir.absoluteFilePath(file)))
             ++count;
@@ -112,8 +124,7 @@ void MdeWindow::openWithDialog()
                                                           ".",
                                                           filter);
     foreach (QString fileName, fileNames) {
-        if(!fileName.isEmpty())
-            openFile(fileName);
+        openFile(fileName);
     }
 }
 
@@ -155,18 +166,20 @@ void MdeWindow::initActions()
     ui->actionPrevious->setShortcut(QKeySequence::PreviousChild);
     ui->actionPreferences->setShortcut(QKeySequence::Preferences);
     ui->actionAbout->setShortcut(QKeySequence::HelpContents);
-    connect(ui->mdiArea,QMdiArea::subWindowActivated,[ui](QMdiSubWindow * sub){
+    connect(ui->mdiArea,QMdiArea::subWindowActivated,[&](QMdiSubWindow * sub){
         bool hasSubWindow = sub!=0;
         ui->actionReload->setEnabled(hasSubWindow);
         ui->actionSave->setEnabled(hasSubWindow);
         ui->actionSaveAs->setEnabled(hasSubWindow);
+        ui->actionClose->setEnabled(hasSubWindow);
+        ui->actionCloseAll->setEnabled(hasSubWindow);
         ui->actionNext->setEnabled(hasSubWindow);
         ui->actionPrevious->setEnabled(hasSubWindow);
     });
-    connect(ui->actionNew,QAction::trigger,this,newDoc);
-    connect(ui->actionOpen,QAction::trigger,this,openWithDialog);
-    connect(ui->actionReload,QAction::trigger, [ui]{
-        QMdiSubWindow * active = ui->mdiArea->activateSubWindow();
+    connect(ui->actionNew,QAction::triggered,this,newDoc);
+    connect(ui->actionOpen,QAction::triggered,this,openWithDialog);
+    connect(ui->actionReload,QAction::triggered, [&]{
+        QMdiSubWindow * active = ui->mdiArea->activeSubWindow();
         if(active) qobject_cast<MdiSubWindow*>(active)->editor()->reload();
     });
     connect(ui->actionClose,QAction::triggered,ui->mdiArea,QMdiArea::closeActiveSubWindow);
@@ -184,9 +197,11 @@ void MdeWindow::loadSettings()
 {
     QSettings settings;
     settings.beginGroup("MainWindow");
+    qInfo() << "Main window: loading settings..";
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("state").toByteArray());
     settings.endGroup();
+    qInfo() << "Main window: settings are loaded.";
     plugManager->loadSettings();
 }
 
@@ -194,9 +209,11 @@ void MdeWindow::saveSettings()
 {
     QSettings settings;
     settings.beginGroup("MainWindow");
+    qInfo() << "Main window: saving settings..";
     settings.setValue("geometry", saveGeometry());
     settings.setValue("state",saveState());
     settings.endGroup();
+    qInfo() << "Main window: settings are saved.";
     plugManager->saveSettings();
 }
 
@@ -207,11 +224,30 @@ MdiSubWindow * MdeWindow::findSubWindow(QString fileName)
         QMdiSubWindow * sub;
         foreach (sub, ui->mdiArea->subWindowList()) {
             auto tab = qobject_cast<MdiSubWindow*>(sub);
-            if(file==tab->editor()->file())
+            if(file==tab->editor()->file()) {
+                qInfo() << "The file" << fileName << "has been opened.";
                 return tab;
+            }
         }
     }
     return 0;
+}
+
+void MdeWindow::warningNoEditor(bool noEditor)
+{
+    static bool showed = false;
+    if(noEditor) {
+        qWarning() << "No editor available!";
+        if(!showed) {
+            QMessageBox::warning(this,tr("No Editor availabe!"),
+                                 tr("The operation cannot be performed "
+                                    "because there is no editor availbale."));
+            showed = true;
+        }
+    }
+    else {
+        showed = false;
+    }
 }
 
 void MdeWindow::closeEvent(QCloseEvent *event)

@@ -27,8 +27,10 @@ void PluginManager::initViewer()
 IEditor * PluginManager::defaultEditor() const
 {
     PluginSpec spec = mapper.value(".");
-    if(spec.isEmpty())
+    if(spec.isEmpty()) {
+        qWarning() << "The default editor is not set.";
         return 0;
+    }
     QObject * obj = plugins.value(spec);
     if(!obj)
         return 0;
@@ -39,8 +41,10 @@ IEditor * PluginManager::defaultEditor() const
 IEditor * PluginManager::defaultBrowser() const
 {
     PluginSpec spec = mapper.value("*");
-    if(spec.isEmpty())
+    if(spec.isEmpty()) {
+        qWarning() << "The default browser is not set.";
         return 0;
+    }
     QObject * obj = plugins.value(spec);
     if(!obj)
         return 0;
@@ -54,8 +58,10 @@ IEditor * PluginManager::editor(QString file) const
     PluginSpec spec = mapper.value(info.suffix());
     if(spec.isEmpty())
         spec = mapper.value(info.completeSuffix());
-    if(spec.isEmpty())
+    if(spec.isEmpty()) {
+        qWarning() << "No suitable editor for this file.";
         return 0;
+    }
     QObject * obj = plugins.value(spec);
     if(!obj)
         return 0;
@@ -93,7 +99,7 @@ void PluginManager::setEditor(const QString suffix, const PluginSpec spec)
         mapper.insert(suffix,spec);
 }
 
-QString PluginManager::fileNameFilter()
+QString PluginManager::fileNameFilter() const
 {
     return suffixDesc.join(";;");
 }
@@ -102,8 +108,10 @@ void PluginManager::loadSettings()
 {
     QSettings settings;
     settings.beginGroup("PluginManager");
+    qInfo() << "Plugin manager: loading settings..";
     //disabled plugins
     int size = settings.beginReadArray("disabled");
+    qInfo() << "loading disabled plugins list..";
     for(int i=0; i<size; ++i) {
         settings.setArrayIndex(i);
         PluginSpec spec = settings.value("spec").toStringList();
@@ -112,6 +120,7 @@ void PluginManager::loadSettings()
     settings.endArray();
     //editor mapper
     size = settings.beginReadArray("mapper");
+    qInfo() << "loading file-editor mapper..";
     for(int i=0; i<size; ++i) {
         settings.setArrayIndex(i);
         PluginSpec spec = settings.value("spec").toStringList();
@@ -122,14 +131,17 @@ void PluginManager::loadSettings()
     }
     settings.endArray();
     settings.endGroup();
+    qInfo() << "Plugin manager: settings are loaded.";
 }
 
 void PluginManager::saveSettings()
 {
     QSettings settings;
     settings.beginGroup("PluginManager");
+    qInfo() << "Plugin manager: saving settings..";
     //disabled plugins
     settings.beginWriteArray("disabled");
+    qInfo() << "saving disabled plugins list..";
     int i = 0;
     foreach (PluginSpec spec, disabledPlugins.toList()) {
         settings.setArrayIndex(i++);
@@ -138,6 +150,7 @@ void PluginManager::saveSettings()
     settings.endArray();
     //editor mapper
     settings.beginWriteArray("mapper");
+    qInfo() << "saving file-editor mapper..";
     i = 0;
     foreach (QString suffix, mapper.keys()) {
         settings.setArrayIndex(i++);
@@ -146,6 +159,7 @@ void PluginManager::saveSettings()
     }
     settings.endArray();
     settings.endGroup();
+    qInfo() << "Plugin manager: settings are saved.";
 }
 
 void PluginManager::loadPlugins()
@@ -162,13 +176,13 @@ void PluginManager::loadPlugins()
     }
 #endif
     pluginsDir.cd("plugins");
+    qInfo() << "Plugin manager: loading plugins...";
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
         if(!QLibrary::isLibrary(fileName))
             continue;
         QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
         QObject * obj = loader.instance();
-        qDebug() << loader.errorString();
         if(obj) {
             auto plugin = qobject_cast<IPluginBase *>(obj);
             if(plugin) {
@@ -182,6 +196,7 @@ void PluginManager::loadPlugins()
                     plugins.insert(spec,0);
                     continue;
                 }
+                qInfo() << "Plugin manager: loading plugin" << spec;
                 plugin->install(win);
                 plugins.insert(spec,obj);
                 auto editorPlug = qobject_cast<IEditorPlugin *>(obj);
@@ -194,6 +209,9 @@ void PluginManager::loadPlugins()
                     editors.insert(spec);
                 }
             }
+        }
+        else {
+            qWarning() << loader.errorString();
         }
     }
 }
@@ -233,13 +251,13 @@ void PluginManager::loadSuffixDescription()
     foreach (QString suffix, mapper.keys()) {
         if(suffix=="*" || suffix==".")
             continue;
-        IEditorPlugin * plug = qobject_cast<IEditorPlugin*>(mapper.value(suffix));
+        auto plug = qobject_cast<IEditorPlugin*>(plugins.value(mapper.value(suffix)));
         QString desc = plug->typeDescription(suffix);
         if(desc.isEmpty()) {
             desc = suffix.toUpper() + tr(" file");
         }
         desc = desc + "(*." + suffix + ")";
-        qDebug() << "Add suffix description:" << desc;
+        qInfo() << "Add suffix description:" << desc;
         descs += desc;
     }
     descs.sort(Qt::CaseInsensitive);

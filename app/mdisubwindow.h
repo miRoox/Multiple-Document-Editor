@@ -16,13 +16,13 @@ public:
 
 public slots:
     void setEditor(IEditor * editor);
-    void subWindowActivated(QMdiSubWindow*);
+    void slotSubWindowActivated(QMdiSubWindow*);
 
 protected:
     void mousePressEvent(QMouseEvent * event);//TODO: drag & drop
 
 private:
-    IEditor * editor;
+    IEditor * m_editor;
 };
 
 #endif // MDISUBWINDOW_H

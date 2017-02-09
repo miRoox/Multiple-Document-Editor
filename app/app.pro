@@ -18,7 +18,8 @@ include(../shared/qtsingleapplication/qtsingleapplication.pri)
 SOURCES += main.cpp \
     mdewindow.cpp \
     pluginmanager.cpp \
-    mdisubwindow.cpp
+    mdisubwindow.cpp \
+    mylogger.cpp
 
 RESOURCES += \
     myimage.qrc
@@ -30,7 +31,8 @@ HEADERS += \
     ipluginbase.h \
     ieditor.h \
     pluginmanager.h \
-    mdisubwindow.h
+    mdisubwindow.h \
+    mylogger.h
 
 FORMS += \
     mdewindow.ui

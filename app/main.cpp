@@ -1,5 +1,6 @@
 ﻿#include "qtsingleapplication.h"
 #include "mdewindow.h"
+#include "mylogger.h"
 #include <QTranslator>
 #include <QLocale>
 #include <QCommandLineParser>
@@ -17,6 +18,8 @@ const char Log_OPT[] = "log";
 const char Recus_OPT1[] = "r";
 const char Recus_OPT2[] = "recus";
 
+const char divChar = '\n';
+
 QMessageBox::StandardButton askMsgSendFailed();
 void initRemoteCmdlParser(QCommandLineParser & parser);
 void dealRemoteCmdlOptions(QCommandLineParser & parser, MdeWindow * win);
@@ -26,9 +29,15 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Multiple Document Editor");
     QCoreApplication::setApplicationVersion("1.2");
     QCoreApplication::setOrganizationName("miroox");
+#ifndef QT_DEBUG
+    MyLogger logger;
+    qInstallMessageHandler(MyLogger::MyMsgHandler);
+#endif
+    qInfo() << QCoreApplication::applicationName() << "is starting...";
     SharedTools::QtSingleApplication app(QLatin1String(appId),argc, argv);
 
     QCommandLineParser parser;
+    qInfo() << "Initializing commandline parser..";
     parser.setApplicationDescription(app.applicationName());
     //Options that require preprocessing
     QCommandLineOption helpOpt = parser.addHelpOption();
@@ -40,19 +49,27 @@ int main(int argc, char *argv[])
            QApplication::translate("CommandLine","Attempt to connect to instance given by <pid>"),
            QLatin1String("pid")},
           {Block_OPT,
-           QApplication::translate("CommandLine","Block until editor is closed")}
+           QApplication::translate("CommandLine","Block until editor is closed")},
+          {Log_OPT,
+           QApplication::translate("CommandLine","Turn the log file writing on initially")}
     });
     //Options that can use in remote arguments
     initRemoteCmdlParser(parser);
 
-    parser.parse(app.arguments());
-    qDebug() << parser.errorText();
+    if(!parser.parse(app.arguments())) {
+        qWarning() << parser.errorText();
+    }
+#ifndef QT_DEBUG
+    logger.confirmLogging(parser.isSet(Log_OPT));
+#endif
     if(parser.isSet(helpOpt)) {
+        qInfo() << "Show commandline paramter";
         app.removeCurrentPid();
         parser.showHelp();
         return 0;
     }
     if(parser.isSet(versionOpt)) {
+        qInfo() << "Show application version:" << app.applicationVersion();
         app.removeCurrentPid();
         parser.showVersion();
         return 0;
@@ -62,20 +79,23 @@ int main(int argc, char *argv[])
     if(parser.isSet(Pid_OPT)) {
         bool available;
         qint64 tmpPid = parser.value(Pid_OPT).toInt(&available);
-        if(available && tmpPid>=0)
+        if(available && tmpPid>=0) {
             pid = tmpPid;
+            qInfo() << "Attempt to connect to another instance with pid:" << pid;
+        }
     }
     if(app.isRunning() && !parser.isSet(MultInst_OPT)) {
         app.setBlock(parser.isSet(Block_OPT));
-        if(app.sendMessage(app.arguments().join(' '),1000,pid))
+        if(app.sendMessage(app.arguments().join(divChar),1000,pid))
             return 0;
 
-        // Message could not be send, maybe it was in the process of quitting
+        qWarning() << "Message could not be send, maybe it was in the process of quitting.";
         if(app.isRunning(pid)) {
             // Nah app is still running, ask the user
             QMessageBox::StandardButton button = askMsgSendFailed();
             while (QMessageBox::Retry == button) {
-                if(app.sendMessage(app.arguments().join(' '),1000,pid))
+                qDebug() << "Try again..";
+                if(app.sendMessage(app.arguments().join(divChar),1000,pid))
                     return 0;
                 if(!app.isRunning(pid)) // App quit while we were trying so start a new instance
                     button = QMessageBox::Yes;
@@ -88,15 +108,18 @@ int main(int argc, char *argv[])
     }
 
     MdeWindow win;
+    win.show();
     app.setActivationWindow(&win);
-    QApplication::connect(&app,SharedTools::QtSingleApplication::messageReceived,[&win](QString args){
+    QApplication::connect(&app,SharedTools::QtSingleApplication::messageReceived,
+                          [&win](QString args){
         QCommandLineParser remoteParser;
         initRemoteCmdlParser(remoteParser);
-        remoteParser.parse(args.split(' '));
+        if(!remoteParser.parse(args.split(divChar))) {
+            qWarning() << remoteParser.errorText();
+        }
         dealRemoteCmdlOptions(remoteParser,&win);
     });
     dealRemoteCmdlOptions(parser,&win);
-    win.show();
     return app.exec();
 }
 
@@ -113,11 +136,13 @@ void initRemoteCmdlParser(QCommandLineParser &parser)
 
 void dealRemoteCmdlOptions(QCommandLineParser & parser, MdeWindow *win)
 {
-    if(parser.isSet(Recus_OPT1)) {
-        win->openFilesRecursively(parser.positionalArguments().first());
-    }
-    else {
-        win->openFile(parser.positionalArguments().first());
+    if(!parser.positionalArguments().isEmpty()) {
+        if(parser.isSet(Recus_OPT1)) {
+            win->openFilesRecursively(parser.positionalArguments().first());
+        }
+        else {
+            win->openFile(parser.positionalArguments().first());
+        }
     }
 }
 
