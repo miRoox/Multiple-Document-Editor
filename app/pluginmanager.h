@@ -19,12 +19,13 @@ class PluginManager : public QObject
 {
     Q_OBJECT
 
-    using PluginSpec = QStringList;
+    using PluginSpec = QHash<QString,QString>;
 public:
-    explicit PluginManager(MdeWindow *parent = 0);
-    void loadSettings();
-    void saveSettings();//before close
-    void initViewer();
+    explicit PluginManager(QObject *parent = 0);
+    ~PluginManager();
+    void setMDE(MdeWindow * w);
+    void loadPlugins();
+    void loadSuffixDescription();
     IEditor * defaultEditor() const;
     IEditor * defaultBrowser() const;
     IEditor * editor(QString file) const;
@@ -39,11 +40,16 @@ public slots:
     void setDefaultEditor(const PluginSpec spec);
     void setDefaultBrowser(const PluginSpec spec);
     void setEditor(const QString suffix, const PluginSpec spec);
-    void loadPlugins();
-    void unloadPlugins();//before  close
+
+private:
+    void loadSettings();
+    void saveSettings();
+    void initViewer();
     void checkDisabled();
     void checkMapper();
-    void loadSuffixDescription();
+
+    static PluginSpec specFromVariantHash(const QVariantHash &data);
+    static QVariantHash variantHashFromSpec(const PluginSpec &spec);
 
 private:
     MdeWindow * win;

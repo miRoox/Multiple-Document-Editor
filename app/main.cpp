@@ -1,4 +1,5 @@
 ﻿#include "qtsingleapplication.h"
+#include "pluginmanager.h"
 #include "mdewindow.h"
 #include "mylogger.h"
 #include <QTranslator>
@@ -31,7 +32,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("miroox");
 #ifndef QT_DEBUG
     MyLogger logger;
-    qInstallMessageHandler(MyLogger::MyMsgHandler);
+    logger.installMyMsgHandle();
 #endif
     qInfo() << QCoreApplication::applicationName() << "is starting...";
     SharedTools::QtSingleApplication app(QLatin1String(appId),argc, argv);
@@ -106,8 +107,12 @@ int main(int argc, char *argv[])
                 return -1;
         }
     }
+    PluginManager plugManager;
+    plugManager.loadPlugins();
+    plugManager.loadSuffixDescription();
 
     MdeWindow win;
+    plugManager.setMDE(&win);
     win.show();
     app.setActivationWindow(&win);
     QApplication::connect(&app,SharedTools::QtSingleApplication::messageReceived,

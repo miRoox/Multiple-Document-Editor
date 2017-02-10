@@ -18,16 +18,11 @@ MdeWindow::MdeWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MdeWindow)
 {
-    plugManager = new PluginManager(this);
+    plugManager = 0;
     qInfo() << "Set up User Interface";
     ui->setupUi(this);
     initActions();
     loadSettings();
-    plugManager->loadPlugins();
-    plugManager->checkDisabled();
-    plugManager->checkMapper();
-    plugManager->loadSuffixDescription();
-    plugManager->initViewer();
     setAcceptDrops(true);
     connect(ui->mdiArea,QMdiArea::subWindowActivated,[this](QMdiSubWindow * active){
             if(active) setWindowTitle(active->windowTitle());
@@ -38,6 +33,11 @@ MdeWindow::MdeWindow(QWidget *parent) :
 MdeWindow::~MdeWindow()
 {
     delete ui;
+}
+
+void MdeWindow::setPluginManager(PluginManager *pm)
+{
+    plugManager = pm;
 }
 
 
@@ -54,6 +54,7 @@ MdiSubWindow *MdeWindow::addToSubWindow(IEditor *editor)
 void MdeWindow::newDoc()
 {
     static quint64 sequence = 1;
+    qInfo() << "Attempt to create a new document";
     IEditor * editor = plugManager->defaultEditor();
     if(!editor)
         return warningNoEditor();
@@ -100,6 +101,7 @@ quint32 MdeWindow::openFilesRecursively(QString fileName)
     QStringList filter(QFileInfo(fileName).fileName());
     QString path = QFileInfo(fileName).absolutePath();
     QDir dir(path);
+    qInfo() << "Attempt to open" << fileName << "recursively";
     if(filter.first().isEmpty()) {
         filter[0] = QString("*");
     }
@@ -202,7 +204,6 @@ void MdeWindow::loadSettings()
     restoreState(settings.value("state").toByteArray());
     settings.endGroup();
     qInfo() << "Main window: settings are loaded.";
-    plugManager->loadSettings();
 }
 
 void MdeWindow::saveSettings()
@@ -214,7 +215,6 @@ void MdeWindow::saveSettings()
     settings.setValue("state",saveState());
     settings.endGroup();
     qInfo() << "Main window: settings are saved.";
-    plugManager->saveSettings();
 }
 
 MdiSubWindow * MdeWindow::findSubWindow(QString fileName)
@@ -258,7 +258,6 @@ void MdeWindow::closeEvent(QCloseEvent *event)
     }
     else {
         saveSettings();
-        plugManager->unloadPlugins();
         event->accept();
     }
 }

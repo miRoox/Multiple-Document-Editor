@@ -10,9 +10,10 @@ class MyLogger
 public:
     MyLogger();
     ~MyLogger();
-    static void MyMsgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
+    static void installMyMsgHandle();
     static void confirmLogging(bool log);
 private:
+    static void myMsgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
     static QFile * logFile;
 };
 

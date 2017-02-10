@@ -13,12 +13,14 @@ class IPluginBase
 {
 public:
     virtual ~IPluginBase() { }
-    virtual QString name() const;
-    virtual QString version() const;
-    virtual QString vendor() const;
-    virtual bool install(MdeWindow * win) = 0;
-    virtual bool uninstall() = 0;
+    virtual bool initialize() = 0;
+    virtual void setMDE(MdeWindow * w) = 0;
 };
+
+#define PLUGINMETADATA_NAME     "name"
+#define PLUGINMETADATA_VER      "version"
+#define PLUGINMETADATA_VENDOR   "vendor"
+#define PLUGINMETADATA_PLATFORM "platforms"
 
 QT_BEGIN_NAMESPACE
 

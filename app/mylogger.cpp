@@ -14,14 +14,12 @@ MyLogger::MyLogger()
         if(!QDir("./debug").exists()) {
             QDir(".").mkdir("debug");
         }
-        //QDir::setCurrent("/debug");
         QString name = QString("./debug/")
                 + QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss")
                 +".log";
         logFile = new QFile(name);
         if(!logFile->open(QFile::WriteOnly|QFile::Text))
             qWarning() << logFile->errorString();
-        //QDir::setCurrent("..");
     }
 }
 
@@ -33,6 +31,14 @@ MyLogger::~MyLogger()
         }
         delete logFile;
     }
+}
+
+void MyLogger::installMyMsgHandle()
+{
+    if(logFile)
+        if(logFile->isOpen()) {
+            qInstallMessageHandler(myMsgHandler);
+        }
 }
 
 void MyLogger::confirmLogging(bool log)
@@ -47,7 +53,7 @@ void MyLogger::confirmLogging(bool log)
     }
 }
 
-void MyLogger::MyMsgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+void MyLogger::myMsgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     if(!logFile)
         return;
@@ -59,22 +65,22 @@ void MyLogger::MyMsgHandler(QtMsgType type, const QMessageLogContext &context, c
     QString currentTime = QDateTime::currentDateTime().toString("HH:mm:ss:zzz");
     switch (type) {
     case QtDebugMsg:
-        msgText = QString("[%1]Debug(%3): %2\n").
+        msgText = QString("[%1]Debug: %2 (in %3)\n").
                 arg(currentTime).arg(msg).arg(contextStr);
         break;
     case QtInfoMsg:
         msgText = QString("[%1]Info: %2\n").arg(currentTime).arg(msg);
         break;
     case QtWarningMsg:
-        msgText = QString("[%1]Warning(%3): %2\n").
+        msgText = QString("[%1]Warning: %2 (in %3)\n").
                 arg(currentTime).arg(msg).arg(contextStr);
         break;
     case QtCriticalMsg:
-        msgText = QString("[%1]Critical(%3): %2\n").
+        msgText = QString("[%1]Critical: %2 (in %3)\n").
                 arg(currentTime).arg(msg).arg(contextStr);
         break;
     case QtFatalMsg:
-        msgText = QString("[%1]Fatal(%3): %2\n").
+        msgText = QString("[%1]Fatal: %2 (in %3)\n").
                 arg(currentTime).arg(msg).arg(contextStr);
         break;
     }

@@ -4,6 +4,7 @@
 #include "mdewindow.h"
 #include <QSettings>
 #include <QStringList>
+#include <QVariant>
 #include <QFileInfo>
 #include <QDir>
 #include <QPluginLoader>
@@ -12,11 +13,34 @@
 #include <QApplication>
 #include <QDebug>
 
-PluginManager::PluginManager(MdeWindow *parent) : QObject(parent),
-    win(parent), plugins(), editors(), disabledPlugins(), mapper(),
+#define DEFEDITSUFX "."
+#define DEFBRSWSUFX "*"
+
+PluginManager::PluginManager(QObject *parent) : QObject(parent),
+    plugins(), editors(), disabledPlugins(), mapper(),
     suffixDesc()
 {
+    win = 0;
     suffixDesc += tr("Any file") + "(*)";
+    loadSettings();
+}
+
+PluginManager::~PluginManager()
+{
+    saveSettings();
+}
+
+void PluginManager::setMDE(MdeWindow *w)
+{
+    win = w;
+    foreach (QObject * obj, plugins.values()) {
+        if(obj) {
+            auto plugin = qobject_cast<IPluginBase*>(obj);
+            plugin->setMDE(win);
+        }
+    }
+    win->setPluginManager(this);
+    initViewer();
 }
 
 void PluginManager::initViewer()
@@ -26,7 +50,7 @@ void PluginManager::initViewer()
 
 IEditor * PluginManager::defaultEditor() const
 {
-    PluginSpec spec = mapper.value(".");
+    PluginSpec spec = mapper.value(DEFEDITSUFX);
     if(spec.isEmpty()) {
         qWarning() << "The default editor is not set.";
         return 0;
@@ -40,7 +64,7 @@ IEditor * PluginManager::defaultEditor() const
 
 IEditor * PluginManager::defaultBrowser() const
 {
-    PluginSpec spec = mapper.value("*");
+    PluginSpec spec = mapper.value(DEFBRSWSUFX);
     if(spec.isEmpty()) {
         qWarning() << "The default browser is not set.";
         return 0;
@@ -84,13 +108,13 @@ void PluginManager::setEnabled(const PluginSpec spec)
 void PluginManager::setDefaultEditor(const PluginSpec spec)
 {
     if(editors.contains(spec))
-        mapper.insert(".",spec);
+        mapper.insert(DEFEDITSUFX,spec);
 }
 
 void PluginManager::setDefaultBrowser(const PluginSpec spec)
 {
     if(editors.contains(spec))
-        mapper.insert("*",spec);
+        mapper.insert(DEFBRSWSUFX,spec);
 }
 
 void PluginManager::setEditor(const QString suffix, const PluginSpec spec)
@@ -114,7 +138,7 @@ void PluginManager::loadSettings()
     qInfo() << "loading disabled plugins list..";
     for(int i=0; i<size; ++i) {
         settings.setArrayIndex(i);
-        PluginSpec spec = settings.value("spec").toStringList();
+        PluginSpec spec =  specFromVariantHash(settings.value("spec").toHash());
         disabledPlugins.insert(spec);
     }
     settings.endArray();
@@ -123,7 +147,7 @@ void PluginManager::loadSettings()
     qInfo() << "loading file-editor mapper..";
     for(int i=0; i<size; ++i) {
         settings.setArrayIndex(i);
-        PluginSpec spec = settings.value("spec").toStringList();
+        PluginSpec spec = specFromVariantHash(settings.value("spec").toHash());
         if(disabledPlugins.contains(spec))
             continue;
         QString suffix = settings.value("suffix").toString();
@@ -145,7 +169,7 @@ void PluginManager::saveSettings()
     int i = 0;
     foreach (PluginSpec spec, disabledPlugins.toList()) {
         settings.setArrayIndex(i++);
-        settings.setValue("spec",spec);
+        settings.setValue("spec",variantHashFromSpec(spec));
     }
     settings.endArray();
     //editor mapper
@@ -155,7 +179,7 @@ void PluginManager::saveSettings()
     foreach (QString suffix, mapper.keys()) {
         settings.setArrayIndex(i++);
         settings.setValue("suffix",suffix);
-        settings.setValue("spec",mapper.value(suffix));
+        settings.setValue("spec",variantHashFromSpec(mapper.value(suffix)));
     }
     settings.endArray();
     settings.endGroup();
@@ -186,10 +210,7 @@ void PluginManager::loadPlugins()
         if(obj) {
             auto plugin = qobject_cast<IPluginBase *>(obj);
             if(plugin) {
-                PluginSpec spec;
-                spec << plugin->name();
-                spec << plugin->version();
-                spec << plugin->vendor();
+                PluginSpec spec = specFromVariantHash(loader.metaData().toVariantHash());
                 if(plugins.contains(spec))
                     continue;
                 if(disabledPlugins.contains(spec)) {
@@ -197,7 +218,7 @@ void PluginManager::loadPlugins()
                     continue;
                 }
                 qInfo() << "Plugin manager: loading plugin" << spec;
-                plugin->install(win);
+                plugin->initialize();
                 plugins.insert(spec,obj);
                 auto editorPlug = qobject_cast<IEditorPlugin *>(obj);
                 if(editorPlug) {
@@ -214,42 +235,15 @@ void PluginManager::loadPlugins()
             qWarning() << loader.errorString();
         }
     }
+    checkDisabled();
+    checkMapper();
 }
-
-void PluginManager::unloadPlugins()
-{
-    foreach (PluginSpec spec, plugins.keys()) {
-        QObject * obj = plugins.value(spec);
-        if(obj) {
-            auto plugin = qobject_cast<IPluginBase *>(obj);
-            plugin->uninstall();
-        }
-    }
-}
-
-void PluginManager::checkDisabled()
-{
-    disabledPlugins &= QSet<PluginSpec>::fromList(plugins.keys());
-}
-
-void PluginManager::checkMapper()
-{
-    foreach (QString suffix, mapper.keys()) {
-        if(!editors.contains(mapper.value(suffix)))
-            mapper.remove(suffix);
-    }
-    if(!mapper.contains(".")) { //default editor
-        if(mapper.contains("txt"))
-            setDefaultEditor(mapper.value("txt"));
-    }
-}
-
 
 void PluginManager::loadSuffixDescription()
 {
     QStringList descs;
     foreach (QString suffix, mapper.keys()) {
-        if(suffix=="*" || suffix==".")
+        if(suffix==DEFBRSWSUFX || suffix==DEFEDITSUFX)
             continue;
         auto plug = qobject_cast<IEditorPlugin*>(plugins.value(mapper.value(suffix)));
         QString desc = plug->typeDescription(suffix);
@@ -263,3 +257,42 @@ void PluginManager::loadSuffixDescription()
     descs.sort(Qt::CaseInsensitive);
     suffixDesc += descs;
 }
+
+void PluginManager::checkDisabled()
+{
+    disabledPlugins &= QSet<PluginSpec>::fromList(plugins.keys());
+}
+
+void PluginManager::checkMapper()
+{
+    foreach (QString suffix, mapper.keys()) {
+        if(!editors.contains(mapper.value(suffix)))
+            mapper.remove(suffix);
+    }
+    if(!mapper.contains(DEFEDITSUFX)) { //default editor
+        if(mapper.contains("txt"))
+            setDefaultEditor(mapper.value("txt"));
+    }
+}
+
+PluginManager::PluginSpec PluginManager::specFromVariantHash(const QVariantHash &data)
+{
+    PluginSpec spec;
+    spec.insert(PLUGINMETADATA_NAME,data.value(PLUGINMETADATA_NAME).toString());
+    spec.insert(PLUGINMETADATA_VER,data.value(PLUGINMETADATA_VER).toString());
+    spec.insert(PLUGINMETADATA_VENDOR,data.value(PLUGINMETADATA_VENDOR).toString());
+    spec.insert(PLUGINMETADATA_PLATFORM,data.value(PLUGINMETADATA_PLATFORM).toString());
+    return spec;
+}
+
+QVariantHash PluginManager::variantHashFromSpec(const PluginManager::PluginSpec &spec)
+{
+    QVariantHash data;
+    data.insert(PLUGINMETADATA_NAME,spec.value(PLUGINMETADATA_NAME));
+    data.insert(PLUGINMETADATA_VER,spec.value(PLUGINMETADATA_VER));
+    data.insert(PLUGINMETADATA_VENDOR,spec.value(PLUGINMETADATA_VENDOR));
+    data.insert(PLUGINMETADATA_PLATFORM,spec.value(PLUGINMETADATA_PLATFORM));
+    return data;
+}
+
+
