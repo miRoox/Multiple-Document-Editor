@@ -137,7 +137,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Tool bar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -174,10 +174,10 @@
     <string>Open</string>
    </property>
    <property name="toolTip">
-    <string>Open an existing file</string>
+    <string>Open existing files</string>
    </property>
    <property name="statusTip">
-    <string>Open an existing file</string>
+    <string>Open existing files</string>
    </property>
   </action>
   <action name="actionSave">

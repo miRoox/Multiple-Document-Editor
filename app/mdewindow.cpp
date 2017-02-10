@@ -239,7 +239,7 @@ void MdeWindow::warningNoEditor(bool noEditor)
     if(noEditor) {
         qWarning() << "No editor available!";
         if(!showed) {
-            QMessageBox::warning(this,tr("No Editor availabe!"),
+            QMessageBox::warning(this,tr("No editor availabe!"),
                                  tr("The operation cannot be performed "
                                     "because there is no editor availbale."));
             showed = true;

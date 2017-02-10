@@ -8,6 +8,7 @@
 #include <QCommandLineOption>
 #include <QStringList>
 #include <QMessageBox>
+#include <QLibraryInfo>
 #include <QDebug>
 
 const char appId[] = "miroox/Multiple Document Editor";
@@ -36,6 +37,31 @@ int main(int argc, char *argv[])
 #endif
     qInfo() << QCoreApplication::applicationName() << "is starting...";
     SharedTools::QtSingleApplication app(QLatin1String(appId),argc, argv);
+
+    QTranslator translator;
+    QTranslator qtTranslator;
+    qInfo() << "Loading translation..";
+    QStringList uiLanguages = QLocale::system().uiLanguages();
+    const QString & appTrPath = app.applicationDirPath() + "/../translations";
+    const QString & qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+    foreach (QString locale, uiLanguages) {
+        locale = QLocale(locale).name();
+        if(translator.load(QLatin1String("mde_")+locale,appTrPath)) {
+            const QString &qtTrFile = QLatin1String("qt_") + locale;
+            if(qtTranslator.load(qtTrFile,qtTrPath)
+                    || qtTranslator.load(qtTrFile,appTrPath)) {
+                app.installTranslator(&translator);
+                app.installTranslator(&qtTranslator);
+                //app.setProperty("mde_locale",locale);
+                break;
+            }
+            translator.load(QString()); // unload
+        } else if (locale == QLatin1String("C")) {
+            break; //use built-in
+        }
+    }
+    app.setApplicationDisplayName(QApplication::translate("Application"
+                                                          ,"Multiple Document Editor"));
 
     QCommandLineParser parser;
     qInfo() << "Initializing commandline parser..";

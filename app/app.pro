@@ -38,3 +38,5 @@ HEADERS += \
 FORMS += \
     mdewindow.ui
 
+TRANSLATIONS += \
+    mde_zh_CN.ts
