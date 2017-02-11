@@ -10,6 +10,7 @@ class QString;
 class QStringList;
 QT_END_NAMESPACE
 
+class MdeSettings;
 class MdeWindow;
 class IPluginBase;
 class IEditorPlugin;
@@ -23,6 +24,7 @@ class PluginManager : public QObject
 public:
     explicit PluginManager(QObject *parent = 0);
     ~PluginManager();
+    void loadSettings(MdeSettings * s);
     void setMDE(MdeWindow * w);
     void loadPlugins();
     void loadSuffixDescription();
@@ -52,6 +54,7 @@ private:
     static QVariantHash variantHashFromSpec(const PluginSpec &spec);
 
 private:
+    MdeSettings * coreSettings;
     MdeWindow * win;
     QHash<PluginSpec, QObject*> plugins;
     QSet<PluginSpec> editors;

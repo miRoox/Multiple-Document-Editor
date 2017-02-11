@@ -1,4 +1,5 @@
 ﻿#include "qtsingleapplication.h"
+#include "mdesettings.h"
 #include "pluginmanager.h"
 #include "mdewindow.h"
 #include "mylogger.h"
@@ -37,6 +38,11 @@ int main(int argc, char *argv[])
 #endif
     qInfo() << QCoreApplication::applicationName() << "is starting...";
     SharedTools::QtSingleApplication app(QLatin1String(appId),argc, argv);
+    qAddPostRoutine([]{
+        qInfo() << QCoreApplication::applicationName() << "has quit.";
+    });
+
+    MdeSettings coreSettings;
 
     QTranslator translator;
     QTranslator qtTranslator;
@@ -44,24 +50,29 @@ int main(int argc, char *argv[])
     QStringList uiLanguages = QLocale::system().uiLanguages();
     const QString & appTrPath = app.applicationDirPath() + "/../translations";
     const QString & qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+    QString overrideLanguage = coreSettings.overrideLang();
+    if(!overrideLanguage.isEmpty())
+        uiLanguages.prepend(overrideLanguage);
     foreach (QString locale, uiLanguages) {
         locale = QLocale(locale).name();
         if(translator.load(QLatin1String("mde_")+locale,appTrPath)) {
             const QString &qtTrFile = QLatin1String("qt_") + locale;
-            if(qtTranslator.load(qtTrFile,qtTrPath)
-                    || qtTranslator.load(qtTrFile,appTrPath)) {
+            if(qtTranslator.load(qtTrFile,qtTrPath) ||
+               qtTranslator.load(qtTrFile,appTrPath)) {
                 app.installTranslator(&translator);
                 app.installTranslator(&qtTranslator);
-                //app.setProperty("mde_locale",locale);
+                coreSettings.setUiLanguage(locale);
                 break;
             }
             translator.load(QString()); // unload
-        } else if (locale == QLatin1String("C")) {
-            break; //use built-in
+        } else if (locale == QLatin1String("C") ||
+                   locale.startsWith(QLatin1String("en"))) {
+            coreSettings.setUiLanguage(QLatin1String("en"));
+            break; //english is built-in
         }
     }
-    app.setApplicationDisplayName(QApplication::translate("Application"
-                                                          ,"Multiple Document Editor"));
+    app.setApplicationDisplayName(QApplication::translate("Application",
+                                                          "Multiple Document Editor"));
 
     QCommandLineParser parser;
     qInfo() << "Initializing commandline parser..";
@@ -83,11 +94,10 @@ int main(int argc, char *argv[])
     //Options that can use in remote arguments
     initRemoteCmdlParser(parser);
 
-    if(!parser.parse(app.arguments())) {
+    if(!parser.parse(app.arguments()))
         qWarning() << parser.errorText();
-    }
 #ifndef QT_DEBUG
-    logger.confirmLogging(parser.isSet(Log_OPT));
+    logger.confirmLogging(parser.isSet(Log_OPT) || coreSettings.autoLog());
 #endif
     if(parser.isSet(helpOpt)) {
         qInfo() << "Show commandline paramter";
@@ -133,6 +143,7 @@ int main(int argc, char *argv[])
                 return -1;
         }
     }
+
     PluginManager plugManager;
     plugManager.loadPlugins();
     plugManager.loadSuffixDescription();

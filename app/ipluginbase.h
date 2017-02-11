@@ -7,13 +7,14 @@ QT_BEGIN_NAMESPACE
 class QString;
 QT_END_NAMESPACE
 
+class MdeSettings;
 class MdeWindow;
 
 class IPluginBase
 {
 public:
     virtual ~IPluginBase() { }
-    virtual bool initialize() = 0;
+    virtual bool initialize(MdeSettings * settings) = 0;
     virtual void setMDE(MdeWindow * w) = 0;
 };
 

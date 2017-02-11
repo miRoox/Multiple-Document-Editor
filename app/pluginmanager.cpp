@@ -30,6 +30,11 @@ PluginManager::~PluginManager()
     saveSettings();
 }
 
+void PluginManager::loadSettings(MdeSettings *s)
+{
+    coreSettings = s;
+}
+
 void PluginManager::setMDE(MdeWindow *w)
 {
     win = w;
@@ -218,7 +223,7 @@ void PluginManager::loadPlugins()
                     continue;
                 }
                 qInfo() << "Plugin manager: loading plugin" << spec;
-                plugin->initialize();
+                plugin->initialize(coreSettings);
                 plugins.insert(spec,obj);
                 auto editorPlug = qobject_cast<IEditorPlugin *>(obj);
                 if(editorPlug) {

@@ -164,6 +164,7 @@ void MdeWindow::initActions()
     ui->actionSaveAs->setShortcut(QKeySequence::SaveAs);
     ui->actionClose->setShortcut(QKeySequence::Close);
     ui->actionExit->setShortcut(QKeySequence::Quit);
+    ui->actionFullScreen->setShortcut(QKeySequence::FullScreen);
     ui->actionNext->setShortcut(QKeySequence::NextChild);
     ui->actionPrevious->setShortcut(QKeySequence::PreviousChild);
     ui->actionPreferences->setShortcut(QKeySequence::Preferences);
@@ -187,6 +188,17 @@ void MdeWindow::initActions()
     connect(ui->actionClose,QAction::triggered,ui->mdiArea,QMdiArea::closeActiveSubWindow);
     connect(ui->actionCloseAll,QAction::triggered,ui->mdiArea,QMdiArea::closeAllSubWindows);
     connect(ui->actionExit,QAction::triggered,qApp,QApplication::closeAllWindows);
+    connect(ui->actionStayOnTop,QAction::toggled,[this](bool checked){
+        if(checked) setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+        else setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
+        show();
+    });
+    connect(ui->actionFullScreen,QAction::triggered,[this]{
+        setWindowState(windowState() ^ Qt::WindowFullScreen);
+    });
+    connect(ui->actionMultInst,QAction::triggered,[]{
+        QProcess::startDetached(QApplication::applicationFilePath(),QStringList("--multInst"));
+    });
     connect(ui->actionNext,QAction::triggered,ui->mdiArea,QMdiArea::activateNextSubWindow);
     connect(ui->actionPrevious,QAction::triggered,ui->mdiArea,QMdiArea::activatePreviousSubWindow);
     connect(ui->actionCmdlParam,QAction::triggered,[]{

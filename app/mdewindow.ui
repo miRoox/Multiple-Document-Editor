@@ -106,6 +106,10 @@
      <addaction name="actionNext"/>
      <addaction name="actionPrevious"/>
     </widget>
+    <addaction name="actionStayOnTop"/>
+    <addaction name="actionFullScreen"/>
+    <addaction name="separator"/>
+    <addaction name="actionMultInst"/>
     <addaction name="menuTab"/>
    </widget>
    <widget class="QMenu" name="menu_Tools">
@@ -375,6 +379,42 @@
    </property>
    <property name="statusTip">
     <string>Reload current file</string>
+   </property>
+  </action>
+  <action name="actionFullScreen">
+   <property name="text">
+    <string>Full screen</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle between full-screen and normal mode</string>
+   </property>
+   <property name="statusTip">
+    <string>Toggle between full-screen and normal mode</string>
+   </property>
+  </action>
+  <action name="actionStayOnTop">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Stay on top</string>
+   </property>
+   <property name="toolTip">
+    <string>Make the window stay on top of all other windows</string>
+   </property>
+   <property name="statusTip">
+    <string>Make the window stay on top of all other windows</string>
+   </property>
+  </action>
+  <action name="actionMultInst">
+   <property name="text">
+    <string>New window</string>
+   </property>
+   <property name="toolTip">
+    <string>Start a new instance</string>
+   </property>
+   <property name="statusTip">
+    <string>Start a new instance</string>
    </property>
   </action>
  </widget>

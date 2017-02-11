@@ -4,17 +4,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="main.cpp" line="63"/>
+        <location filename="main.cpp" line="71"/>
         <source>Multiple Document Editor</source>
         <translation>多文档编辑器</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="182"/>
+        <location filename="main.cpp" line="190"/>
         <source>Could not send message</source>
         <translation>无法发送信息</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="183"/>
+        <location filename="main.cpp" line="191"/>
         <source>Unable to send command line arguments to the already running instance. It appears to be not responding. Do you want to start a new instance of editor?</source>
         <translation>无法向正在运行的实例发送命令行参数。目标没有响应。您是否要启动一个新实例？</translation>
     </message>
@@ -22,32 +22,32 @@
 <context>
     <name>CommandLine</name>
     <message>
-        <location filename="main.cpp" line="74"/>
+        <location filename="main.cpp" line="82"/>
         <source>Launch another MDE instance.</source>
         <translation>启动另一个多文档编辑器。</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="76"/>
+        <location filename="main.cpp" line="84"/>
         <source>Attempt to connect to instance given by &lt;pid&gt;</source>
         <translation>尝试连接到&lt;pid&gt;对应的实例</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="79"/>
+        <location filename="main.cpp" line="87"/>
         <source>Block until editor is closed</source>
         <translation>阻塞直到编辑器关闭</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="81"/>
+        <location filename="main.cpp" line="89"/>
         <source>Turn the log file writing on initially</source>
         <translation>启动写入日志文件</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="161"/>
+        <location filename="main.cpp" line="169"/>
         <source>Open files recursively.This argument will be ignored if [file] contain no wildcard character</source>
         <translation>递归地打开文件。如果目标文件[file]中不包含通配符，那么这个参数将被忽略</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="165"/>
+        <location filename="main.cpp" line="173"/>
         <source>file path to open</source>
         <translation>要打开的文件</translation>
     </message>
@@ -86,178 +86,211 @@
         <translation>标签页</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="113"/>
+        <location filename="mdewindow.ui" line="117"/>
         <source>&amp;Tools</source>
         <translation>工具(&amp;T)</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="118"/>
+        <location filename="mdewindow.ui" line="122"/>
         <source>&amp;Settings</source>
         <translation>设置(&amp;S)</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="124"/>
+        <location filename="mdewindow.ui" line="128"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="140"/>
+        <location filename="mdewindow.ui" line="144"/>
         <source>Tool bar</source>
         <oldsource>toolBar</oldsource>
         <translation>工具栏</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="159"/>
+        <location filename="mdewindow.ui" line="163"/>
         <source>New</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="162"/>
-        <location filename="mdewindow.ui" line="165"/>
+        <location filename="mdewindow.ui" line="166"/>
+        <location filename="mdewindow.ui" line="169"/>
         <source>Create a new document</source>
         <translation>创建一个新文档</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="174"/>
+        <location filename="mdewindow.ui" line="178"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="177"/>
-        <location filename="mdewindow.ui" line="180"/>
+        <location filename="mdewindow.ui" line="181"/>
+        <location filename="mdewindow.ui" line="184"/>
         <source>Open existing files</source>
         <oldsource>Open an existing file</oldsource>
         <translation>打开已存在的文件</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="192"/>
+        <location filename="mdewindow.ui" line="196"/>
         <source>Save</source>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="195"/>
-        <location filename="mdewindow.ui" line="198"/>
+        <location filename="mdewindow.ui" line="199"/>
+        <location filename="mdewindow.ui" line="202"/>
         <source>Save current document</source>
         <translation>保存当前文档</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="210"/>
+        <location filename="mdewindow.ui" line="214"/>
         <source>Save As</source>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="213"/>
-        <location filename="mdewindow.ui" line="216"/>
+        <location filename="mdewindow.ui" line="217"/>
+        <location filename="mdewindow.ui" line="220"/>
         <source>Save current document as a new file</source>
         <translation>将当前文档另存为一个新文件</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="225"/>
-        <location filename="mdewindow.ui" line="228"/>
+        <location filename="mdewindow.ui" line="229"/>
+        <location filename="mdewindow.ui" line="232"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="233"/>
-        <location filename="mdewindow.ui" line="236"/>
-        <location filename="mdewindow.ui" line="239"/>
+        <location filename="mdewindow.ui" line="237"/>
+        <location filename="mdewindow.ui" line="240"/>
+        <location filename="mdewindow.ui" line="243"/>
         <source>Clear recent history</source>
         <translation>清除最近历史记录</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="244"/>
-        <location filename="mdewindow.ui" line="247"/>
+        <location filename="mdewindow.ui" line="248"/>
+        <location filename="mdewindow.ui" line="251"/>
         <source>Open all the history files</source>
         <translation>打开全部历史记录文件</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="255"/>
+        <location filename="mdewindow.ui" line="259"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="258"/>
-        <location filename="mdewindow.ui" line="261"/>
+        <location filename="mdewindow.ui" line="262"/>
+        <location filename="mdewindow.ui" line="265"/>
         <source>Close the current tab</source>
         <translation>关闭当前标签页</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="269"/>
+        <location filename="mdewindow.ui" line="273"/>
         <source>Close All</source>
         <translation>关闭全部</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="272"/>
-        <location filename="mdewindow.ui" line="275"/>
+        <location filename="mdewindow.ui" line="276"/>
+        <location filename="mdewindow.ui" line="279"/>
         <source>Close all tabs</source>
         <translation>关闭全部标签页</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="284"/>
+        <location filename="mdewindow.ui" line="288"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="287"/>
-        <location filename="mdewindow.ui" line="290"/>
+        <location filename="mdewindow.ui" line="291"/>
+        <location filename="mdewindow.ui" line="294"/>
         <source>About this application</source>
         <translation>关于本软件</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="302"/>
-        <location filename="mdewindow.ui" line="305"/>
+        <location filename="mdewindow.ui" line="306"/>
+        <location filename="mdewindow.ui" line="309"/>
         <source>About Qt</source>
         <translation>关于Qt</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="320"/>
+        <location filename="mdewindow.ui" line="324"/>
         <source>Next</source>
         <translation>下一个</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="323"/>
-        <location filename="mdewindow.ui" line="326"/>
+        <location filename="mdewindow.ui" line="327"/>
+        <location filename="mdewindow.ui" line="330"/>
         <source>Next tab</source>
         <translation>下一个标签页</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="338"/>
+        <location filename="mdewindow.ui" line="342"/>
         <source>Previous</source>
         <translation>前一个</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="341"/>
-        <location filename="mdewindow.ui" line="344"/>
+        <location filename="mdewindow.ui" line="345"/>
+        <location filename="mdewindow.ui" line="348"/>
         <source>Previous tab</source>
         <translation>前一个标签页</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="349"/>
-        <location filename="mdewindow.ui" line="352"/>
+        <location filename="mdewindow.ui" line="353"/>
+        <location filename="mdewindow.ui" line="356"/>
         <source>Preferences</source>
         <translation>首选项</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="357"/>
+        <location filename="mdewindow.ui" line="361"/>
         <source>CommandLine Parameters</source>
         <translation>命令行参数</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="360"/>
-        <location filename="mdewindow.ui" line="363"/>
+        <location filename="mdewindow.ui" line="364"/>
+        <location filename="mdewindow.ui" line="367"/>
         <source>Command Line Parameters</source>
         <translation>命令行参数</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="371"/>
+        <location filename="mdewindow.ui" line="375"/>
         <source>Reload</source>
         <translation>重新加载</translation>
     </message>
     <message>
-        <location filename="mdewindow.ui" line="374"/>
-        <location filename="mdewindow.ui" line="377"/>
+        <location filename="mdewindow.ui" line="378"/>
+        <location filename="mdewindow.ui" line="381"/>
         <source>Reload current file</source>
         <translation>重新加载当前文件</translation>
+    </message>
+    <message>
+        <location filename="mdewindow.ui" line="386"/>
+        <source>Full screen</source>
+        <translation>切换全屏</translation>
+    </message>
+    <message>
+        <location filename="mdewindow.ui" line="389"/>
+        <location filename="mdewindow.ui" line="392"/>
+        <source>Toggle between full-screen and normal mode</source>
+        <translation>在普通模式与全屏模式间切换</translation>
+    </message>
+    <message>
+        <location filename="mdewindow.ui" line="400"/>
+        <source>Stay on top</source>
+        <translation>窗口置顶</translation>
+    </message>
+    <message>
+        <location filename="mdewindow.ui" line="403"/>
+        <location filename="mdewindow.ui" line="406"/>
+        <source>Make the window stay on top of all other windows</source>
+        <translation>将此窗口始终保持在其它所有窗口前</translation>
+    </message>
+    <message>
+        <location filename="mdewindow.ui" line="411"/>
+        <source>New window</source>
+        <translation>新窗口</translation>
+    </message>
+    <message>
+        <location filename="mdewindow.ui" line="414"/>
+        <location filename="mdewindow.ui" line="417"/>
+        <source>Start a new instance</source>
+        <translation>启动一个新实例</translation>
     </message>
     <message>
         <location filename="mdewindow.cpp" line="64"/>
@@ -270,13 +303,13 @@
         <translation>选择一或多个要打开的文件</translation>
     </message>
     <message>
-        <location filename="mdewindow.cpp" line="242"/>
+        <location filename="mdewindow.cpp" line="254"/>
         <source>No editor availabe!</source>
         <oldsource>No Editor availabe!</oldsource>
         <translation>没有可用的编辑器！</translation>
     </message>
     <message>
-        <location filename="mdewindow.cpp" line="243"/>
+        <location filename="mdewindow.cpp" line="255"/>
         <source>The operation cannot be performed because there is no editor availbale.</source>
         <translation>操作无法执行，因为没有可用的编辑器。</translation>
     </message>

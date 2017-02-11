@@ -20,7 +20,9 @@ SOURCES += main.cpp \
     mdewindow.cpp \
     pluginmanager.cpp \
     mdisubwindow.cpp \
-    mylogger.cpp
+    mylogger.cpp \
+    mdesettings.cpp \
+    mdesettings_p.cpp
 
 RESOURCES += \
     myimage.qrc
@@ -33,10 +35,13 @@ HEADERS += \
     ieditor.h \
     pluginmanager.h \
     mdisubwindow.h \
-    mylogger.h
+    mylogger.h \
+    mdesettings.h \
+    mdesettings_p.h
 
 FORMS += \
     mdewindow.ui
 
 TRANSLATIONS += \
+    mde_en.ts  \
     mde_zh_CN.ts
