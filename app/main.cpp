@@ -172,19 +172,19 @@ void initRemoteCmdlParser(QCommandLineParser &parser)
            QApplication::translate("CommandLine","Open files recursively."
                                    "This argument will be ignored if [file] contain no wildcard character")},
     });
-    parser.addPositionalArgument("file",
-                                 QApplication::translate("CommandLine","file path to open"),"[file]");
+    parser.addPositionalArgument("files",
+                                 QApplication::translate("CommandLine","file path to open"),"[files...]");
 }
 
 void dealRemoteCmdlOptions(QCommandLineParser & parser, MdeWindow *win)
 {
-    if(!parser.positionalArguments().isEmpty()) {
-        if(parser.isSet(Recus_OPT1)) {
-            win->openFilesRecursively(parser.positionalArguments().first());
-        }
-        else {
-            win->openFile(parser.positionalArguments().first());
-        }
+    if(parser.isSet(Recus_OPT1)) {
+        foreach (QString file, parser.positionalArguments())
+            win->openFilesRecursively(file);
+    }
+    else {
+        foreach (QString file, parser.positionalArguments())
+            win->openFile(file);
     }
 }
 

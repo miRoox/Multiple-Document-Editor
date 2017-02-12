@@ -3,11 +3,13 @@
 
 #include <QMdiSubWindow>
 
+class MdiSubWindowPrivate;
 class IEditor;
 
 class MdiSubWindow : public QMdiSubWindow
 {
     Q_OBJECT
+    Q_PROPERTY(IEditor* editor READ editor WRITE setEditor)
 
 public:
     MdiSubWindow(QWidget *parent = Q_NULLPTR, Qt::WindowFlags flags = Qt::WindowFlags());
@@ -15,14 +17,14 @@ public:
     IEditor * editor() const;
 
 public slots:
-    void setEditor(IEditor * editor);
+    void setEditor(IEditor * editor);//only once
     void slotSubWindowActivated(QMdiSubWindow*);
 
 protected:
     void mousePressEvent(QMouseEvent * event);//TODO: drag & drop
 
 private:
-    IEditor * m_editor;
+    MdiSubWindowPrivate * p;
 };
 
 #endif // MDISUBWINDOW_H

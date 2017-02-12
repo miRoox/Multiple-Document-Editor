@@ -98,6 +98,11 @@ IEditor * PluginManager::editor(QString file) const
     return plug->create();
 }
 
+IEditor *PluginManager::selectEditor()
+{
+    return 0;//TODO
+}
+
 void PluginManager::setDisabled(const PluginSpec spec)
 {
     if(plugins.contains(spec))

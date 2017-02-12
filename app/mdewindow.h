@@ -4,25 +4,27 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-class QLabel;
 class QMenu;
 QT_END_NAMESPACE
 
+class MdeWindowPrivate;
 class IEditor;
-class PluginManager;
 class MdiSubWindow;
+class PluginManager;
 
-namespace Ui {
-class MdeWindow;
-}
 
 class MdeWindow : public QMainWindow
 {
     Q_OBJECT
+    Q_PROPERTY(QMenu* menuFile READ menuFile CONSTANT)
+    Q_PROPERTY(QMenu* menuEdit READ menuEdit CONSTANT)
+    Q_PROPERTY(QMenu* menuView READ menuView CONSTANT)
+    Q_PROPERTY(QMenu* menuTools READ menuTools CONSTANT)
+    Q_PROPERTY(QMenu* menuSettings READ menuSettings CONSTANT)
+    Q_PROPERTY(QMenu* menuHelp READ menuHelp CONSTANT)
 
 public:
     explicit MdeWindow(QWidget *parent = 0);
-    ~MdeWindow();
     void setPluginManager(PluginManager * pm);
     QMenu * menuFile() const;
     QMenu * menuEdit() const;
@@ -35,26 +37,18 @@ protected:
     void closeEvent(QCloseEvent * event) override;
 
 signals:
+    void openedFile(QString/*fileName*/);//emit when open file successfully, besides opened file
 
 public slots:
     MdiSubWindow * addToSubWindow(IEditor * editor);
     void newDoc();
     bool openFile(QString fileName);
+    bool openFileWithSelectedEditor(QString fileName);
     quint32 openFilesRecursively(QString fileName);
-    void openWithDialog();
+    void openWithDialog(bool selectable = false);
 
 private:
-    void initActions();
-    void loadSettings();
-    void saveSettings();
-    MdiSubWindow * findSubWindow(QString fileName);
-    void warningNoEditor(bool noEditor = true);
-
-private:
-    Ui::MdeWindow *ui;
-
-    PluginManager * plugManager;
-
+    MdeWindowPrivate * p;
 };
 
 #endif // MDEWINDOW_H

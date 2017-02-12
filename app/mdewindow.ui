@@ -80,6 +80,7 @@
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpenWith"/>
     <addaction name="actionReload"/>
     <addaction name="menuHistory"/>
     <addaction name="separator"/>
@@ -415,6 +416,17 @@
    </property>
    <property name="statusTip">
     <string>Start a new instance</string>
+   </property>
+  </action>
+  <action name="actionOpenWith">
+   <property name="text">
+    <string>Open With</string>
+   </property>
+   <property name="toolTip">
+    <string>Open files with the selected editor</string>
+   </property>
+   <property name="statusTip">
+    <string>Open files with the selected editor</string>
    </property>
   </action>
  </widget>

@@ -22,7 +22,9 @@ SOURCES += main.cpp \
     mdisubwindow.cpp \
     mylogger.cpp \
     mdesettings.cpp \
-    mdesettings_p.cpp
+    mdesettings_p.cpp \
+    mdewindow_p.cpp \
+    mdisubwindow_p.cpp
 
 RESOURCES += \
     myimage.qrc
@@ -37,7 +39,9 @@ HEADERS += \
     mdisubwindow.h \
     mylogger.h \
     mdesettings.h \
-    mdesettings_p.h
+    mdesettings_p.h \
+    mdewindow_p.h \
+    mdisubwindow_p.h
 
 FORMS += \
     mdewindow.ui

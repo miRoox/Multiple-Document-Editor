@@ -21,9 +21,9 @@ signals:
     void overrideLangChanged(QString/*locale*/);
 
 public slots:
-    void setAutoLog(bool log);
+    void setAutoLog(bool log);//only once
     void setOverrideLang(QString locale);
-    void setUiLanguage(QString locale);
+    void setUiLanguage(QString locale);//only once
 
 private:
     MdeSettingsPrivate * p;
