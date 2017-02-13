@@ -25,7 +25,7 @@ class MdeWindow : public QMainWindow
 
 public:
     explicit MdeWindow(QWidget *parent = 0);
-    void setPluginManager(PluginManager * pm);
+    void setPluginManager(PluginManager * pm);//only once
     QMenu * menuFile() const;
     QMenu * menuEdit() const;
     QMenu * menuView() const;

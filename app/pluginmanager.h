@@ -2,7 +2,6 @@
 #define PLUGINMANAGER_H
 
 #include <QObject>
-#include <QList>
 #include <QHash>
 
 QT_BEGIN_NAMESPACE
@@ -10,6 +9,7 @@ class QString;
 class QStringList;
 QT_END_NAMESPACE
 
+class PluginManagerPrivate;
 class MdeSettings;
 class MdeWindow;
 class IPluginBase;
@@ -20,12 +20,13 @@ class PluginManager : public QObject
 {
     Q_OBJECT
 
-    using PluginSpec = QHash<QString,QString>;
 public:
+    using PluginSpec = QHash<QString,QString>;
+
     explicit PluginManager(QObject *parent = 0);
     ~PluginManager();
-    void loadSettings(MdeSettings * s);
-    void setMDE(MdeWindow * w);
+    void loadSettings(MdeSettings * s);//only once
+    void setMDE(MdeWindow * w);//only once
     void loadPlugins();
     void loadSuffixDescription();
     IEditor * defaultEditor() const;
@@ -44,23 +45,9 @@ public slots:
     void setEditor(const QString suffix, const PluginSpec spec);
 
 private:
-    void loadSettings();
-    void saveSettings();
-    void initViewer();
-    void checkDisabled();
-    void checkMapper();
-
-    static PluginSpec specFromVariantHash(const QVariantHash &data);
-    static QVariantHash variantHashFromSpec(const PluginSpec &spec);
-
-private:
-    MdeSettings * coreSettings;
-    MdeWindow * win;
-    QHash<PluginSpec, QObject*> plugins;
-    QSet<PluginSpec> editors;
-    QSet<PluginSpec> disabledPlugins;
-    QHash<QString, PluginSpec> mapper;
-    QStringList suffixDesc;
+    PluginManagerPrivate * p;
 };
+
+#define SPECKEY_CATEGORY "category"
 
 #endif // PLUGINMANAGER_H

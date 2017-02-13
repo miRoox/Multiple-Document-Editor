@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     mdesettings.cpp \
     mdesettings_p.cpp \
     mdewindow_p.cpp \
-    mdisubwindow_p.cpp
+    mdisubwindow_p.cpp \
+    pluginmanager_p.cpp
 
 RESOURCES += \
     myimage.qrc
@@ -41,7 +42,8 @@ HEADERS += \
     mdesettings.h \
     mdesettings_p.h \
     mdewindow_p.h \
-    mdisubwindow_p.h
+    mdisubwindow_p.h \
+    pluginmanager_p.h
 
 FORMS += \
     mdewindow.ui

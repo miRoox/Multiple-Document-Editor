@@ -235,7 +235,7 @@
         <location filename="mdewindow.ui" line="354"/>
         <location filename="mdewindow.ui" line="357"/>
         <source>Preferences</source>
-        <translation>首选项</translation>
+        <translation>偏好设置</translation>
     </message>
     <message>
         <location filename="mdewindow.ui" line="362"/>

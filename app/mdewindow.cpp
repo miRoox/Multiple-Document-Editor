@@ -9,6 +9,7 @@
 #include <QProcess>
 #include <QKeySequence>
 #include <QFileDialog>
+#include <QCloseEvent>
 #include <QDebug>
 
 MdeWindow::MdeWindow(QWidget *parent) :
