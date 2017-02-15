@@ -9,5 +9,7 @@
         <file>images/previous.png</file>
         <file>images/about.png</file>
         <file>images/qt.png</file>
+        <file>images/disable.png</file>
+        <file>images/enable.png</file>
     </qresource>
 </RCC>

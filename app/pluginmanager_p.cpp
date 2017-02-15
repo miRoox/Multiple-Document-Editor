@@ -3,9 +3,22 @@
 #include "ieditor.h"
 #include "mdewindow.h"
 #include <QSettings>
+#include <QList>
 #include <QStringList>
 #include <QVariant>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QSortFilterProxyModel>
+#include <QItemSelectionModel>
+#include <QVBoxLayout>
 #include <QMenu>
+#include <QDialog>
+#include <QLineEdit>
+#include <QTableView>
+#include <QHeaderView>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QIcon>
 #include <QDebug>
 
 PluginManagerPrivate::PluginManagerPrivate(PluginManager *parent)
@@ -80,7 +93,73 @@ void PluginManagerPrivate::saveSettings()
 
 void PluginManagerPrivate::initViewer()
 {
-    win->menuSettings()->addAction(tr("Plugin Manager"));
+    QDialog * dialog = new QDialog(win);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+
+    QTableView * view = new QTableView(dialog);
+    QSortFilterProxyModel * proxyModel = new QSortFilterProxyModel;
+    proxyModel->setSourceModel(createPluginSpecModel(plugins.keys()));
+    view->setModel(proxyModel);
+    view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    for (int column = 0; column < proxyModel->columnCount(); ++column)
+        view->resizeColumnToContents(column);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    QHeaderView * headerView = view->horizontalHeader();
+    headerView->setSectionsClickable(true);
+    headerView->setSortIndicatorShown(true);
+    connect(headerView,QHeaderView::sectionClicked,[headerView](int index){
+        if(headerView->sortIndicatorOrder()==Qt::AscendingOrder)
+            headerView->setSortIndicator(index,Qt::DescendingOrder);
+        else
+            headerView->setSortIndicator(index,Qt::AscendingOrder);
+    });
+    connect(headerView,QHeaderView::sortIndicatorChanged,
+            proxyModel,QSortFilterProxyModel::sort);
+
+    QLineEdit * filter = new QLineEdit(dialog);
+    filter->setPlaceholderText(tr("Filter"));
+    connect(filter,QLineEdit::textChanged,
+            proxyModel,static_cast<void(QSortFilterProxyModel::*)(const QString &)>(&QSortFilterProxyModel::setFilterRegExp));
+
+    QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Close,dialog);
+    QPushButton * enableButton = buttonBox->addButton(tr("Enable"),QDialogButtonBox::ActionRole);
+    QPushButton * disableButton = buttonBox->addButton(tr("Disable"),QDialogButtonBox::ActionRole);
+    connect(enableButton,QPushButton::clicked,view,[=]{
+        QModelIndexList rows = view->selectionModel()->selectedRows();
+        auto prxModel = qobject_cast<QSortFilterProxyModel *>(view->model());
+        if(!prxModel) qWarning() << "prxModel convert failed";
+        auto model = qobject_cast<QStandardItemModel*>(prxModel->sourceModel());
+        if(!model) qWarning() << "model convert failed";
+        foreach (QModelIndex index, rows) {
+            PluginSpec spec = specFromIndex(model,index);
+            if(disabledPlugins.remove(spec))
+                model->setData(index,QIcon(":/myImage/images/enable.png"),Qt::DecorationRole);
+        }
+    });
+    connect(disableButton,QPushButton::clicked,view,[=]{
+        QModelIndexList rows = view->selectionModel()->selectedRows();
+        auto prxModel = qobject_cast<QSortFilterProxyModel *>(view->model());
+        if(!prxModel) qWarning() << "prxModel convert failed";
+        auto model = qobject_cast<QStandardItemModel*>(prxModel->sourceModel());
+        if(!model) qWarning() << "model convert failed";
+        foreach (QModelIndex index, rows) {
+            PluginSpec spec = specFromIndex(model,index);
+            disabledPlugins.insert(spec);
+            model->setData(index,QIcon(":/myImage/images/disable.png"),Qt::DecorationRole);
+        }
+    });
+
+    QVBoxLayout * layout = new QVBoxLayout;
+    layout->addWidget(filter);
+    layout->addWidget(view);
+    layout->addWidget(buttonBox);
+    layout->setSpacing(5);
+    layout->setMargin(10);
+    dialog->setLayout(layout);
+
+    auto managerView = win->menuSettings()->addAction(tr("Plugin Manager"));
+    connect(managerView,QAction::triggered,dialog,QDialog::exec);
 }
 
 void PluginManagerPrivate::checkDisabled()
@@ -98,6 +177,50 @@ void PluginManagerPrivate::checkMapper()
         if(mapper.contains("txt"))
             p->setDefaultEditor(mapper.value("txt"));
     }
+}
+
+QList<QStandardItem *> PluginManagerPrivate::createPluginSpecItem(const PluginManagerPrivate::PluginSpec &spec)
+{
+    QList<QStandardItem *> items;
+    if(disabledPlugins.contains(spec))
+        items.append(new QStandardItem(QIcon(":/myImage/images/disable.png"),
+                                       spec.value(PLUGINMETADATA_NAME)));
+    else
+        items.append(new QStandardItem(QIcon(":/myImage/images/enable.png"),
+                                       spec.value(PLUGINMETADATA_NAME)));
+    items.append(new QStandardItem(spec.value(SPECKEY_CATEGORY)));
+    items.append(new QStandardItem(spec.value(PLUGINMETADATA_VER)));
+    items.append(new QStandardItem(spec.value(PLUGINMETADATA_VENDOR)));
+    items.append(new QStandardItem(spec.value(PLUGINMETADATA_PLATFORM)));
+    return items;
+}
+
+QStandardItemModel *PluginManagerPrivate::createPluginSpecModel(const QList<PluginManagerPrivate::PluginSpec> &specs)
+{
+    QStandardItemModel * model = new QStandardItemModel;
+    QStringList headers;
+    headers << tr(PLUGINMETADATA_NAME)
+            << tr(SPECKEY_CATEGORY)
+            << tr(PLUGINMETADATA_VER)
+            << tr(PLUGINMETADATA_VENDOR)
+            << tr(PLUGINMETADATA_PLATFORM);
+    model->setHorizontalHeaderLabels(headers);
+    foreach (PluginSpec spec, specs) {
+        model->appendRow(createPluginSpecItem(spec));
+    }
+    return model;
+}
+
+PluginManagerPrivate::PluginSpec PluginManagerPrivate::specFromIndex(const QStandardItemModel *model, QModelIndex index)
+{
+    const int row = index.row();
+    PluginSpec spec;
+    spec.insert(PLUGINMETADATA_NAME,model->item(row,0)->data(Qt::DisplayRole).toString());
+    spec.insert(SPECKEY_CATEGORY,model->item(row,1)->data(Qt::DisplayRole).toString());
+    spec.insert(PLUGINMETADATA_VER,model->item(row,2)->data(Qt::DisplayRole).toString());
+    spec.insert(PLUGINMETADATA_VENDOR,model->item(row,3)->data(Qt::DisplayRole).toString());
+    spec.insert(PLUGINMETADATA_PLATFORM,model->item(row,4)->data(Qt::DisplayRole).toString());
+    return spec;
 }
 
 PluginManagerPrivate::PluginSpec PluginManagerPrivate::specFromVariantHash(const QVariantHash &data)

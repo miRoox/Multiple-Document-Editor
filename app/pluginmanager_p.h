@@ -7,6 +7,11 @@
 
 #include "pluginmanager.h"
 
+template <typename T> class QList;
+class QStandardItem;
+class QStandardItemModel;
+class QModelIndex;
+
 class PluginManagerPrivate : public QObject
 {
     Q_OBJECT
@@ -21,8 +26,14 @@ private:
     void checkDisabled();
     void checkMapper();
 
+    QList<QStandardItem *> createPluginSpecItem(const PluginSpec &spec);
+    QStandardItemModel * createPluginSpecModel(const QList<PluginSpec> &specs);
+    PluginSpec specFromIndex(const QStandardItemModel *model, QModelIndex index);
+
     static PluginSpec specFromVariantHash(const QVariantHash &data);
     static QVariantHash variantHashFromSpec(const PluginSpec &spec);
+
+private slots:
 
 private:
     PluginManager * p;
