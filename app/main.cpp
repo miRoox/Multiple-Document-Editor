@@ -1,7 +1,7 @@
 ﻿#include "qtsingleapplication.h"
-#include "mdesettings.h"
-#include "pluginmanager.h"
-#include "mdewindow.h"
+#include <generalsettings/generalsettings.h>
+#include <extensionsystem/pluginmanager.h>
+#include <mdewidget/mdewindow.h>
 #include "mylogger.h"
 #include <QTranslator>
 #include <QLocale>
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
         qInfo() << QCoreApplication::applicationName() << "has quit.";
     });
 
-    MdeSettings coreSettings;
+    GeneralSettings coreSettings;
 
     QTranslator translator;
     QTranslator qtTranslator;
@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
             break; //english is built-in
         }
     }
+    qInfo() << "UI language:" << coreSettings.uiLanguage();
+
     app.setApplicationDisplayName(QApplication::translate("Application",
                                                           "Multiple Document Editor"));
 
@@ -145,6 +147,7 @@ int main(int argc, char *argv[])
     }
 
     PluginManager plugManager;
+    plugManager.loadGeneralSettings(&coreSettings);
     plugManager.loadPlugins();
     plugManager.loadSuffixDescription();
 

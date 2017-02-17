@@ -37,7 +37,7 @@ private slots:
 
 private:
     PluginManager * p;
-    MdeSettings * coreSettings;
+    GeneralSettings * coreSettings;
     MdeWindow * win;
     QHash<PluginSpec, QObject*> plugins;
     QSet<PluginSpec> editors;

@@ -1,4 +1,8 @@
 TEMPLATE = subdirs
-SUBDIRS = plugins app
+CONFIG += ordered
+SUBDIRS = libs\
+          app \
+          plugins
 
-app.depends = plugins
+app.depends = libs
+plugins.depends = libs

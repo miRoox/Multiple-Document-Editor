@@ -1,8 +1,8 @@
 #include "mdewindow_p.h"
 #include "ui_mdewindow.h"
 #include "mdisubwindow.h"
-#include "pluginmanager.h"
-#include "ieditor.h"
+#include <extensionsystem/pluginmanager.h>
+#include <extensionsystem/ieditor.h>
 #include <QAction>
 #include <QMdiArea>
 #include <QApplication>

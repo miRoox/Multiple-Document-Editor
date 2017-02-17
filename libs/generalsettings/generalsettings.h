@@ -1,18 +1,20 @@
-#ifndef MDESETTINGS_H
-#define MDESETTINGS_H
+#ifndef GENERALSETTINGS_H
+#define GENERALSETTINGS_H
+
+#include "generalsettings_global.h"
 
 #include <QObject>
 
-class MdeSettingsPrivate;
+class GeneralSettingsPrivate;
 
-class MdeSettings : public QObject
+class GENERALSETTINGSSHARED_EXPORT GeneralSettings : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool autoLog READ autoLog WRITE setAutoLog)
     Q_PROPERTY(QString overrideLang READ overrideLang WRITE setOverrideLang NOTIFY overrideLangChanged)
     Q_PROPERTY(QString uiLanguage READ uiLanguage WRITE setUiLanguage)
 public:
-    explicit MdeSettings(QObject *parent = 0);
+    explicit GeneralSettings(QObject *parent = 0);
     bool autoLog() const;
     QString overrideLang() const;
     QString uiLanguage() const;
@@ -26,7 +28,7 @@ public slots:
     void setUiLanguage(QString locale);//only once
 
 private:
-    MdeSettingsPrivate * p;
+    GeneralSettingsPrivate * p;
 };
 
-#endif // MDESETTINGS_H
+#endif // GENERALSETTINGS_H

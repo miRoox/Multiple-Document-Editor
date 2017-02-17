@@ -1,6 +1,8 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 
+#include "extensionsystem/extensionsystem_global.h"
+
 #include <QObject>
 #include <QHash>
 
@@ -10,13 +12,13 @@ class QStringList;
 QT_END_NAMESPACE
 
 class PluginManagerPrivate;
-class MdeSettings;
+class GeneralSettings;
 class MdeWindow;
 class IPluginBase;
 class IEditorPlugin;
 class IEditor;
 
-class PluginManager : public QObject
+class EXTENSIONSYSTEMSHARED_EXPORT PluginManager : public QObject
 {
     Q_OBJECT
 
@@ -25,7 +27,7 @@ public:
 
     explicit PluginManager(QObject *parent = 0);
     ~PluginManager();
-    void loadSettings(MdeSettings * s);//only once
+    void loadGeneralSettings(GeneralSettings * s);//only once
     void setMDE(MdeWindow * w);//only once
     void loadPlugins();
     void loadSuffixDescription();

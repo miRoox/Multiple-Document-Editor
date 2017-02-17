@@ -1,6 +1,6 @@
 #include "mdisubwindow.h"
 #include "mdisubwindow_p.h"
-#include "ieditor.h"
+#include <extensionsystem/ieditor.h>
 #include <QMouseEvent>
 
 MdiSubWindow::MdiSubWindow(QWidget *parent, Qt::WindowFlags flags)

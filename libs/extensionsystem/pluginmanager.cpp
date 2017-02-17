@@ -2,7 +2,7 @@
 #include "pluginmanager_p.h"
 #include "ipluginbase.h"
 #include "ieditor.h"
-#include "mdewindow.h"
+#include <mdewidget/mdewindow.h>
 #include <QHash>
 #include <QSet>
 #include <QSettings>
@@ -27,7 +27,7 @@ PluginManager::~PluginManager()
     p->saveSettings();
 }
 
-void PluginManager::loadSettings(MdeSettings *s)
+void PluginManager::loadGeneralSettings(GeneralSettings *s)
 {
     p->coreSettings = s;
 }
@@ -41,7 +41,7 @@ void PluginManager::setMDE(MdeWindow *w)
             plugin->setMDE(p->win);
         }
     }
-    p->win->setPluginManager(this);
+    /*p->win->setPluginManager(this);*/
     p->initViewer();
 }
 
@@ -154,7 +154,10 @@ void PluginManager::loadPlugins()
         if(obj) {
             auto plugin = qobject_cast<IPluginBase *>(obj);
             if(plugin) {
-                PluginSpec spec = p->specFromVariantHash(loader.metaData().toVariantHash());
+                PluginSpec spec = p->specFromVariantHash(loader.metaData().
+                                                         value("MetaData").
+                                                         toObject().
+                                                         toVariantHash());
                 if(p->plugins.contains(spec))
                     continue;
                 if(p->disabledPlugins.contains(spec)) {

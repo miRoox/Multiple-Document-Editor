@@ -1,6 +1,8 @@
 #ifndef MDEWINDOW_H
 #define MDEWINDOW_H
 
+#include <mdewidget/mdewidget_global.h>
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -13,7 +15,8 @@ class MdiSubWindow;
 class PluginManager;
 
 
-class MdeWindow : public QMainWindow
+class MDEWIDGETSHARED_EXPORT MdeWindow
+        : public QMainWindow
 {
     Q_OBJECT
     Q_PROPERTY(QMenu* menuFile READ menuFile CONSTANT)

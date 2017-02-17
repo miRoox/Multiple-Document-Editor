@@ -4,10 +4,6 @@
 #include <QObject>
 #include "mdewindow.h"
 
-QT_BEGIN_NAMESPACE
-class QSplitter;
-QT_END_NAMESPACE
-
 class PluginManager;
 
 namespace Ui {

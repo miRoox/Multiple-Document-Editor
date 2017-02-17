@@ -1,12 +1,15 @@
 #ifndef MDISUBWINDOW_H
 #define MDISUBWINDOW_H
 
+#include <mdewidget/mdewidget_global.h>
+
 #include <QMdiSubWindow>
 
 class MdiSubWindowPrivate;
 class IEditor;
 
-class MdiSubWindow : public QMdiSubWindow
+class MDEWIDGETSHARED_EXPORT MdiSubWindow
+        : public QMdiSubWindow
 {
     Q_OBJECT
     Q_PROPERTY(IEditor* editor READ editor WRITE setEditor)

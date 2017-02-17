@@ -1,0 +1,12 @@
+#ifndef MDEWIDGET_GLOBAL_H
+#define MDEWIDGET_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(MDEWIDGET_LIBRARY)
+#  define MDEWIDGETSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define MDEWIDGETSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // MDEWIDGET_GLOBAL_H

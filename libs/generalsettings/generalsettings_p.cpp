@@ -1,18 +1,18 @@
-#include "mdesettings_p.h"
+#include "generalsettings_p.h"
 #include <QSettings>
 #include <QDebug>
 
-MdeSettingsPrivate::MdeSettingsPrivate(QObject *parent) : QObject(parent)
+GeneralSettingsPrivate::GeneralSettingsPrivate(QObject *parent) : QObject(parent)
 {
     loadSettings();
 }
 
-MdeSettingsPrivate::~MdeSettingsPrivate()
+GeneralSettingsPrivate::~GeneralSettingsPrivate()
 {
     saveSettings();
 }
 
-void MdeSettingsPrivate::loadSettings()
+void GeneralSettingsPrivate::loadSettings()
 {
     QSettings settings;
     settings.beginGroup("General");
@@ -23,7 +23,7 @@ void MdeSettingsPrivate::loadSettings()
     qInfo() << "General setting is loaded.";
 }
 
-void MdeSettingsPrivate::saveSettings()
+void GeneralSettingsPrivate::saveSettings()
 {
     QSettings settings;
     settings.beginGroup("General");

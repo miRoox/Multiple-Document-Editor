@@ -14,18 +14,16 @@ TARGET = MDE
 DESTDIR    = ..
 TEMPLATE = app
 
+INCLUDEPATH  += ../libs
+LIBS *= -L../libs \
+        -l$$qtLibraryTarget(generalsettings) \
+        -l$$qtLibraryTarget(extensionsystem) \
+        -l$$qtLibraryTarget(mdewidget)
+
 include(../shared/qtsingleapplication/qtsingleapplication.pri)
 
 SOURCES += main.cpp \
-    mdewindow.cpp \
-    pluginmanager.cpp \
-    mdisubwindow.cpp \
-    mylogger.cpp \
-    mdesettings.cpp \
-    mdesettings_p.cpp \
-    mdewindow_p.cpp \
-    mdisubwindow_p.cpp \
-    pluginmanager_p.cpp
+    mylogger.cpp 
 
 RESOURCES += \
     myimage.qrc
@@ -33,20 +31,7 @@ RESOURCES += \
 RC_ICONS = notepad.ico
 
 HEADERS += \
-    mdewindow.h \
-    ipluginbase.h \
-    ieditor.h \
-    pluginmanager.h \
-    mdisubwindow.h \
-    mylogger.h \
-    mdesettings.h \
-    mdesettings_p.h \
-    mdewindow_p.h \
-    mdisubwindow_p.h \
-    pluginmanager_p.h
-
-FORMS += \
-    mdewindow.ui
+    mylogger.h 
 
 TRANSLATIONS += \
     mde_en.ts  \

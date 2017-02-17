@@ -1,9 +1,9 @@
 #include "mdewindow.h"
 #include "mdewindow_p.h"
 #include "ui_mdewindow.h"
-#include "pluginmanager.h"
+#include <extensionsystem/pluginmanager.h>
 #include "mdisubwindow.h"
-#include "ieditor.h"
+#include <extensionsystem/ieditor.h>
 #include <QStringList>
 #include <QMdiArea>
 #include <QProcess>
@@ -54,7 +54,7 @@ void MdeWindow::newDoc()
     tab->setEditor(editor);
     editor->newFile();
     tab->setWindowTitle(tr("Untitled %1").arg(sequence++));
-    tab->show();
+    tab->showMaximized();
     p->warningNoEditor(false);
     qInfo() << "Create a new document.";
 }
@@ -80,7 +80,7 @@ bool MdeWindow::openFile(QString fileName)
         tab = addToSubWindow(editor);
         editor->loadFile(fileName);
         tab->setWindowTitle(editor->title());
-        tab->show();
+        tab->showMaximized();
         p->warningNoEditor(false);
         qInfo() << "Open file:"
                 << QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
@@ -104,7 +104,7 @@ bool MdeWindow::openFileWithSelectedEditor(QString fileName)
     tab = addToSubWindow(editor);
     editor->loadFile(fileName);
     tab->setWindowTitle(editor->title());
-    tab->show();
+    tab->showMaximized();
     p->warningNoEditor(false);
     qInfo() << "Open file:"
             << QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());

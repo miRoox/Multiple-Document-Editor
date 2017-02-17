@@ -1,7 +1,7 @@
 #include "pluginmanager_p.h"
 #include "ipluginbase.h"
 #include "ieditor.h"
-#include "mdewindow.h"
+#include <mdewidget/mdewindow.h>
 #include <QSettings>
 #include <QList>
 #include <QStringList>
@@ -31,6 +31,7 @@ PluginManagerPrivate::PluginManagerPrivate(PluginManager *parent)
       suffixDesc()
 {
     win = 0;
+    coreSettings = 0;
 }
 
 void PluginManagerPrivate::loadSettings()
@@ -158,8 +159,8 @@ void PluginManagerPrivate::initViewer()
     layout->setMargin(10);
     dialog->setLayout(layout);
 
-    auto managerView = win->menuSettings()->addAction(tr("Plugin Manager"));
-    connect(managerView,QAction::triggered,dialog,QDialog::exec);
+    /*auto managerView = win->menuSettings()->addAction(tr("Plugin Manager"));
+    connect(managerView,QAction::triggered,dialog,QDialog::exec);*/
 }
 
 void PluginManagerPrivate::checkDisabled()
