@@ -12,6 +12,7 @@ QT_END_NAMESPACE
 class MdeWindowPrivate;
 class IEditor;
 class MdiSubWindow;
+class GeneralSettings;
 class PluginManager;
 
 
@@ -27,20 +28,22 @@ class MDEWIDGETSHARED_EXPORT MdeWindow
     Q_PROPERTY(QMenu* menuHelp READ menuHelp CONSTANT)
 
 public:
-    explicit MdeWindow(QWidget *parent = 0);
-    void setPluginManager(PluginManager * pm);//only once
+    explicit MdeWindow(GeneralSettings *settings, QWidget *parent = 0);
+    void installPluginManager(PluginManager * pm);//only once
     QMenu * menuFile() const;
     QMenu * menuEdit() const;
     QMenu * menuView() const;
     QMenu * menuTools() const;
     QMenu * menuSettings() const;
     QMenu * menuHelp() const;
+    QString currentFile() const;
 
 protected:
     void closeEvent(QCloseEvent * event) override;
 
 signals:
     void openedFile(QString/*fileName*/);//emit when open file successfully, besides opened file
+    void savedFile(QString/*fileName*/);//emit when save file successfully
 
 public slots:
     MdiSubWindow * addToSubWindow(IEditor * editor);
@@ -49,6 +52,9 @@ public slots:
     bool openFileWithSelectedEditor(QString fileName);
     quint32 openFilesRecursively(QString fileName);
     void openWithDialog(bool selectable = false);
+    bool save();
+    bool saveAsFile(QString fileName);
+    void saveAs();
 
 private:
     MdeWindowPrivate * p;

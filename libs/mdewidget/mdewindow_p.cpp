@@ -1,6 +1,7 @@
 #include "mdewindow_p.h"
 #include "ui_mdewindow.h"
 #include "mdisubwindow.h"
+#include <generalsettings/generalsettings.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/ieditor.h>
 #include <QAction>
@@ -18,12 +19,24 @@ MdeWindowPrivate::MdeWindowPrivate(MdeWindow *parent)
       w(parent),
       ui(new Ui::MdeWindow)
 {
-    plugManager = 0;
+    genSettings = nullptr;
+    plugManager = nullptr;
 }
 
 MdeWindowPrivate::~MdeWindowPrivate()
 {
     delete ui;
+}
+
+void MdeWindowPrivate::installGeneralSettings()
+{
+    // default direction
+    connect(w,MdeWindow::openedFile,this,[this](QString fileName){
+        lastOperatePath = QFileInfo(fileName).canonicalPath();
+    });
+    connect(w,MdeWindow::savedFile,this,[this](QString fileName){
+        lastOperatePath = QFileInfo(fileName).canonicalPath();
+    });
 }
 
 void MdeWindowPrivate::initActions()
@@ -61,6 +74,8 @@ void MdeWindowPrivate::initActions()
         QMdiSubWindow * active = ui->mdiArea->activeSubWindow();
         if(active) qobject_cast<MdiSubWindow*>(active)->editor()->reload();
     });
+    connect(ui->actionSave,QAction::triggered,w,MdeWindow::save);
+    connect(ui->actionSaveAs,QAction::triggered,w,MdeWindow::saveAs);
     connect(ui->actionClose,QAction::triggered,ui->mdiArea,QMdiArea::closeActiveSubWindow);
     connect(ui->actionCloseAll,QAction::triggered,ui->mdiArea,QMdiArea::closeAllSubWindows);
     connect(ui->actionExit,QAction::triggered,qApp,QApplication::closeAllWindows);
@@ -122,6 +137,20 @@ MdiSubWindow *MdeWindowPrivate::findSubWindow(QString fileName)
     return 0;
 }
 
+QString MdeWindowPrivate::defaultDir()
+{
+    auto option = genSettings->defDirOption();
+    switch (option) {
+    case GeneralSettings::CurrentFile:
+        return QFileInfo(w->currentFile()).absolutePath();
+    case GeneralSettings::LastOperate:
+        return lastOperatePath;
+    case GeneralSettings::Custom:
+        return genSettings->defDir();
+    }
+    return QString(".");
+}
+
 void MdeWindowPrivate::warningNoEditor(bool noEditor)
 {
     static bool showed = false;
@@ -137,4 +166,18 @@ void MdeWindowPrivate::warningNoEditor(bool noEditor)
     else {
         showed = false;
     }
+}
+
+void MdeWindowPrivate::warningOpenFailed(QString fileName)
+{
+    qWarning() << "Cannot open" << fileName;
+    QMessageBox::warning(w,tr("Open file failed!"),
+                         tr("Cannot open %1 ").arg(fileName));
+}
+
+void MdeWindowPrivate::warningSaveFailed(QString fileName)
+{
+    qWarning() << "Cannot save" << fileName;
+    QMessageBox::warning(w,tr("Save file failed!"),
+                         tr("Cannot save %1 ").arg(fileName));
 }

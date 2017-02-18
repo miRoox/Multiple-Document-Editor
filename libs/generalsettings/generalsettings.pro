@@ -10,6 +10,7 @@ TARGET = $$qtLibraryTarget(generalsettings)
 DESTDIR       = ../../libs
 TEMPLATE = lib
 CONFIG += shared dll
+CONFIG += c++14
 
 DEFINES += GENERALSETTINGS_LIBRARY
 

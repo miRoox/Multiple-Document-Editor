@@ -24,7 +24,7 @@ public:
     virtual bool loadFile(QString) = 0;
     virtual bool reload() = 0;
     virtual bool save() = 0;
-    virtual bool saveAs() = 0;
+    virtual bool saveAs(QString) = 0;
     virtual QString title() = 0;
     virtual QFileInfo file() = 0;
 };

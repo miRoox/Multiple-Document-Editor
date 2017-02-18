@@ -4,6 +4,8 @@
 #include <QObject>
 #include "mdewindow.h"
 
+#include <QString>
+
 class PluginManager;
 
 namespace Ui {
@@ -17,17 +19,25 @@ private:
     explicit MdeWindowPrivate(MdeWindow *parent = 0);
     ~MdeWindowPrivate();
 
+    void installGeneralSettings();
     void initActions();
     void loadSettings();
     void saveSettings();
     MdiSubWindow * findSubWindow(QString fileName);
+    QString defaultDir();
     void warningNoEditor(bool noEditor = true);
+    void warningOpenFailed(QString fileName);
+    void warningSaveFailed(QString fileName);
 
 private:
     MdeWindow * w;
     Ui::MdeWindow *ui;
 
+    GeneralSettings * genSettings;
     PluginManager * plugManager;
+
+    QString lastOperatePath;
+
     friend class MdeWindow;
 };
 

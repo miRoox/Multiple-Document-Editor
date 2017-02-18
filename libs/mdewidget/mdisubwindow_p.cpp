@@ -3,7 +3,7 @@
 MdiSubWindowPrivate::MdiSubWindowPrivate(MdiSubWindow *parent)
     : QObject(parent)
 {
-    editor = 0;
+    editor = nullptr;
 }
 
 MdiSubWindowPrivate::~MdiSubWindowPrivate()

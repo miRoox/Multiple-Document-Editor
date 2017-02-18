@@ -124,6 +124,7 @@
     </property>
     <addaction name="actionPreferences"/>
     <addaction name="actionPluginManager"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -132,6 +133,7 @@
     <addaction name="actionCmdlParam"/>
     <addaction name="actionAbout"/>
     <addaction name="actionAboutQt"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>

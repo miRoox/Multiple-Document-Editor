@@ -1,6 +1,7 @@
 #include "mdewindow.h"
 #include "mdewindow_p.h"
 #include "ui_mdewindow.h"
+#include <generalsettings/generalsettings.h>
 #include <extensionsystem/pluginmanager.h>
 #include "mdisubwindow.h"
 #include <extensionsystem/ieditor.h>
@@ -12,10 +13,12 @@
 #include <QCloseEvent>
 #include <QDebug>
 
-MdeWindow::MdeWindow(QWidget *parent) :
+MdeWindow::MdeWindow(GeneralSettings * settings, QWidget *parent) :
     QMainWindow(parent)
 {
     p = new MdeWindowPrivate(this);
+    p->genSettings = settings;
+    p->installGeneralSettings();
     qInfo() << "Set up user interface";
     p->ui->setupUi(this);
     p->initActions();
@@ -27,9 +30,9 @@ MdeWindow::MdeWindow(QWidget *parent) :
     });
 }
 
-void MdeWindow::setPluginManager(PluginManager *pm)
+void MdeWindow::installPluginManager(PluginManager *pm)
 {
-    if(p->plugManager==0) {
+    if(p->plugManager==nullptr) {
         p->plugManager = pm;
         p->plugManager->setMDE(this);
         connect(p->ui->actionPluginManager,QAction::triggered,
@@ -82,7 +85,10 @@ bool MdeWindow::openFile(QString fileName)
             return false;
         }
         tab = addToSubWindow(editor);
-        editor->loadFile(fileName);
+        if(!editor->loadFile(fileName)) {
+            p->warningOpenFailed(fileName);
+            return false;
+        }
         tab->setWindowTitle(editor->title());
         tab->showMaximized();
         p->warningNoEditor(false);
@@ -106,7 +112,10 @@ bool MdeWindow::openFileWithSelectedEditor(QString fileName)
         tab->close();
     }
     tab = addToSubWindow(editor);
-    editor->loadFile(fileName);
+    if(!editor->loadFile(fileName)) {
+        p->warningOpenFailed(fileName);
+        return false;
+    }
     tab->setWindowTitle(editor->title());
     tab->showMaximized();
     p->warningNoEditor(false);
@@ -144,7 +153,7 @@ void MdeWindow::openWithDialog(bool selectable)
     QString filter = p->plugManager->fileNameFilter();
     QStringList fileNames = QFileDialog::getOpenFileNames(this,
                                                           tr("Select one or more files to open"),
-                                                          ".",
+                                                          p->defaultDir(),
                                                           filter);
     if(selectable)
         foreach (QString fileName, fileNames) {
@@ -154,6 +163,52 @@ void MdeWindow::openWithDialog(bool selectable)
         foreach (QString fileName, fileNames) {
             openFile(fileName);
         }
+}
+
+bool MdeWindow::save()
+{
+    qInfo() << "Attempt to save current file";
+    QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
+    if(active) {
+        auto sub = qobject_cast<MdiSubWindow*>(active);
+        QString fileName = sub->editor()->file().canonicalFilePath();
+        if(sub->editor()->save()) {
+            emit savedFile(fileName);
+            return true;
+        }
+        else {
+            p->warningSaveFailed(fileName);
+        }
+    }
+    return false;
+}
+
+bool MdeWindow::saveAsFile(QString fileName)
+{
+    if(fileName.isEmpty())
+        return false;
+    qInfo() << "Attempt to save current file as" << fileName;
+    QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
+    if(active) {
+        auto sub = qobject_cast<MdiSubWindow*>(active);
+        if(sub->editor()->saveAs(fileName)) {
+            setWindowTitle(sub->editor()->title());
+            emit savedFile(fileName);
+            return true;
+        }
+        else {
+            p->warningSaveFailed(fileName);
+        }
+    }
+    return false;
+}
+
+void MdeWindow::saveAs()
+{
+    QString filter = p->plugManager->fileNameFilter();
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save as"),
+                                                    p->defaultDir(),filter);
+    saveAsFile(fileName);
 }
 
 QMenu * MdeWindow::menuFile() const
@@ -179,6 +234,15 @@ QMenu * MdeWindow::menuSettings() const
 QMenu * MdeWindow::menuHelp() const
 {
     return p->ui->menu_Help;
+}
+
+QString MdeWindow::currentFile() const
+{
+    QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
+    if(active) {
+        return qobject_cast<MdiSubWindow*>(active)->editor()->file().canonicalFilePath();
+    }
+    return QString();
 }
 
 void MdeWindow::closeEvent(QCloseEvent *event)

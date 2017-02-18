@@ -6,7 +6,7 @@
 #include <QString>
 #include <QDebug>
 
-QFile * MyLogger::logFile = 0;
+QFile * MyLogger::logFile = nullptr;
 
 MyLogger::MyLogger()
 {

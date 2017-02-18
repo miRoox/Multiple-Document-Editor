@@ -6,3 +6,8 @@ SUBDIRS = libs\
 
 app.depends = libs
 plugins.depends = libs
+
+
+TRANSLATIONS += \
+    mde_en.ts  \
+    mde_zh_CN.ts

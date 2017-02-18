@@ -50,11 +50,11 @@ IEditor * PluginManager::defaultEditor() const
     PluginSpec spec = p->mapper.value(DEFEDITSUFX);
     if(spec.isEmpty()) {
         qWarning() << "The default editor is not set.";
-        return 0;
+        return nullptr;
     }
     QObject * obj = p->plugins.value(spec);
     if(!obj)
-        return 0;
+        return nullptr;
     auto plug = qobject_cast<IEditorPlugin*>(obj);
     return plug->create();
 }
@@ -64,11 +64,11 @@ IEditor * PluginManager::defaultBrowser() const
     PluginSpec spec = p->mapper.value(DEFBRSWSUFX);
     if(spec.isEmpty()) {
         qWarning() << "The default browser is not set.";
-        return 0;
+        return nullptr;
     }
     QObject * obj = p->plugins.value(spec);
     if(!obj)
-        return 0;
+        return nullptr;
     auto plug = qobject_cast<IEditorPlugin*>(obj);
     return plug->create();
 }
@@ -81,18 +81,25 @@ IEditor * PluginManager::editor(QString file) const
         spec = p->mapper.value(info.completeSuffix());
     if(spec.isEmpty()) {
         qWarning() << "No suitable editor for this file.";
-        return 0;
+        return nullptr;
     }
     QObject * obj = p->plugins.value(spec);
     if(!obj)
-        return 0;
+        return nullptr;
     auto plug = qobject_cast<IEditorPlugin*>(obj);
     return plug->create();
 }
 
 IEditor *PluginManager::selectEditor()
 {
-    return 0;//TODO
+    PluginSpec spec = p->execEditorSelectorDialog();
+    if(spec.isEmpty())
+        return nullptr;
+    QObject * obj = p->plugins.value(spec);
+    if(!obj)
+        return nullptr;
+    auto plug = qobject_cast<IEditorPlugin*>(obj);
+    return plug->create();
 }
 
 void PluginManager::setDisabled(const PluginSpec spec)
@@ -127,7 +134,7 @@ void PluginManager::setEditor(const QString suffix, const PluginSpec spec)
 
 void PluginManager::execPluginSelectionDialog()
 {
-    p->pluginSelectDialog->exec();
+    p->pluginManagerDialog->exec();
 }
 
 QString PluginManager::fileNameFilter() const
@@ -166,7 +173,7 @@ void PluginManager::loadPlugins()
                 if(p->plugins.contains(spec))
                     continue;
                 if(p->disabledPlugins.contains(spec)) {
-                    p->plugins.insert(spec,0);
+                    p->plugins.insert(spec,nullptr);
                     continue;
                 }
                 qInfo() << "Plugin manager: loading plugin" << spec;

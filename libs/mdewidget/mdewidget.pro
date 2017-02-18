@@ -10,6 +10,7 @@ TARGET = $$qtLibraryTarget(mdewidget)
 DESTDIR       = ../../libs
 TEMPLATE = lib
 CONFIG += shared dll
+CONFIG += c++14
 
 INCLUDEPATH  += ../../libs
 

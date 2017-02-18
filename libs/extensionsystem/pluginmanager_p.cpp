@@ -14,6 +14,7 @@
 #include <QMenu>
 #include <QDialog>
 #include <QLineEdit>
+#include <QListView>
 #include <QTableView>
 #include <QHeaderView>
 #include <QDialogButtonBox>
@@ -31,9 +32,9 @@ PluginManagerPrivate::PluginManagerPrivate(PluginManager *parent)
       mapper(),
       suffixDesc()
 {
-    win = 0;
-    coreSettings = 0;
-    pluginSelectDialog = 0;
+    win = nullptr;
+    coreSettings = nullptr;
+    pluginManagerDialog = nullptr;
 }
 
 void PluginManagerPrivate::loadSettings()
@@ -91,64 +92,7 @@ void PluginManagerPrivate::saveSettings()
 
 void PluginManagerPrivate::initViewer()
 {
-    //Plugin selection dialog
-    pluginSelectDialog = new QDialog(win);
-    pluginSelectDialog->setWindowTitle(tr("Plugin manager"));
-
-    QTableView * view = new QTableView(pluginSelectDialog);
-    QSortFilterProxyModel * proxyModel = new QSortFilterProxyModel;
-    auto sourceModel = createPluginSpecModel(plugins.keys());
-    proxyModel->setSourceModel(sourceModel);
-    view->setModel(proxyModel);
-    view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
-    for (int column = 0; column < proxyModel->columnCount(); ++column)
-        view->resizeColumnToContents(column);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    QHeaderView * headerView = view->horizontalHeader();
-    headerView->setSectionsClickable(true);
-    headerView->setSortIndicatorShown(true);
-    //auto change the sort indicator when section click
-//    connect(headerView,QHeaderView::sortIndicatorChanged,[](int logicalIndex, Qt::SortOrder order){
-//        qDebug() << "sort indicator change" << logicalIndex << static_cast<int>(order);
-//    });
-    connect(headerView,QHeaderView::sortIndicatorChanged,
-            proxyModel,QSortFilterProxyModel::sort);
-
-    QLineEdit * filter = new QLineEdit(pluginSelectDialog);
-    filter->setPlaceholderText(tr("Filter"));
-    connect(filter,QLineEdit::textChanged,
-            proxyModel,static_cast<void(QSortFilterProxyModel::*)(const QString &)>(&QSortFilterProxyModel::setFilterRegExp));
-
-    QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok,
-                                                        pluginSelectDialog);
-    connect(buttonBox->button(QDialogButtonBox::Cancel),QPushButton::clicked,
-            pluginSelectDialog,QDialog::close);
-    connect(buttonBox->button(QDialogButtonBox::Ok),QPushButton::clicked,[=]{
-        for (int row = 0; row < proxyModel->rowCount(); ++row) {
-            PluginSpec spec = specFromIndex(sourceModel,sourceModel->index(row,0));
-            if(sourceModel->item(row)->checkState()==Qt::Checked) {
-                if(!this->disabledPlugins.remove(spec))
-                    qWarning() << "Plugin" << spec << "has not been disabled";
-            }
-            else {
-                this->disabledPlugins.insert(spec);
-            }
-            QMessageBox::information(pluginSelectDialog,tr("Need to restart"),
-                                     tr("Need to restart to take effect"),
-                                     QMessageBox::Ok);
-        }
-        pluginSelectDialog->close();
-    });
-
-    QVBoxLayout * layout = new QVBoxLayout;
-    layout->addWidget(filter);
-    layout->addWidget(view);
-    layout->addWidget(buttonBox);
-    layout->setSpacing(5);
-    layout->setMargin(10);
-    pluginSelectDialog->setLayout(layout);
-
+    initPluginManagerDialog();
 }
 
 void PluginManagerPrivate::checkDisabled()
@@ -168,16 +112,122 @@ void PluginManagerPrivate::checkMapper()
     }
 }
 
-QList<QStandardItem *> PluginManagerPrivate::createPluginSpecItem(const PluginManagerPrivate::PluginSpec &spec)
+void PluginManagerPrivate::initPluginManagerDialog()
+{
+    pluginManagerDialog = new QDialog(win);
+    pluginManagerDialog->setWindowTitle(tr("Plugin manager"));
+
+    QTableView * view = new QTableView(pluginManagerDialog);
+    QSortFilterProxyModel * proxyModel = new QSortFilterProxyModel;
+    auto sourceModel = createPluginSpecModel(plugins.keys());
+    proxyModel->setSourceModel(sourceModel);
+    view->setModel(proxyModel);
+    view->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Preferred);
+    for (int column = 0; column < proxyModel->columnCount(); ++column)
+        view->resizeColumnToContents(column);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    QHeaderView * headerView = view->horizontalHeader();
+    headerView->setSectionsClickable(true);
+    headerView->setSortIndicatorShown(true);
+    //auto change the sort indicator when section click
+//    connect(headerView,QHeaderView::sortIndicatorChanged,[](int logicalIndex, Qt::SortOrder order){
+//        qDebug() << "sort indicator change" << logicalIndex << static_cast<int>(order);
+//    });
+    connect(headerView,QHeaderView::sortIndicatorChanged,
+            proxyModel,QSortFilterProxyModel::sort);
+
+    QLineEdit * filter = new QLineEdit(pluginManagerDialog);
+    filter->setPlaceholderText(tr("Filter"));
+    connect(filter,QLineEdit::textChanged,
+            proxyModel,
+            static_cast<void(QSortFilterProxyModel::*)(const QString &)>(&QSortFilterProxyModel::setFilterRegExp));
+
+    QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok,
+                                                        pluginManagerDialog);
+    connect(buttonBox->button(QDialogButtonBox::Cancel),QPushButton::clicked,
+            pluginManagerDialog,QDialog::close);
+    connect(buttonBox->button(QDialogButtonBox::Ok),QPushButton::clicked,[=]{
+        for (int row = 0; row < sourceModel->rowCount(); ++row) {
+            PluginSpec spec = specFromIndex(sourceModel,sourceModel->index(row,0));
+            if(sourceModel->item(row)->checkState()==Qt::Checked) {
+                if(!this->disabledPlugins.remove(spec))
+                    qWarning() << "Plugin" << spec << "has not been disabled";
+            }
+            else {
+                this->disabledPlugins.insert(spec);
+            }
+            QMessageBox::information(pluginManagerDialog,tr("Need to restart"),
+                                     tr("Need to restart to take effect"),
+                                     QMessageBox::Ok);
+        }
+        pluginManagerDialog->close();
+    });
+
+    QVBoxLayout * layout = new QVBoxLayout;
+    layout->addWidget(filter);
+    layout->addWidget(view);
+    layout->addWidget(buttonBox);
+    layout->setSpacing(5);
+    layout->setMargin(10);
+    pluginManagerDialog->setLayout(layout);
+}
+
+PluginManagerPrivate::PluginSpec PluginManagerPrivate::execEditorSelectorDialog() const
+{
+    PluginSpec spec;
+
+    QDialog * dialog = new QDialog(win);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setWindowTitle(tr("Editor selector"));
+
+    QListView * view = new QListView(dialog);
+    QSortFilterProxyModel * proxyModel = new QSortFilterProxyModel;
+    auto sourceModel = createPluginSpecModel(editors.toList());
+    proxyModel->setSourceModel(sourceModel);
+    view->setModel(proxyModel);
+    view->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    QLineEdit * filter = new QLineEdit(dialog);
+    filter->setPlaceholderText(tr("Filter"));
+    connect(filter,QLineEdit::textChanged,
+            proxyModel,
+            static_cast<void(QSortFilterProxyModel::*)(const QString &)>(&QSortFilterProxyModel::setFilterRegExp));
+
+    QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok,
+                                                        dialog);
+    connect(buttonBox->button(QDialogButtonBox::Cancel),QPushButton::clicked,
+            dialog,QDialog::close);
+    connect(buttonBox->button(QDialogButtonBox::Ok),QPushButton::clicked,[=,&spec]{
+        auto rows = view->selectionModel()->selectedRows();
+        if(rows.isEmpty()) {
+            qWarning() << "No selected editor";
+            QMessageBox::warning(dialog,tr("No selected editor!"),
+                                 tr("You should select an editor."));
+        }
+        else {
+            spec = specFromIndex(sourceModel,proxyModel->mapToSource(rows.first()));
+            dialog->close();
+        }
+    });
+
+    QVBoxLayout * layout = new QVBoxLayout;
+    layout->addWidget(filter);
+    layout->addWidget(view);
+    layout->addWidget(buttonBox);
+    layout->setSpacing(5);
+    layout->setMargin(10);
+    dialog->setLayout(layout);
+
+    dialog->exec();
+
+    return spec;
+}
+
+QList<QStandardItem *> PluginManagerPrivate::createPluginSpecItem(const PluginManagerPrivate::PluginSpec &spec) const
 {
     QList<QStandardItem *> items;
-    auto nameItem = new QStandardItem(spec.value(PLUGINMETADATA_NAME));
-    nameItem->setCheckable(true);
-    if(disabledPlugins.contains(spec))
-        nameItem->setCheckState(Qt::Unchecked);
-    else
-        nameItem->setCheckState(Qt::Checked);
-    items.append(nameItem);
+    items.append(new QStandardItem(spec.value(PLUGINMETADATA_NAME)));
     if(disabledPlugins.contains(spec))
         items.append(new QStandardItem(tr("disabled")));
     else if (editors.contains(spec))
@@ -190,7 +240,7 @@ QList<QStandardItem *> PluginManagerPrivate::createPluginSpecItem(const PluginMa
     return items;
 }
 
-QStandardItemModel *PluginManagerPrivate::createPluginSpecModel(const QList<PluginManagerPrivate::PluginSpec> &specs)
+QStandardItemModel *PluginManagerPrivate::createPluginSpecModel(const QList<PluginManagerPrivate::PluginSpec> &specs) const
 {
     QStandardItemModel * model = new QStandardItemModel;
     QStringList headers;
@@ -201,12 +251,18 @@ QStandardItemModel *PluginManagerPrivate::createPluginSpecModel(const QList<Plug
             << tr(PLUGINMETADATA_PLATFORM);
     model->setHorizontalHeaderLabels(headers);
     foreach (PluginSpec spec, specs) {
-        model->appendRow(createPluginSpecItem(spec));
+        auto items = createPluginSpecItem(spec);
+        items[0]->setCheckable(true);
+        if(disabledPlugins.contains(spec))
+            items[0]->setCheckState(Qt::Unchecked);
+        else
+            items[0]->setCheckState(Qt::Checked);
+        model->appendRow(items);
     }
     return model;
 }
 
-PluginManagerPrivate::PluginSpec PluginManagerPrivate::specFromIndex(const QStandardItemModel *model, QModelIndex index)
+PluginManagerPrivate::PluginSpec PluginManagerPrivate::specFromIndex(const QStandardItemModel *model, QModelIndex index) const
 {
     const int row = index.row();
     PluginSpec spec;

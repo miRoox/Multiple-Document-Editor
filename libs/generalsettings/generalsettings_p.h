@@ -18,6 +18,8 @@ private:
     bool autoLog;
     QString overrideLang;
     QString uiLanguage;
+    GeneralSettings::DefDirOption defDirOption;
+    QString defDir;
     friend class GeneralSettings;
 };
 

@@ -26,10 +26,12 @@ private:
     void initViewer();
     void checkDisabled();
     void checkMapper();
+    void initPluginManagerDialog();
+    PluginSpec execEditorSelectorDialog() const;
 
-    QList<QStandardItem *> createPluginSpecItem(const PluginSpec &spec);
-    QStandardItemModel * createPluginSpecModel(const QList<PluginSpec> &specs);
-    PluginSpec specFromIndex(const QStandardItemModel *model, QModelIndex index);
+    QList<QStandardItem *> createPluginSpecItem(const PluginSpec &spec) const;
+    QStandardItemModel * createPluginSpecModel(const QList<PluginSpec> &specs) const;
+    PluginSpec specFromIndex(const QStandardItemModel *model, QModelIndex index) const;
 
     static PluginSpec specFromVariantHash(const QVariantHash &data);
     static QVariantHash variantHashFromSpec(const PluginSpec &spec);
@@ -45,7 +47,7 @@ private:
     QSet<PluginSpec> disabledPlugins;
     QHash<QString, PluginSpec> mapper;
     QStringList suffixDesc;
-    QDialog * pluginSelectDialog;
+    QDialog * pluginManagerDialog;
     friend class PluginManager;
 };
 

@@ -14,6 +14,8 @@ TARGET = MDE
 DESTDIR    = ..
 TEMPLATE = app
 
+CONFIG += c++14
+
 INCLUDEPATH  += ../libs
 LIBS *= -L../libs \
         -l$$qtLibraryTarget(generalsettings) \
