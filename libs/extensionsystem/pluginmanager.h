@@ -45,11 +45,11 @@ public slots:
     void setDefaultEditor(const PluginSpec spec);
     void setDefaultBrowser(const PluginSpec spec);
     void setEditor(const QString suffix, const PluginSpec spec);
+    void execPluginSelectionDialog();
 
 private:
     PluginManagerPrivate * p;
 };
 
-#define SPECKEY_CATEGORY "category"
 
 #endif // PLUGINMANAGER_H

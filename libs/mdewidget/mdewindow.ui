@@ -123,6 +123,7 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="actionPreferences"/>
+    <addaction name="actionPluginManager"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -427,6 +428,17 @@
    </property>
    <property name="statusTip">
     <string>Open files with the selected editor</string>
+   </property>
+  </action>
+  <action name="actionPluginManager">
+   <property name="text">
+    <string>Plugin Manager</string>
+   </property>
+   <property name="toolTip">
+    <string>Broswer and manage the plugins</string>
+   </property>
+   <property name="statusTip">
+    <string>Broswer and manage the plugins</string>
    </property>
   </action>
  </widget>

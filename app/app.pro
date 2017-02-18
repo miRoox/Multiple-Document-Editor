@@ -25,14 +25,8 @@ include(../shared/qtsingleapplication/qtsingleapplication.pri)
 SOURCES += main.cpp \
     mylogger.cpp 
 
-RESOURCES += \
-    myimage.qrc
-
 RC_ICONS = notepad.ico
 
 HEADERS += \
     mylogger.h 
 
-TRANSLATIONS += \
-    mde_en.ts  \
-    mde_zh_CN.ts

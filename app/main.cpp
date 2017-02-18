@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
     plugManager.loadSuffixDescription();
 
     MdeWindow win;
-    plugManager.setMDE(&win);
+    win.setPluginManager(&plugManager);
     win.show();
     app.setActivationWindow(&win);
     QApplication::connect(&app,SharedTools::QtSingleApplication::messageReceived,

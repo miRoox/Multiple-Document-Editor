@@ -11,6 +11,7 @@ template <typename T> class QList;
 class QStandardItem;
 class QStandardItemModel;
 class QModelIndex;
+class QDialog;
 
 class PluginManagerPrivate : public QObject
 {
@@ -44,6 +45,7 @@ private:
     QSet<PluginSpec> disabledPlugins;
     QHash<QString, PluginSpec> mapper;
     QStringList suffixDesc;
+    QDialog * pluginSelectDialog;
     friend class PluginManager;
 };
 

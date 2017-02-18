@@ -29,8 +29,12 @@ MdeWindow::MdeWindow(QWidget *parent) :
 
 void MdeWindow::setPluginManager(PluginManager *pm)
 {
-    if(p->plugManager==0)
+    if(p->plugManager==0) {
         p->plugManager = pm;
+        p->plugManager->setMDE(this);
+        connect(p->ui->actionPluginManager,QAction::triggered,
+                p->plugManager,PluginManager::execPluginSelectionDialog);
+    }
 }
 
 MdiSubWindow *MdeWindow::addToSubWindow(IEditor *editor)

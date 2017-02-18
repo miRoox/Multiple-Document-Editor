@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QPluginLoader>
 #include <QLibrary>
+#include <QDialog>
 #include <QApplication>
 #include <QDebug>
 
@@ -41,7 +42,6 @@ void PluginManager::setMDE(MdeWindow *w)
             plugin->setMDE(p->win);
         }
     }
-    /*p->win->setPluginManager(this);*/
     p->initViewer();
 }
 
@@ -125,6 +125,11 @@ void PluginManager::setEditor(const QString suffix, const PluginSpec spec)
         p->mapper.insert(suffix,spec);
 }
 
+void PluginManager::execPluginSelectionDialog()
+{
+    p->pluginSelectDialog->exec();
+}
+
 QString PluginManager::fileNameFilter() const
 {
     return p->suffixDesc.join(";;");
@@ -173,11 +178,7 @@ void PluginManager::loadPlugins()
                         if(!p->mapper.contains(suffix))
                             p->mapper.insert(suffix,spec);
                     }
-                    spec[SPECKEY_CATEGORY] = tr("editors");
                     p->editors.insert(spec);
-                }
-                else {
-                    spec[SPECKEY_CATEGORY] = tr("utilities");
                 }
                 p->plugins.insert(spec,obj);
             }

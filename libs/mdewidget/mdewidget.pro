@@ -50,3 +50,6 @@ unix {
 
 FORMS += \
     mdewindow.ui
+
+RESOURCES += \
+    myimage.qrc
