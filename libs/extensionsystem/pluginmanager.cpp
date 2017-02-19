@@ -19,7 +19,6 @@
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
     p = new PluginManagerPrivate(this);
-    p->suffixDesc += tr("Any file") + "(*)";
     p->loadSettings();
 }
 
@@ -177,7 +176,10 @@ void PluginManager::loadPlugins()
                     continue;
                 }
                 qInfo() << "Plugin manager: loading plugin" << spec;
-                plugin->initialize(p->coreSettings);
+                if(!plugin->initialize(p->coreSettings)) {
+                    qWarning() << spec << "initialize failed";
+                    continue;
+                }
                 auto editorPlug = qobject_cast<IEditorPlugin *>(obj);
                 if(editorPlug) {
                     QStringList suffixes = editorPlug->designedTypes();
@@ -200,6 +202,7 @@ void PluginManager::loadPlugins()
 
 void PluginManager::loadSuffixDescription()
 {
+    p->suffixDesc += tr("Any file") + "(*)";
     QStringList descs;
     foreach (QString suffix, p->mapper.keys()) {
         if(suffix==DEFBRSWSUFX || suffix==DEFEDITSUFX)

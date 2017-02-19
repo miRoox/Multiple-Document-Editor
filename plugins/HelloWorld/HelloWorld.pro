@@ -18,3 +18,6 @@ SOURCES += \
 
 DISTFILES += \
     helloworld.json
+TRANSLATIONS += \
+    helloworld_en.ts  \
+    helloworld_zh_CN.ts

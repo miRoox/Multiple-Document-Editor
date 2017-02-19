@@ -95,6 +95,28 @@ void MdeWindowPrivate::initActions()
     connect(ui->actionCmdlParam,QAction::triggered,[]{
         QProcess::startDetached(QApplication::applicationFilePath(),QStringList("-h"));
     });
+    connect(ui->actionAbout,QAction::triggered,[this]{
+        static const char homepage[] = "https://github.com/miRoox/Multiple-Document-Editor";
+        QMessageBox::about(w,tr("About ")+qApp->applicationDisplayName(),
+                           tr("<html><body>"
+                              "<h3 align=\"center\">%1\t%2</h3>"
+                              "<p>Based on Qt %3</p>"
+                              "<table border=\"0\"><tr>"
+                              "<td>Author: </td>"
+                              "<td><a href=\"https://github.com/miRoox\">%4</a></td>"
+                              "</tr><tr>"
+                              "<td>Homepage: </td>"
+                              "<td><a href=\"%5\">"
+                              "%5</a></td>"
+                              "</tr></table>"
+                              "</body></html>").
+                           arg(qApp->applicationDisplayName()).
+                           arg(qApp->applicationVersion()).
+                           arg(QT_VERSION_STR).
+                           arg(qApp->organizationName()).
+                           arg(homepage)
+                           );
+    });
     connect(ui->actionAboutQt,QAction::triggered,qApp,QApplication::aboutQt);
 }
 
@@ -134,7 +156,7 @@ MdiSubWindow *MdeWindowPrivate::findSubWindow(QString fileName)
             }
         }
     }
-    return 0;
+    return nullptr;
 }
 
 QString MdeWindowPrivate::defaultDir()

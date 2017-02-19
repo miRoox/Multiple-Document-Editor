@@ -244,11 +244,11 @@ QStandardItemModel *PluginManagerPrivate::createPluginSpecModel(const QList<Plug
 {
     QStandardItemModel * model = new QStandardItemModel;
     QStringList headers;
-    headers << tr(PLUGINMETADATA_NAME)
+    headers << tr("name")
             << tr("category")
-            << tr(PLUGINMETADATA_VER)
-            << tr(PLUGINMETADATA_VENDOR)
-            << tr(PLUGINMETADATA_PLATFORM);
+            << tr("version")
+            << tr("vendor")
+            << tr("platforms");
     model->setHorizontalHeaderLabels(headers);
     foreach (PluginSpec spec, specs) {
         auto items = createPluginSpecItem(spec);

@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
         qInfo() << QCoreApplication::applicationName() << "has quit.";
     });
 
-    GeneralSettings coreSettings;
+    GeneralSettings generalSettings;
 
     QTranslator translator;
     QTranslator qtTranslator;
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     QStringList uiLanguages = QLocale::system().uiLanguages();
     const QString & appTrPath = app.applicationDirPath() + "/../translations";
     const QString & qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
-    QString overrideLanguage = coreSettings.overrideLang();
+    QString overrideLanguage = generalSettings.overrideLang();
     if(!overrideLanguage.isEmpty())
         uiLanguages.prepend(overrideLanguage);
     foreach (QString locale, uiLanguages) {
@@ -61,17 +61,21 @@ int main(int argc, char *argv[])
                qtTranslator.load(qtTrFile,appTrPath)) {
                 app.installTranslator(&translator);
                 app.installTranslator(&qtTranslator);
-                coreSettings.setUiLanguage(locale);
+                generalSettings.setUiLanguage(locale);
                 break;
             }
             translator.load(QString()); // unload
         } else if (locale == QLatin1String("C") ||
                    locale.startsWith(QLatin1String("en"))) {
-            coreSettings.setUiLanguage(QLatin1String("en"));
+            generalSettings.setUiLanguage(QLatin1String("en"));
             break; //english is built-in
         }
     }
-    qInfo() << "UI language:" << coreSettings.uiLanguage();
+    qInfo() << "UI language:" << generalSettings.uiLanguage();
+
+    PluginManager plugManager;
+    plugManager.loadGeneralSettings(&generalSettings);
+    plugManager.loadPlugins();
 
     app.setApplicationDisplayName(QApplication::translate("Application",
                                                           "Multiple Document Editor"));
@@ -146,12 +150,9 @@ int main(int argc, char *argv[])
         }
     }
 
-    PluginManager plugManager;
-    plugManager.loadGeneralSettings(&coreSettings);
-    plugManager.loadPlugins();
     plugManager.loadSuffixDescription();
 
-    MdeWindow win(&coreSettings);
+    MdeWindow win(&generalSettings);
     win.installPluginManager(&plugManager);
     win.show();
     app.setActivationWindow(&win);
