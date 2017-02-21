@@ -21,6 +21,8 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QIcon>
+#include <QTranslator>
+#include <QApplication>
 #include <QDebug>
 
 PluginManagerPrivate::PluginManagerPrivate(PluginManager *parent)

@@ -166,48 +166,37 @@ void MdeWindow::openWithDialog(bool selectable)
 
 bool MdeWindow::save()
 {
-    qInfo() << "Attempt to save current file";
     QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
     if(active) {
         auto sub = qobject_cast<MdiSubWindow*>(active);
-        QString fileName = sub->editor()->file().canonicalFilePath();
-        if(sub->editor()->save()) {
+        QString fileName = sub->editor()->save(false);
+        if(!fileName.isEmpty()) {
             emit savedFile(fileName);
             return true;
         }
         else {
-            p->warningSaveFailed(fileName);
+            p->warningSaveFailed(sub->windowTitle());
         }
     }
     return false;
 }
 
-bool MdeWindow::saveAsFile(QString fileName)
+bool MdeWindow::saveAs()
 {
-    if(fileName.isEmpty())
-        return false;
-    qInfo() << "Attempt to save current file as" << fileName;
     QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
     if(active) {
         auto sub = qobject_cast<MdiSubWindow*>(active);
-        if(sub->editor()->saveAs(fileName)) {
+        QString fileName = sub->editor()->save(true);
+        if(!fileName.isEmpty()) {
             setWindowTitle(sub->editor()->title());
             emit savedFile(fileName);
             return true;
         }
         else {
-            p->warningSaveFailed(fileName);
+            p->warningSaveFailed(sub->editor()->file().canonicalFilePath());
         }
     }
     return false;
-}
-
-void MdeWindow::saveAs()
-{
-    QString filter = p->plugManager->fileNameFilter();
-    QString fileName = QFileDialog::getSaveFileName(this,tr("Save as"),
-                                                    p->defaultDir(),filter);
-    saveAsFile(fileName);
 }
 
 QMenu * MdeWindow::menuFile() const

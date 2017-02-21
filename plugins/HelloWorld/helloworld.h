@@ -9,7 +9,9 @@ class HelloWorld : public QObject,
                    public IPluginBase
 {
     Q_OBJECT
+
     Q_PLUGIN_METADATA(IID "org.miroox.mde-1.2-IPluginBase" FILE "helloworld.json")
+
     Q_INTERFACES(IPluginBase)
 
 public:

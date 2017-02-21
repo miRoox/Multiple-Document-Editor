@@ -25,6 +25,7 @@ public slots:
 
 protected:
     void mousePressEvent(QMouseEvent * event);//TODO: drag & drop
+    void closeEvent(QCloseEvent * event);
 
 private:
     MdiSubWindowPrivate * p;

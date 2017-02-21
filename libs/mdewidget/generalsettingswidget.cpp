@@ -88,7 +88,8 @@ void GeneralSettingsWidget::initConnections()
                                                     tr("Select style sheet file"),
                                                     "../qss",
                                                     tr("Qt Style Sheet")+"(*.qss)");
-        ui->qssLineEdit->setText(QDir::toNativeSeparators(QFileInfo(file).canonicalFilePath()));
+        if(!file.isEmpty())
+            ui->qssLineEdit->setText(QDir::toNativeSeparators(QFileInfo(file).canonicalFilePath()));
     });
     //auto-log
     connect(ui->autoLogCheckBox,QCheckBox::toggled,
@@ -109,7 +110,8 @@ void GeneralSettingsWidget::initConnections()
                                                         ".",
                                                         QFileDialog::ShowDirsOnly
                                                         | QFileDialog::DontResolveSymlinks);
-        ui->defDirLineEdit->setText(QDir::toNativeSeparators(QFileInfo(dir).canonicalPath()));
+        if(!dir.isEmpty())
+            ui->defDirLineEdit->setText(QDir::toNativeSeparators(QFileInfo(dir).canonicalPath()));
     });
     //history option
     //max history

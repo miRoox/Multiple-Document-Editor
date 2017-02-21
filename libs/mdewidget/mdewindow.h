@@ -54,8 +54,7 @@ public slots:
     quint32 openFilesRecursively(QString fileName);
     void openWithDialog(bool selectable = false);
     bool save();
-    bool saveAsFile(QString fileName);
-    void saveAs();
+    bool saveAs();
 
 private:
     MdeWindowPrivate * p;

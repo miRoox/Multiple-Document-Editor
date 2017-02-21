@@ -150,17 +150,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="108"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="109"/>
         <source>Select directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="155"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="157"/>
         <source>Need restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="156"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="158"/>
         <source>This option need restart to take effect</source>
         <translation type="unfinished"></translation>
     </message>
@@ -174,254 +174,248 @@
     </message>
     <message>
         <location filename="libs/mdewidget/mdewindow.ui" line="69"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="72"/>
-        <source>Recent closed files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="75"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="96"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="90"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="101"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="95"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="105"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="99"/>
         <source>Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="118"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="112"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="123"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="117"/>
         <source>&amp;Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="131"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="125"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="148"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="142"/>
         <source>Tool bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="167"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="161"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="170"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="173"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="164"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="167"/>
         <source>Create a new document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="182"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="176"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="185"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="188"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="179"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="182"/>
         <source>Open existing files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="200"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="194"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="203"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="206"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="197"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="200"/>
         <source>Save current document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="218"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="212"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="221"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="224"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="215"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="218"/>
         <source>Save current document as a new file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="233"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="236"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="227"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="230"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="libs/mdewidget/mdewindow.ui" line="235"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="238"/>
         <location filename="libs/mdewidget/mdewindow.ui" line="241"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="244"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="247"/>
         <source>Clear recent history</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="252"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="255"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="246"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="249"/>
         <source>Open all the history files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="263"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="257"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="266"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="269"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="260"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="263"/>
         <source>Close the current tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="277"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="271"/>
         <source>Close All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="280"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="283"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="274"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="277"/>
         <source>Close all tabs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="292"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="286"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="295"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="298"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="289"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="292"/>
         <source>About this application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="310"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="313"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="304"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="307"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="328"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="322"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="331"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="334"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="325"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="328"/>
         <source>Next tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="346"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="340"/>
         <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="349"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="352"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="343"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="346"/>
         <source>Previous tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="357"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="360"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="351"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="354"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="365"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="359"/>
         <source>CommandLine Parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="368"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="371"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="362"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="365"/>
         <source>Command Line Parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="379"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="373"/>
         <source>Reload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="382"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="385"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="376"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="379"/>
         <source>Reload current file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="390"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="384"/>
         <source>Full screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="393"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="396"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="387"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="390"/>
         <source>Toggle between full-screen and normal mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="404"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="398"/>
         <source>Stay on top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="407"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="410"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="401"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="404"/>
         <source>Make the window stay on top of all other windows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="415"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="413"/>
         <source>New window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="418"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="421"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="416"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="419"/>
         <source>Start a new instance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="426"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="424"/>
         <source>Open With</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="429"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="432"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="427"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="430"/>
         <source>Open files with the selected editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="437"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="435"/>
         <source>Plugin Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.ui" line="440"/>
-        <location filename="libs/mdewidget/mdewindow.ui" line="443"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="438"/>
+        <location filename="libs/mdewidget/mdewindow.ui" line="441"/>
         <source>Broswer and manage the plugins</source>
         <translation type="unfinished"></translation>
     </message>

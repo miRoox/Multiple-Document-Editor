@@ -65,12 +65,6 @@
      <string>&amp;File</string>
     </property>
     <widget class="QMenu" name="menuHistory">
-     <property name="toolTip">
-      <string>Recent closed files</string>
-     </property>
-     <property name="statusTip">
-      <string>Recent closed files</string>
-     </property>
      <property name="title">
       <string>History</string>
      </property>
@@ -155,8 +149,8 @@
    </attribute>
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
-   <addaction name="actionSaveAs"/>
    <addaction name="actionSave"/>
+   <addaction name="actionSaveAs"/>
   </widget>
   <action name="actionNew">
    <property name="icon">
@@ -411,6 +405,10 @@
    </property>
   </action>
   <action name="actionMultInst">
+   <property name="icon">
+    <iconset resource="myimage.qrc">
+     <normaloff>:/myImage/images/newwindow.png</normaloff>:/myImage/images/newwindow.png</iconset>
+   </property>
    <property name="text">
     <string>New window</string>
    </property>

@@ -40,3 +40,13 @@ void MdiSubWindow::mousePressEvent(QMouseEvent *event)
 {
     event->accept();
 }
+
+void MdiSubWindow::closeEvent(QCloseEvent *event)
+{
+    if(p->editor->canBeClosed()) {
+        event->accept();
+    }
+    else {
+        event->ignore();
+    }
+}

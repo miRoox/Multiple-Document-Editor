@@ -12,11 +12,9 @@
 bool HelloWorld::initialize(GeneralSettings *settings)
 {
     const QString &appTrPath = qApp->applicationDirPath() + "/../translations";
-    QTranslator translator;
-    if(translator.load(QLatin1String("helloworld_") + settings->uiLanguage(),appTrPath)) {
-        if(qApp->installTranslator(&translator))
-            qDebug() << "loading translation successfully";//no effect?
-    }
+    QTranslator * translator = new QTranslator(this);
+    if(translator->load(QLatin1String("helloworld_") + settings->uiLanguage(),appTrPath))
+        qApp->installTranslator(translator);
     else
         qWarning() << "loading translation failed";
     return true;

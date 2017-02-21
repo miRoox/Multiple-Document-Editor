@@ -2,6 +2,7 @@
 #include "pluginmanager_p.h"
 #include "ipluginbase.h"
 #include "ieditor.h"
+#include <generalsettings/generalsettings.h>
 #include <mdewidget/mdewindow.h>
 #include <QHash>
 #include <QSet>

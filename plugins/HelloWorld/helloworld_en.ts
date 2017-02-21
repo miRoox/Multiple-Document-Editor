@@ -4,13 +4,13 @@
 <context>
     <name>HelloWorld</name>
     <message>
-        <location filename="helloworld.cpp" line="19"/>
-        <location filename="helloworld.cpp" line="20"/>
+        <location filename="helloworld.cpp" line="28"/>
+        <location filename="helloworld.cpp" line="29"/>
         <source>Hello World</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="helloworld.cpp" line="20"/>
+        <location filename="helloworld.cpp" line="29"/>
         <source>This is a hello world plugin.</source>
         <translation type="unfinished"></translation>
     </message>
