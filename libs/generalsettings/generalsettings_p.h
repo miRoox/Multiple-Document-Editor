@@ -9,17 +9,32 @@ class GeneralSettingsPrivate : public QObject
 {
     Q_OBJECT
 
-    explicit GeneralSettingsPrivate(QObject *parent = 0);
+    explicit GeneralSettingsPrivate(GeneralSettings *parent = 0);
     ~GeneralSettingsPrivate();
     void loadSettings();
     void saveSettings();
 
+private slots:
+    void checkHistory();
+
+signals:
+    void historyChange(QStringList);
+
 private:
+    GeneralSettings * p;
+
     bool autoLog;
     QString overrideLang;
     QString uiLanguage;
     GeneralSettings::DefDirOption defDirOption;
     QString defDir;
+    QString styleSheetFile;
+    bool autoSave;
+    int autoSaveInterval;
+    int maxHistory;
+    GeneralSettings::HistoryOption historyOption;
+    QStringList history;
+
     friend class GeneralSettings;
 };
 

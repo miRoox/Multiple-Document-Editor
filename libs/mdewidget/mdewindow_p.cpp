@@ -1,6 +1,7 @@
 #include "mdewindow_p.h"
 #include "ui_mdewindow.h"
 #include "mdisubwindow.h"
+#include "generalsettingswidget.h"
 #include <generalsettings/generalsettings.h>
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/ieditor.h>
@@ -11,7 +12,12 @@
 #include <QProcess>
 #include <QSettings>
 #include <QFileInfo>
+#include <QFile>
+#include <QTextStream>
 #include <QMessageBox>
+#include <QListWidget>
+#include <QStackedWidget>
+#include <QHBoxLayout>
 #include <QDebug>
 
 MdeWindowPrivate::MdeWindowPrivate(MdeWindow *parent)
@@ -21,6 +27,7 @@ MdeWindowPrivate::MdeWindowPrivate(MdeWindow *parent)
 {
     genSettings = nullptr;
     plugManager = nullptr;
+    preferrence = nullptr;
 }
 
 MdeWindowPrivate::~MdeWindowPrivate()
@@ -37,6 +44,10 @@ void MdeWindowPrivate::installGeneralSettings()
     connect(w,MdeWindow::savedFile,this,[this](QString fileName){
         lastOperatePath = QFileInfo(fileName).canonicalPath();
     });
+    //load style sheet
+    loadStyleSheet(genSettings->styleSheetFile());
+    connect(genSettings,GeneralSettings::styleSheetFileChanged,
+            this,MdeWindowPrivate::loadStyleSheet);
 }
 
 void MdeWindowPrivate::initActions()
@@ -106,8 +117,7 @@ void MdeWindowPrivate::initActions()
                               "<td><a href=\"https://github.com/miRoox\">%4</a></td>"
                               "</tr><tr>"
                               "<td>Homepage: </td>"
-                              "<td><a href=\"%5\">"
-                              "%5</a></td>"
+                              "<td><a href=\"%5\">%5</a></td>"
                               "</tr></table>"
                               "</body></html>").
                            arg(qApp->applicationDisplayName()).
@@ -118,6 +128,56 @@ void MdeWindowPrivate::initActions()
                            );
     });
     connect(ui->actionAboutQt,QAction::triggered,qApp,QApplication::aboutQt);
+}
+
+void MdeWindowPrivate::initPreferrence()
+{
+    preferrence = new QDialog(w);
+    QListWidget * widgetList = new QListWidget(preferrence);
+    QStackedWidget * container = new QStackedWidget(preferrence);
+    connect(widgetList,QListWidget::currentRowChanged,
+            container,QStackedWidget::setCurrentIndex);
+    connect(widgetList,QListWidget::currentTextChanged,[this](const QString &name){
+        preferrence->setWindowTitle(tr("%1 - Preferrences").arg(name));
+    });
+    QHBoxLayout * layout = new QHBoxLayout;
+    layout->addWidget(widgetList);
+    layout->addWidget(container);
+    layout->setSpacing(10);
+    layout->setMargin(20);
+    layout->setStretchFactor(widgetList,1);
+    layout->setStretchFactor(container,4);
+    preferrence->setLayout(layout);
+    connect(ui->actionPreferences,QAction::triggered,preferrence,QDialog::exec);
+
+    addToPreferrence(tr("General"),new GeneralSettingsWidget(genSettings,preferrence));
+}
+
+void MdeWindowPrivate::addToPreferrence(QString name, QWidget *page)
+{
+    if(!page)
+        return;
+    auto widgetList = preferrence->findChild<QListWidget *>();
+    auto container = preferrence->findChild<QStackedWidget *>();
+    widgetList->addItem(name);
+    container->addWidget(page);
+}
+
+bool MdeWindowPrivate::loadStyleSheet(QString fileName)
+{
+    if(fileName.isEmpty())
+        return true;
+    QFile file(fileName);
+    if(!file.open(QFile::ReadOnly)) {
+        qWarning() << "Cannot open style sheet file" << fileName;
+        QMessageBox::warning(w,tr("Invalid style sheet file"),
+                             tr("Cannot open style sheet file %1").arg(fileName));
+        return false;
+    }
+    QTextStream fileText(&file);
+    qApp->setStyleSheet(fileText.readAll());
+    file.close();
+    return true;
 }
 
 void MdeWindowPrivate::loadSettings()
@@ -142,6 +202,16 @@ void MdeWindowPrivate::saveSettings()
     settings.setValue("state",w->saveState());
     settings.endGroup();
     qInfo() << "Main window: settings are saved.";
+}
+
+MdiSubWindow *MdeWindowPrivate::addToSubWindow(IEditor *editor)
+{
+    MdiSubWindow * tab = new MdiSubWindow(ui->mdiArea);
+    tab->setEditor(editor);
+    ui->mdiArea->addSubWindow(tab);
+    connect(ui->mdiArea,QMdiArea::subWindowActivated,
+            tab,MdiSubWindow::slotSubWindowActivated);
+    return tab;
 }
 
 MdiSubWindow *MdeWindowPrivate::findSubWindow(QString fileName)

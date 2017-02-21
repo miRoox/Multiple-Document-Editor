@@ -4,17 +4,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="app/main.cpp" line="76"/>
+        <location filename="app/main.cpp" line="80"/>
         <source>Multiple Document Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="196"/>
+        <location filename="app/main.cpp" line="197"/>
         <source>Could not send message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="197"/>
+        <location filename="app/main.cpp" line="198"/>
         <source>Unable to send command line arguments to the already running instance. It appears to be not responding. Do you want to start a new instance of editor?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -22,33 +22,146 @@
 <context>
     <name>CommandLine</name>
     <message>
-        <location filename="app/main.cpp" line="87"/>
+        <location filename="app/main.cpp" line="91"/>
         <source>Launch another MDE instance.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="89"/>
+        <location filename="app/main.cpp" line="93"/>
         <source>Attempt to connect to instance given by &lt;pid&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="92"/>
+        <location filename="app/main.cpp" line="96"/>
         <source>Block until editor is closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="94"/>
+        <location filename="app/main.cpp" line="98"/>
         <source>Turn the log file writing on initially</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="175"/>
+        <location filename="app/main.cpp" line="176"/>
         <source>Open files recursively.This argument will be ignored if [file] contain no wildcard character</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="179"/>
+        <location filename="app/main.cpp" line="180"/>
         <source>file path to open</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GeneralSettingsWidget</name>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="14"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="31"/>
+        <source>Localization:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="41"/>
+        <source>Style Sheet:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="69"/>
+        <source>Auto-log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="76"/>
+        <source>Auto-save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="93"/>
+        <source>Auto-save interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="103"/>
+        <source>min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="122"/>
+        <source>Default Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="128"/>
+        <source>Current file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="138"/>
+        <source>Last operate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="145"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="183"/>
+        <source>History Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="191"/>
+        <source>Recent closed files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="201"/>
+        <source>Recent opened files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="208"/>
+        <source>Recent saved files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="225"/>
+        <source>Max history:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="48"/>
+        <source>&lt;System language&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="88"/>
+        <source>Select style sheet file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="90"/>
+        <source>Qt Style Sheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="108"/>
+        <source>Select directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="155"/>
+        <source>Need restart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="156"/>
+        <source>This option need restart to take effect</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -313,17 +426,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="63"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="62"/>
         <source>Untitled %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="155"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="154"/>
         <source>Select one or more files to open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="209"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="208"/>
         <source>Save as</source>
         <translation type="unfinished"></translation>
     </message>
@@ -331,42 +444,62 @@
 <context>
     <name>MdeWindowPrivate</name>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="100"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="111"/>
         <source>About </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="101"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="112"/>
         <source>&lt;html&gt;&lt;body&gt;&lt;h3 align=&quot;center&quot;&gt;%1	%2&lt;/h3&gt;&lt;p&gt;Based on Qt %3&lt;/p&gt;&lt;table border=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;Author: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;https://github.com/miRoox&quot;&gt;%4&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Homepage: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;%5&quot;&gt;%5&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="182"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="141"/>
+        <source>%1 - Preferrences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="153"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="173"/>
+        <source>Invalid style sheet file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="174"/>
+        <source>Cannot open style sheet file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="252"/>
         <source>No editor availabe!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="183"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="253"/>
         <source>The operation cannot be performed because there is no editor availbale.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="196"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="266"/>
         <source>Open file failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="197"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="267"/>
         <source>Cannot open %1 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="203"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="273"/>
         <source>Save file failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="204"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="274"/>
         <source>Cannot save %1 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -374,12 +507,12 @@
 <context>
     <name>PluginManager</name>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="22"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="205"/>
         <source>Any file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="210"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="213"/>
         <source> file</source>
         <translation type="unfinished"></translation>
     </message>

@@ -10,7 +10,6 @@ class QMenu;
 QT_END_NAMESPACE
 
 class MdeWindowPrivate;
-class IEditor;
 class MdiSubWindow;
 class GeneralSettings;
 class PluginManager;
@@ -39,6 +38,8 @@ public:
     QString currentFile() const;
 
 protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
     void closeEvent(QCloseEvent * event) override;
 
 signals:
@@ -46,7 +47,7 @@ signals:
     void savedFile(QString/*fileName*/);//emit when save file successfully
 
 public slots:
-    MdiSubWindow * addToSubWindow(IEditor * editor);
+    void addToPreferrence(QString name, QWidget * page);
     void newDoc();
     bool openFile(QString fileName);
     bool openFileWithSelectedEditor(QString fileName);

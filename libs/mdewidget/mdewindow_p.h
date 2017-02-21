@@ -7,6 +7,7 @@
 #include <QString>
 
 class PluginManager;
+class IEditor;
 
 namespace Ui {
 class MdeWindow;
@@ -21,8 +22,12 @@ private:
 
     void installGeneralSettings();
     void initActions();
+    void initPreferrence();
+    void addToPreferrence(QString name, QWidget *page);
+    bool loadStyleSheet(QString fileName);
     void loadSettings();
     void saveSettings();
+    MdiSubWindow * addToSubWindow(IEditor * editor);
     MdiSubWindow * findSubWindow(QString fileName);
     QString defaultDir();
     void warningNoEditor(bool noEditor = true);
@@ -35,6 +40,8 @@ private:
 
     GeneralSettings * genSettings;
     PluginManager * plugManager;
+
+    QDialog * preferrence;
 
     QString lastOperatePath;
 

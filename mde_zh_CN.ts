@@ -4,17 +4,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="app/main.cpp" line="76"/>
+        <location filename="app/main.cpp" line="80"/>
         <source>Multiple Document Editor</source>
         <translation>多文档编辑器</translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="196"/>
+        <location filename="app/main.cpp" line="197"/>
         <source>Could not send message</source>
         <translation>无法发送信息</translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="197"/>
+        <location filename="app/main.cpp" line="198"/>
         <source>Unable to send command line arguments to the already running instance. It appears to be not responding. Do you want to start a new instance of editor?</source>
         <translation>无法向正在运行的实例发送命令行参数。目标没有响应。您是否要启动一个新实例？</translation>
     </message>
@@ -22,34 +22,147 @@
 <context>
     <name>CommandLine</name>
     <message>
-        <location filename="app/main.cpp" line="87"/>
+        <location filename="app/main.cpp" line="91"/>
         <source>Launch another MDE instance.</source>
         <translation>启动另一个多文档编辑器。</translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="89"/>
+        <location filename="app/main.cpp" line="93"/>
         <source>Attempt to connect to instance given by &lt;pid&gt;</source>
         <translation>尝试连接到&lt;pid&gt;对应的实例</translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="92"/>
+        <location filename="app/main.cpp" line="96"/>
         <source>Block until editor is closed</source>
         <translation>阻塞直到编辑器关闭</translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="94"/>
+        <location filename="app/main.cpp" line="98"/>
         <source>Turn the log file writing on initially</source>
         <translation>启动写入日志文件</translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="175"/>
+        <location filename="app/main.cpp" line="176"/>
         <source>Open files recursively.This argument will be ignored if [file] contain no wildcard character</source>
         <translation>递归地打开文件。如果目标文件[file]中不包含通配符，那么这个参数将被忽略</translation>
     </message>
     <message>
-        <location filename="app/main.cpp" line="179"/>
+        <location filename="app/main.cpp" line="180"/>
         <source>file path to open</source>
         <translation>要打开的文件</translation>
+    </message>
+</context>
+<context>
+    <name>GeneralSettingsWidget</name>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="14"/>
+        <source>General</source>
+        <translation>通用</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="31"/>
+        <source>Localization:</source>
+        <translation>地区/语言：</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="41"/>
+        <source>Style Sheet:</source>
+        <translation>样式表：</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="69"/>
+        <source>Auto-log</source>
+        <translation>自动记录日志</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="76"/>
+        <source>Auto-save</source>
+        <translation>自动保存</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="93"/>
+        <source>Auto-save interval:</source>
+        <translation>自动保存时间间隔:</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="103"/>
+        <source>min</source>
+        <translation>分钟</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="122"/>
+        <source>Default Directory</source>
+        <translation>默认目录</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="128"/>
+        <source>Current file</source>
+        <translation>当前文件</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="138"/>
+        <source>Last operate</source>
+        <translation>上一次操作</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="145"/>
+        <source>Custom</source>
+        <translation>自定义</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="183"/>
+        <source>History Options</source>
+        <translation>历史记录选项</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="191"/>
+        <source>Recent closed files</source>
+        <translation>最近关闭的文件</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="201"/>
+        <source>Recent opened files</source>
+        <translation>最近打开文件</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="208"/>
+        <source>Recent saved files</source>
+        <translation>最近保存文件</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="225"/>
+        <source>Max history:</source>
+        <translation>最大记录数：</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="48"/>
+        <source>&lt;System language&gt;</source>
+        <translation>&lt;系统语言&gt;</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="88"/>
+        <source>Select style sheet file</source>
+        <translation>选择样式表文件</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="90"/>
+        <source>Qt Style Sheet</source>
+        <translation>Qt样式表</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="108"/>
+        <source>Select directory</source>
+        <translation>选择目录</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="155"/>
+        <source>Need restart</source>
+        <translation>需要重新启动</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="156"/>
+        <source>This option need restart to take effect</source>
+        <translation>该选项需要重新启动才能生效</translation>
     </message>
 </context>
 <context>
@@ -313,17 +426,17 @@
         <translation>浏览并管理插件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="63"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="62"/>
         <source>Untitled %1</source>
         <translation>未命名 %1</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="155"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="154"/>
         <source>Select one or more files to open</source>
         <translation>选择一或多个要打开的文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="209"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="208"/>
         <source>Save as</source>
         <translation>另存为</translation>
     </message>
@@ -331,42 +444,62 @@
 <context>
     <name>MdeWindowPrivate</name>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="100"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="111"/>
         <source>About </source>
         <translation>关于 </translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="101"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="112"/>
         <source>&lt;html&gt;&lt;body&gt;&lt;h3 align=&quot;center&quot;&gt;%1	%2&lt;/h3&gt;&lt;p&gt;Based on Qt %3&lt;/p&gt;&lt;table border=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;Author: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;https://github.com/miRoox&quot;&gt;%4&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Homepage: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;%5&quot;&gt;%5&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;&lt;h3 align=&quot;center&quot;&gt;%1	%2&lt;/h3&gt;&lt;p&gt;基于 Qt %3&lt;/p&gt;&lt;table border=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;作者： &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;https://github.com/miRoox&quot;&gt;%4&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;主页： &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;%5&quot;&gt;%5&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="182"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="141"/>
+        <source>%1 - Preferrences</source>
+        <translation>%1 - 偏好设置</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="153"/>
+        <source>General</source>
+        <translation>通用</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="173"/>
+        <source>Invalid style sheet file</source>
+        <translation>无效的样式表文件</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="174"/>
+        <source>Cannot open style sheet file %1</source>
+        <translation>无法打开样式表文件 %1</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="252"/>
         <source>No editor availabe!</source>
         <translation>没有可用的编辑器！</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="183"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="253"/>
         <source>The operation cannot be performed because there is no editor availbale.</source>
         <translation>操作无法执行，因为没有可用的编辑器。</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="196"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="266"/>
         <source>Open file failed!</source>
         <translation>打开文件失败！</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="197"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="267"/>
         <source>Cannot open %1 </source>
         <translation>无法打开 %1 </translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="203"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="273"/>
         <source>Save file failed!</source>
         <translation>保存文件失败！</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="204"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="274"/>
         <source>Cannot save %1 </source>
         <translation>无法保存 %1 </translation>
     </message>
@@ -374,12 +507,12 @@
 <context>
     <name>PluginManager</name>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="22"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="205"/>
         <source>Any file</source>
         <translation>任意文件</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="210"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="213"/>
         <source> file</source>
         <translation>文件</translation>
     </message>

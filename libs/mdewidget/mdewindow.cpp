@@ -11,6 +11,9 @@
 #include <QKeySequence>
 #include <QFileDialog>
 #include <QCloseEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
 #include <QDebug>
 
 MdeWindow::MdeWindow(GeneralSettings * settings, QWidget *parent) :
@@ -22,6 +25,7 @@ MdeWindow::MdeWindow(GeneralSettings * settings, QWidget *parent) :
     qInfo() << "Set up user interface";
     p->ui->setupUi(this);
     p->initActions();
+    p->initPreferrence();
     p->loadSettings();
     setAcceptDrops(true);
     connect(p->ui->mdiArea,QMdiArea::subWindowActivated,[this](QMdiSubWindow * active){
@@ -40,14 +44,9 @@ void MdeWindow::installPluginManager(PluginManager *pm)
     }
 }
 
-MdiSubWindow *MdeWindow::addToSubWindow(IEditor *editor)
+void MdeWindow::addToPreferrence(QString name, QWidget *page)
 {
-    MdiSubWindow * tab = new MdiSubWindow(p->ui->mdiArea);
-    tab->setEditor(editor);
-    p->ui->mdiArea->addSubWindow(tab);
-    connect(p->ui->mdiArea,QMdiArea::subWindowActivated,
-            tab,MdiSubWindow::slotSubWindowActivated);
-    return tab;
+    p->addToPreferrence(name,page);
 }
 
 void MdeWindow::newDoc()
@@ -57,7 +56,7 @@ void MdeWindow::newDoc()
     IEditor * editor = p->plugManager->defaultEditor();
     if(!editor)
         return p->warningNoEditor();
-    MdiSubWindow * tab = addToSubWindow(editor);
+    MdiSubWindow * tab = p->addToSubWindow(editor);
     tab->setEditor(editor);
     editor->newFile();
     tab->setWindowTitle(tr("Untitled %1").arg(sequence++));
@@ -84,7 +83,7 @@ bool MdeWindow::openFile(QString fileName)
             p->warningNoEditor();
             return false;
         }
-        tab = addToSubWindow(editor);
+        tab = p->addToSubWindow(editor);
         if(!editor->loadFile(fileName)) {
             p->warningOpenFailed(fileName);
             return false;
@@ -111,7 +110,7 @@ bool MdeWindow::openFileWithSelectedEditor(QString fileName)
     if(tab) {
         tab->close();
     }
-    tab = addToSubWindow(editor);
+    tab = p->addToSubWindow(editor);
     if(!editor->loadFile(fileName)) {
         p->warningOpenFailed(fileName);
         return false;
@@ -243,6 +242,23 @@ QString MdeWindow::currentFile() const
         return qobject_cast<MdiSubWindow*>(active)->editor()->file().canonicalFilePath();
     }
     return QString();
+}
+
+void MdeWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if(event->mimeData()->hasUrls())
+        event->acceptProposedAction();
+    else event->ignore();
+}
+
+void MdeWindow::dropEvent(QDropEvent *event)
+{
+    const QMimeData * mimeData = event->mimeData();
+    if(mimeData->hasUrls()) {
+        foreach (QUrl url, mimeData->urls()) {
+            openFile(url.toLocalFile());
+        }
+    }
 }
 
 void MdeWindow::closeEvent(QCloseEvent *event)

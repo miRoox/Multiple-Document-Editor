@@ -35,14 +35,16 @@ SOURCES += \
     mdewindow.cpp \
     mdewindow_p.cpp \
     mdisubwindow.cpp \
-    mdisubwindow_p.cpp
+    mdisubwindow_p.cpp \
+    generalsettingswidget.cpp
 
 HEADERS +=\
         mdewidget_global.h \
     mdewindow.h \
     mdewindow_p.h \
     mdisubwindow.h \
-    mdisubwindow_p.h
+    mdisubwindow_p.h \
+    generalsettingswidget.h
 
 unix {
     target.path = /usr/lib
@@ -50,7 +52,8 @@ unix {
 }
 
 FORMS += \
-    mdewindow.ui
+    mdewindow.ui \
+    generalsettingswidget.ui
 
 RESOURCES += \
     myimage.qrc
