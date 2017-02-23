@@ -45,6 +45,7 @@ protected:
 signals:
     void openedFile(QString/*fileName*/);//emit when open file successfully, besides opened file
     void savedFile(QString/*fileName*/);//emit when save file successfully
+    void closedFile(QString/*fileName*/);//emit when file is closed
 
 public slots:
     void addToPreferrence(QString name, QWidget * page);

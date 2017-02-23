@@ -6,6 +6,7 @@
 #include <extensionsystem/pluginmanager.h>
 #include <extensionsystem/ieditor.h>
 #include <QAction>
+#include <QActionGroup>
 #include <QMdiArea>
 #include <QApplication>
 #include <QKeySequence>
@@ -27,7 +28,8 @@ MdeWindowPrivate::MdeWindowPrivate(MdeWindow *parent)
 {
     genSettings = nullptr;
     plugManager = nullptr;
-    preferrence = nullptr;
+    preferrence = new QDialog(w);
+    historyGroup = new QActionGroup(w);
 }
 
 MdeWindowPrivate::~MdeWindowPrivate()
@@ -48,6 +50,13 @@ void MdeWindowPrivate::installGeneralSettings()
     loadStyleSheet(genSettings->styleSheetFile());
     connect(genSettings,GeneralSettings::styleSheetFileChanged,
             this,MdeWindowPrivate::loadStyleSheet);
+    //history
+    loadHistory(genSettings->history());
+    connect(genSettings,GeneralSettings::historyChange,
+            this,MdeWindowPrivate::loadHistory);
+    loadHistoryOption(genSettings->historyOption());
+    connect(genSettings,GeneralSettings::historyOptionChanged,
+            this,MdeWindowPrivate::loadHistoryOption);
 }
 
 void MdeWindowPrivate::initActions()
@@ -64,7 +73,7 @@ void MdeWindowPrivate::initActions()
     ui->actionPrevious->setShortcut(QKeySequence::PreviousChild);
     ui->actionPreferences->setShortcut(QKeySequence::Preferences);
     ui->actionAbout->setShortcut(QKeySequence::HelpContents);
-    connect(ui->mdiArea,QMdiArea::subWindowActivated,[&](QMdiSubWindow * sub){
+    connect(ui->mdiArea,QMdiArea::subWindowActivated,[this](QMdiSubWindow * sub){
         bool hasSubWindow = sub!=0;
         ui->actionReload->setEnabled(hasSubWindow);
         ui->actionSave->setEnabled(hasSubWindow);
@@ -75,27 +84,34 @@ void MdeWindowPrivate::initActions()
         ui->actionPrevious->setEnabled(hasSubWindow);
     });
     connect(ui->actionNew,QAction::triggered,w,MdeWindow::newDoc);
-    connect(ui->actionOpen,QAction::triggered,w,[this]{
+    connect(ui->actionOpen,QAction::triggered,w,[w = w]{
         w->openWithDialog(/*selectable = false*/);
     });
-    connect(ui->actionOpenWith,QAction::triggered,w,[this]{
+    connect(ui->actionOpenWith,QAction::triggered,w,[w = w]{
         w->openWithDialog(/*selectable = */true);
     });
-    connect(ui->actionReload,QAction::triggered, [this]{
-        QMdiSubWindow * active = ui->mdiArea->activeSubWindow();
+    connect(ui->actionReload,QAction::triggered, [mdiArea = ui->mdiArea]{
+        QMdiSubWindow * active = mdiArea->activeSubWindow();
         if(active) qobject_cast<MdiSubWindow*>(active)->editor()->reload();
+    });
+    connect(ui->actionClearRecentHistory,QAction::triggered,
+            genSettings,GeneralSettings::clearHistory);
+    connect(ui->actionOpenAllTheHistoryFiles,QAction::triggered,[this]{
+        foreach (QString file, genSettings->history()) {
+            openHistoryFile(file);
+        }
     });
     connect(ui->actionSave,QAction::triggered,w,MdeWindow::save);
     connect(ui->actionSaveAs,QAction::triggered,w,MdeWindow::saveAs);
     connect(ui->actionClose,QAction::triggered,ui->mdiArea,QMdiArea::closeActiveSubWindow);
     connect(ui->actionCloseAll,QAction::triggered,ui->mdiArea,QMdiArea::closeAllSubWindows);
     connect(ui->actionExit,QAction::triggered,qApp,QApplication::closeAllWindows);
-    connect(ui->actionStayOnTop,QAction::toggled,[this](bool checked){
+    connect(ui->actionStayOnTop,QAction::toggled,w,[w = w](bool checked){
         if(checked) w->setWindowFlags(w->windowFlags() | Qt::WindowStaysOnTopHint);
         else w->setWindowFlags(w->windowFlags() & ~Qt::WindowStaysOnTopHint);
         w->show();
     });
-    connect(ui->actionFullScreen,QAction::triggered,[this]{
+    connect(ui->actionFullScreen,QAction::triggered,w,[w = w]{
         w->setWindowState(w->windowState() ^ Qt::WindowFullScreen);
     });
     connect(ui->actionMultInst,QAction::triggered,[]{
@@ -106,7 +122,7 @@ void MdeWindowPrivate::initActions()
     connect(ui->actionCmdlParam,QAction::triggered,[]{
         QProcess::startDetached(QApplication::applicationFilePath(),QStringList("-h"));
     });
-    connect(ui->actionAbout,QAction::triggered,[this]{
+    connect(ui->actionAbout,QAction::triggered,w,[w = w]{
         static const char homepage[] = "https://github.com/miRoox/Multiple-Document-Editor";
         QMessageBox::about(w,tr("About ")+qApp->applicationDisplayName(),
                            tr("<html><body>"
@@ -132,7 +148,6 @@ void MdeWindowPrivate::initActions()
 
 void MdeWindowPrivate::initPreferrence()
 {
-    preferrence = new QDialog(w);
     QListWidget * widgetList = new QListWidget(preferrence);
     QStackedWidget * container = new QStackedWidget(preferrence);
     connect(widgetList,QListWidget::currentRowChanged,
@@ -180,6 +195,67 @@ bool MdeWindowPrivate::loadStyleSheet(QString fileName)
     return true;
 }
 
+void MdeWindowPrivate::openHistoryFile(QString fileName)
+{
+    if(!w->openFile(fileName)) {
+        if(QMessageBox::Yes==QMessageBox::warning(w,tr("Cannot open file %1").arg(fileName),
+                                                  tr("Delete the record?"),
+                                                  QMessageBox::Yes,QMessageBox::No)) {
+            genSettings->removeFromHistory(fileName);
+        }
+    }
+}
+
+void MdeWindowPrivate::loadHistory(QStringList history)
+{
+    foreach (QAction * action, historyGroup->actions()) {
+        ui->menuHistory->removeAction(action);
+    }
+    foreach (QString file, history) {
+        QAction * action = ui->menuHistory->addAction(file,[this,file]{
+            openHistoryFile(file);
+        });
+        action->setActionGroup(historyGroup);
+    }
+}
+
+void MdeWindowPrivate::loadHistoryOption(GeneralSettings::HistoryOption option)
+{
+
+    switch (option) {
+    case GeneralSettings::RecentClosed:
+        disconnect(w,MdeWindow::openedFile,
+                   genSettings,GeneralSettings::addToHistory);
+        disconnect(w,MdeWindow::savedFile,
+                   genSettings,GeneralSettings::addToHistory);
+        connect(w,MdeWindow::closedFile,
+                genSettings,GeneralSettings::addToHistory);
+        connect(w,MdeWindow::openedFile,
+                genSettings,GeneralSettings::removeFromHistory);
+        break;
+    case GeneralSettings::RecentOpened:
+        disconnect(w,MdeWindow::closedFile,
+                   genSettings,GeneralSettings::addToHistory);
+        disconnect(w,MdeWindow::savedFile,
+                   genSettings,GeneralSettings::addToHistory);
+        disconnect(w,MdeWindow::openedFile,
+                   genSettings,GeneralSettings::removeFromHistory);
+        connect(w,MdeWindow::openedFile,
+                genSettings,GeneralSettings::addToHistory);
+        break;
+    case GeneralSettings::RecentSaved:
+        disconnect(w,MdeWindow::closedFile,
+                   genSettings,GeneralSettings::addToHistory);
+        disconnect(w,MdeWindow::openedFile,
+                   genSettings,GeneralSettings::addToHistory);
+        disconnect(w,MdeWindow::openedFile,
+                   genSettings,GeneralSettings::removeFromHistory);
+        connect(w,MdeWindow::savedFile,
+                genSettings,GeneralSettings::addToHistory);
+        break;
+    }
+}
+
 void MdeWindowPrivate::loadSettings()
 {
     QSettings settings;
@@ -211,6 +287,8 @@ MdiSubWindow *MdeWindowPrivate::addToSubWindow(IEditor *editor)
     ui->mdiArea->addSubWindow(tab);
     connect(ui->mdiArea,QMdiArea::subWindowActivated,
             tab,MdiSubWindow::slotSubWindowActivated);
+    connect(tab,MdiSubWindow::closedFile,
+            w,MdeWindow::closedFile);
     return tab;
 }
 

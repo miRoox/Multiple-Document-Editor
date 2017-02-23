@@ -12,8 +12,13 @@ private:
     explicit MdiSubWindowPrivate(MdiSubWindow *parent = 0);
     ~MdiSubWindowPrivate();
 
+private slots:
+    void save();
+
 private:
+    MdiSubWindow * w;
     IEditor * editor;
+    GeneralSettings * genSettings;
     friend class MdiSubWindow;
 };
 

@@ -7,6 +7,7 @@
 
 class MdiSubWindowPrivate;
 class IEditor;
+class GeneralSettings;
 
 class MDEWIDGETSHARED_EXPORT MdiSubWindow
         : public QMdiSubWindow
@@ -18,10 +19,14 @@ public:
     MdiSubWindow(QWidget *parent = Q_NULLPTR, Qt::WindowFlags flags = Qt::WindowFlags());
     ~MdiSubWindow();
     IEditor * editor() const;
+    void setEditor(IEditor * editor);//only once
+    void loadGenSettings(GeneralSettings *settings);
 
 public slots:
-    void setEditor(IEditor * editor);//only once
     void slotSubWindowActivated(QMdiSubWindow*);
+
+signals:
+    void closedFile(QString/*fileName*/);
 
 protected:
     void mousePressEvent(QMouseEvent * event);//TODO: drag & drop

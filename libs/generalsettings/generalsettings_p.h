@@ -34,6 +34,7 @@ private:
     int maxHistory;
     GeneralSettings::HistoryOption historyOption;
     QStringList history;
+    bool reload;
 
     friend class GeneralSettings;
 };

@@ -73,6 +73,7 @@ void GeneralSettingsWidget::loadSettings()
     loadDefDir();
     loadHistoryOption();
     ui->maxHistoryBox->setValue(genSettings->maxHistory());
+    ui->reloadCheckBox->setChecked(genSettings->reload());
 
     manual = true;
 }
@@ -149,6 +150,7 @@ void GeneralSettingsWidget::apply()
     }
 
     genSettings->setMaxHistory(ui->maxHistoryBox->value());
+    genSettings->setReload(ui->reloadCheckBox->isChecked());
 }
 
 void GeneralSettingsWidget::warningNeedRestart()

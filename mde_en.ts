@@ -90,47 +90,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="122"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="120"/>
+        <source>Reload when reopen an opened file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="129"/>
         <source>Default Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="128"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="135"/>
         <source>Current file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="138"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="145"/>
         <source>Last operate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="145"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="152"/>
         <source>Custom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="183"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="190"/>
         <source>History Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="191"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="198"/>
         <source>Recent closed files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="201"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="208"/>
         <source>Recent opened files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="208"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="215"/>
         <source>Recent saved files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="225"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="232"/>
         <source>Max history:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -140,27 +145,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="88"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="89"/>
         <source>Select style sheet file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="90"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="91"/>
         <source>Qt Style Sheet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="109"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="110"/>
         <source>Select directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="157"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="159"/>
         <source>Need restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="158"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="160"/>
         <source>This option need restart to take effect</source>
         <translation type="unfinished"></translation>
     </message>
@@ -425,88 +430,112 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="154"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="157"/>
         <source>Select one or more files to open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="208"/>
-        <source>Save as</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MdeWindowPrivate</name>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="111"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="127"/>
         <source>About </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="112"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="128"/>
         <source>&lt;html&gt;&lt;body&gt;&lt;h3 align=&quot;center&quot;&gt;%1	%2&lt;/h3&gt;&lt;p&gt;Based on Qt %3&lt;/p&gt;&lt;table border=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;Author: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;https://github.com/miRoox&quot;&gt;%4&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Homepage: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;%5&quot;&gt;%5&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="141"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="156"/>
         <source>%1 - Preferrences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="153"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="168"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="173"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="188"/>
         <source>Invalid style sheet file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="174"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="189"/>
         <source>Cannot open style sheet file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="252"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="201"/>
+        <source>Cannot open file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="202"/>
+        <source>Delete the record?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="330"/>
         <source>No editor availabe!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="253"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="331"/>
         <source>The operation cannot be performed because there is no editor availbale.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="266"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="344"/>
         <source>Open file failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="267"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="345"/>
         <source>Cannot open %1 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="273"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="351"/>
         <source>Save file failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="274"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="352"/>
         <source>Cannot save %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MdiSubWindowPrivate</name>
+    <message>
+        <location filename="libs/mdewidget/mdisubwindow_p.cpp" line="30"/>
+        <source>The document has not been saved yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdisubwindow_p.cpp" line="31"/>
+        <source>The document %1 has not been saved yet
+Do you want to save it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdisubwindow_p.cpp" line="34"/>
+        <source>No longer remind me</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PluginManager</name>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="205"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="206"/>
         <source>Any file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="213"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="214"/>
         <source> file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -514,78 +543,78 @@
 <context>
     <name>PluginManagerPrivate</name>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="118"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="120"/>
         <source>Plugin manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="141"/>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="192"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="143"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="194"/>
         <source>Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="160"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="162"/>
         <source>Need to restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="161"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="163"/>
         <source>Need to restart to take effect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="182"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="184"/>
         <source>Editor selector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="205"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="207"/>
         <source>No selected editor!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="206"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="208"/>
         <source>You should select an editor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="232"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="234"/>
         <source>disabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="234"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="236"/>
         <source>editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="236"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="238"/>
         <source>utilities</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="247"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="249"/>
         <source>name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="248"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="250"/>
         <source>category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="249"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="251"/>
         <source>version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="250"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="252"/>
         <source>vendor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="251"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="253"/>
         <source>platforms</source>
         <translation type="unfinished"></translation>
     </message>

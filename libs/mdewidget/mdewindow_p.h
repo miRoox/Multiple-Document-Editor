@@ -6,8 +6,12 @@
 
 #include <QString>
 
+class QActionGroup;
+
 class PluginManager;
 class IEditor;
+
+#include <generalsettings/generalsettings.h>
 
 namespace Ui {
 class MdeWindow;
@@ -25,6 +29,9 @@ private:
     void initPreferrence();
     void addToPreferrence(QString name, QWidget *page);
     bool loadStyleSheet(QString fileName);
+    void openHistoryFile(QString fileName);
+    void loadHistory(QStringList history);
+    void loadHistoryOption(GeneralSettings::HistoryOption option);
     void loadSettings();
     void saveSettings();
     MdiSubWindow * addToSubWindow(IEditor * editor);
@@ -44,6 +51,8 @@ private:
     QDialog * preferrence;
 
     QString lastOperatePath;
+
+    QActionGroup * historyGroup;
 
     friend class MdeWindow;
 };

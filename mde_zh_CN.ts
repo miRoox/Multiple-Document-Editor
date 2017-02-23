@@ -90,47 +90,52 @@
         <translation>分钟</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="122"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="120"/>
+        <source>Reload when reopen an opened file</source>
+        <translation>再次打开已打开的文件时重新加载</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="129"/>
         <source>Default Directory</source>
         <translation>默认目录</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="128"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="135"/>
         <source>Current file</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="138"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="145"/>
         <source>Last operate</source>
         <translation>上一次操作</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="145"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="152"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="183"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="190"/>
         <source>History Options</source>
         <translation>历史记录选项</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="191"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="198"/>
         <source>Recent closed files</source>
         <translation>最近关闭的文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="201"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="208"/>
         <source>Recent opened files</source>
         <translation>最近打开文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="208"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="215"/>
         <source>Recent saved files</source>
         <translation>最近保存文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.ui" line="225"/>
+        <location filename="libs/mdewidget/generalsettingswidget.ui" line="232"/>
         <source>Max history:</source>
         <translation>最大记录数：</translation>
     </message>
@@ -140,27 +145,27 @@
         <translation>&lt;系统语言&gt;</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="88"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="89"/>
         <source>Select style sheet file</source>
         <translation>选择样式表文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="90"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="91"/>
         <source>Qt Style Sheet</source>
         <translation>Qt样式表</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="109"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="110"/>
         <source>Select directory</source>
         <translation>选择目录</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="157"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="159"/>
         <source>Need restart</source>
         <translation>需要重新启动</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="158"/>
+        <location filename="libs/mdewidget/generalsettingswidget.cpp" line="160"/>
         <source>This option need restart to take effect</source>
         <translation>该选项需要重新启动才能生效</translation>
     </message>
@@ -425,88 +430,117 @@
         <translation>未命名 %1</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="154"/>
+        <location filename="libs/mdewidget/mdewindow.cpp" line="157"/>
         <source>Select one or more files to open</source>
         <translation>选择一或多个要打开的文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow.cpp" line="208"/>
         <source>Save as</source>
-        <translation>另存为</translation>
+        <translation type="vanished">另存为</translation>
     </message>
 </context>
 <context>
     <name>MdeWindowPrivate</name>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="111"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="127"/>
         <source>About </source>
         <translation>关于 </translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="112"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="128"/>
         <source>&lt;html&gt;&lt;body&gt;&lt;h3 align=&quot;center&quot;&gt;%1	%2&lt;/h3&gt;&lt;p&gt;Based on Qt %3&lt;/p&gt;&lt;table border=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;Author: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;https://github.com/miRoox&quot;&gt;%4&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Homepage: &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;%5&quot;&gt;%5&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;&lt;h3 align=&quot;center&quot;&gt;%1	%2&lt;/h3&gt;&lt;p&gt;基于 Qt %3&lt;/p&gt;&lt;table border=&quot;0&quot;&gt;&lt;tr&gt;&lt;td&gt;作者： &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;https://github.com/miRoox&quot;&gt;%4&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;主页： &lt;/td&gt;&lt;td&gt;&lt;a href=&quot;%5&quot;&gt;%5&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="141"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="156"/>
         <source>%1 - Preferrences</source>
         <translation>%1 - 偏好设置</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="153"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="168"/>
         <source>General</source>
         <translation>通用</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="173"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="188"/>
         <source>Invalid style sheet file</source>
         <translation>无效的样式表文件</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="174"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="189"/>
         <source>Cannot open style sheet file %1</source>
         <translation>无法打开样式表文件 %1</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="252"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="201"/>
+        <source>Cannot open file %1</source>
+        <translation>无法打开文件 %1</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="202"/>
+        <source>Delete the record?</source>
+        <translation>是否删除记录？</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="330"/>
         <source>No editor availabe!</source>
         <translation>没有可用的编辑器！</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="253"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="331"/>
         <source>The operation cannot be performed because there is no editor availbale.</source>
         <translation>操作无法执行，因为没有可用的编辑器。</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="266"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="344"/>
         <source>Open file failed!</source>
         <translation>打开文件失败！</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="267"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="345"/>
         <source>Cannot open %1 </source>
         <translation>无法打开 %1 </translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="273"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="351"/>
         <source>Save file failed!</source>
         <translation>保存文件失败！</translation>
     </message>
     <message>
-        <location filename="libs/mdewidget/mdewindow_p.cpp" line="274"/>
+        <location filename="libs/mdewidget/mdewindow_p.cpp" line="352"/>
         <source>Cannot save %1 </source>
         <translation>无法保存 %1 </translation>
     </message>
 </context>
 <context>
+    <name>MdiSubWindowPrivate</name>
+    <message>
+        <location filename="libs/mdewidget/mdisubwindow_p.cpp" line="30"/>
+        <source>The document has not been saved yet</source>
+        <translation>文档尚未保存</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdisubwindow_p.cpp" line="31"/>
+        <source>The document %1 has not been saved yet
+Do you want to save it?</source>
+        <translation>文档 %1 尚未保存
+是否保存？</translation>
+    </message>
+    <message>
+        <location filename="libs/mdewidget/mdisubwindow_p.cpp" line="34"/>
+        <source>No longer remind me</source>
+        <translation>不再提醒我</translation>
+    </message>
+</context>
+<context>
     <name>PluginManager</name>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="205"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="206"/>
         <source>Any file</source>
         <translation>任意文件</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager.cpp" line="213"/>
+        <location filename="libs/extensionsystem/pluginmanager.cpp" line="214"/>
         <source> file</source>
         <translation>文件</translation>
     </message>
@@ -514,78 +548,78 @@
 <context>
     <name>PluginManagerPrivate</name>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="118"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="120"/>
         <source>Plugin manager</source>
         <translation>插件管理器</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="141"/>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="192"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="143"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="194"/>
         <source>Filter</source>
         <translation>筛选</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="160"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="162"/>
         <source>Need to restart</source>
         <translation>需要重新启动</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="161"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="163"/>
         <source>Need to restart to take effect</source>
         <translation>需要重新启动使之生效</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="182"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="184"/>
         <source>Editor selector</source>
         <translation>编辑器选择器</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="205"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="207"/>
         <source>No selected editor!</source>
         <translation>没有选择的编辑器！</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="206"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="208"/>
         <source>You should select an editor.</source>
         <translation>你应该选择一个编辑器。</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="232"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="234"/>
         <source>disabled</source>
         <translation>禁用</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="234"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="236"/>
         <source>editor</source>
         <translation>编辑器</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="236"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="238"/>
         <source>utilities</source>
         <translation>实用工具</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="247"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="249"/>
         <source>name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="248"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="250"/>
         <source>category</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="249"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="251"/>
         <source>version</source>
         <translation>版本</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="250"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="252"/>
         <source>vendor</source>
         <translation>供应商</translation>
     </message>
     <message>
-        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="251"/>
+        <location filename="libs/extensionsystem/pluginmanager_p.cpp" line="253"/>
         <source>platforms</source>
         <translation>平台</translation>
     </message>

@@ -20,6 +20,7 @@ class GENERALSETTINGSSHARED_EXPORT GeneralSettings : public QObject
     Q_PROPERTY(int autoSaveInterval READ autoSaveInterval WRITE setAutoSaveInterval NOTIFY autoSaveIntervalChanged)
     Q_PROPERTY(int maxHistory READ maxHistory WRITE setMaxHistory NOTIFY maxHistoryChanged)
     Q_PROPERTY(HistoryOption historyOption READ historyOption WRITE setHistoryOption NOTIFY historyOptionChanged)
+    Q_PROPERTY(bool reload READ reload WRITE setReload NOTIFY reloadChanged)
 
 public:
     explicit GeneralSettings(QObject *parent = 0);
@@ -49,6 +50,7 @@ public:
     int maxHistory() const;
     HistoryOption historyOption() const;
     QStringList history() const;
+    bool reload() const;
 
 signals:
     void autoLogChange(bool);
@@ -61,6 +63,7 @@ signals:
     void maxHistoryChanged(int/*max*/);
     void historyOptionChanged(HistoryOption);
     void historyChange(QStringList/*history*/);
+    void reloadChanged(bool);
 
 public slots:
     void setAutoLog(bool log);
@@ -75,6 +78,8 @@ public slots:
     void setHistoryOption(HistoryOption option);
     void addToHistory(QString fileName);
     bool removeFromHistory(QString fileName);
+    void clearHistory();
+    void setReload(bool re);
 
 private:
     GeneralSettingsPrivate * p;

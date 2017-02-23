@@ -62,6 +62,11 @@ QStringList GeneralSettings::history() const
     return p->history;
 }
 
+bool GeneralSettings::reload() const
+{
+    return p->reload;
+}
+
 void GeneralSettings::setAutoLog(bool log)
 {
     if(p->autoLog != log) {
@@ -160,4 +165,20 @@ bool GeneralSettings::removeFromHistory(QString fileName)
         return true;
     }
     return false;
+}
+
+void GeneralSettings::clearHistory()
+{
+    if(!p->history.isEmpty()) {
+        p->history.clear();
+        emit historyChange(p->history);
+    }
+}
+
+void GeneralSettings::setReload(bool re)
+{
+    if(p->reload != re) {
+        p->reload = re;
+        emit reloadChanged(re);
+    }
 }

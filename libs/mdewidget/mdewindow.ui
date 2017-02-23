@@ -68,9 +68,9 @@
      <property name="title">
       <string>History</string>
      </property>
-     <addaction name="separator"/>
      <addaction name="actionOpenAllTheHistoryFiles"/>
      <addaction name="actionClearRecentHistory"/>
+     <addaction name="separator"/>
     </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
