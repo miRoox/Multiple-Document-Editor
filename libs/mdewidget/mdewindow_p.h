@@ -25,11 +25,11 @@ private:
     ~MdeWindowPrivate();
 
     void installGeneralSettings();
+    void initBasicConnection();
     void initActions();
     void initPreferrence();
     void addToPreferrence(QString name, QWidget *page);
     bool loadStyleSheet(QString fileName);
-    void openHistoryFile(QString fileName);
     void loadHistory(QStringList history);
     void loadHistoryOption(GeneralSettings::HistoryOption option);
     void loadSettings();

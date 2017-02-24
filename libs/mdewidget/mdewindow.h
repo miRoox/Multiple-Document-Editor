@@ -43,9 +43,11 @@ protected:
     void closeEvent(QCloseEvent * event) override;
 
 signals:
-    void openedFile(QString/*fileName*/);//emit when open file successfully, besides opened file
-    void savedFile(QString/*fileName*/);//emit when save file successfully
-    void closedFile(QString/*fileName*/);//emit when file is closed
+    void openedFile(QString/*nativeCanonicalFilePath*/);//emit when open file successfully, except opened file
+    void savedFile(QString/*nativeCanonicalFilePath*/);//emit when save file successfully
+    void closedFile(QString/*nativeCanonicalFilePath*/);//emit when file is closed
+    void openFailed(QString/*nativeCanonicalFilePath*/);
+    void saveFailed(QString/*nativeCanonicalFilePath*/);
 
 public slots:
     void addToPreferrence(QString name, QWidget * page);

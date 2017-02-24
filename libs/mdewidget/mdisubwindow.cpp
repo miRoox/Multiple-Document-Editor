@@ -72,8 +72,7 @@ void MdiSubWindow::mousePressEvent(QMouseEvent *event)
 
 void MdiSubWindow::closeEvent(QCloseEvent *event)
 {
-    if(p->editor->canBeClosed()) {
-        emit closedFile(QDir::toNativeSeparators(p->editor->file().canonicalFilePath()));
+    if(p->editor->close()) {
         event->accept();
     }
     else {

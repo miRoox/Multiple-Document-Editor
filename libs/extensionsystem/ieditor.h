@@ -18,19 +18,19 @@ class IEditor
 {
 public:
     virtual ~IEditor() { }
-    virtual IEditorPlugin * base() = 0;
-    virtual QWidget * widget() = 0;//widget that will be added to mdi subwindow
-    virtual void extraInitialize(MdiSubWindow *tab) = 0;//after widget added to mdi subwindow, setParent maybe a good idea
+    virtual IEditorPlugin * base() const = 0;
+    virtual QWidget * widget() const = 0;//widget that will be set to mdi subwindow
+    virtual void extraInitialize(MdiSubWindow *tab) = 0;//after widget set to mdi subwindow
     virtual void activate() = 0;
     virtual void deactivate() = 0;
     virtual void newFile() = 0;
-    virtual bool loadFile(QString fileName) = 0;
-    virtual bool reload() = 0;
-    virtual bool save() = 0;
-    virtual bool saveAs() = 0;
-    virtual QString title() = 0;
-    virtual QFileInfo file() = 0;
-    virtual bool canBeClosed() = 0;
+    virtual void loadFile(QString fileName) = 0;
+    virtual void reload() = 0;
+    virtual void save() = 0;
+    virtual void saveAs() = 0;
+    virtual QString title() const = 0;
+    virtual QFileInfo file() const = 0;
+    virtual bool close() = 0;
 };
 
 class IEditorPlugin
@@ -39,7 +39,7 @@ public:
     virtual ~IEditorPlugin() { }
     virtual IEditor * create() = 0;
     virtual QStringList designedTypes() const = 0;
-    virtual QString typeDescription(QString) const = 0;
+    virtual QString typeDescription(QString suffix) const = 0;
 };
 
 QT_BEGIN_NAMESPACE

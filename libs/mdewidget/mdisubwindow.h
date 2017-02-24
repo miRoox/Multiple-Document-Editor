@@ -25,9 +25,6 @@ public:
 public slots:
     void slotSubWindowActivated(QMdiSubWindow*);
 
-signals:
-    void closedFile(QString/*fileName*/);
-
 protected:
     void mousePressEvent(QMouseEvent * event);//TODO: drag & drop
     void closeEvent(QCloseEvent * event);

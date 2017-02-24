@@ -22,6 +22,7 @@ MdeWindow::MdeWindow(GeneralSettings * settings, QWidget *parent) :
     p = new MdeWindowPrivate(this);
     p->genSettings = settings;
     p->installGeneralSettings();
+    p->initBasicConnection();
     qInfo() << "Set up user interface";
     p->ui->setupUi(this);
     p->initActions();
@@ -67,7 +68,7 @@ void MdeWindow::newDoc()
 
 bool MdeWindow::openFile(QString fileName)
 {
-    if(fileName.isEmpty())
+    if(!QFileInfo(fileName).exists())
         return false;
     qInfo() << "Attempt to open file:" << fileName;
     MdiSubWindow * tab = p->findSubWindow(fileName);
@@ -87,23 +88,19 @@ bool MdeWindow::openFile(QString fileName)
             return false;
         }
         tab = p->addToSubWindow(editor);
-        if(!editor->loadFile(fileName)) {
-            p->warningOpenFailed(fileName);
-            return false;
-        }
+        editor->loadFile(fileName);
         tab->setWindowTitle(editor->title());
         tab->showMaximized();
         p->warningNoEditor(false);
         qInfo() << "Open file:"
                 << QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
     }
-    emit openedFile(QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath()));
     return true;
 }
 
 bool MdeWindow::openFileWithSelectedEditor(QString fileName)
 {
-    if(fileName.isEmpty())
+    if(!QFileInfo(fileName).exists())
         return false;
     qInfo() << "Attempt to open file:" << fileName;
     IEditor * editor = p->plugManager->selectEditor();
@@ -114,16 +111,12 @@ bool MdeWindow::openFileWithSelectedEditor(QString fileName)
         tab->close();
     }
     tab = p->addToSubWindow(editor);
-    if(!editor->loadFile(fileName)) {
-        p->warningOpenFailed(fileName);
-        return false;
-    }
+    editor->loadFile(fileName);
     tab->setWindowTitle(editor->title());
     tab->showMaximized();
     p->warningNoEditor(false);
     qInfo() << "Open file:"
             << QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath());
-    emit openedFile(QDir::toNativeSeparators(QFileInfo(fileName).canonicalFilePath()));
     return true;
 }
 
@@ -174,13 +167,8 @@ bool MdeWindow::save()
         auto sub = qobject_cast<MdiSubWindow*>(active);
         QFileInfo file = sub->editor()->file();
         if(file.exists()) {
-            if(sub->editor()->save()) {
-                emit savedFile(QDir::toNativeSeparators(file.canonicalFilePath()));
-                return true;
-            }
-            else {
-                p->warningSaveFailed(file.canonicalFilePath());
-            }
+            sub->editor()->save();
+            return true;
         }
         else {
             return saveAs();
@@ -194,14 +182,9 @@ bool MdeWindow::saveAs()
     QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
     if(active) {
         auto sub = qobject_cast<MdiSubWindow*>(active);
-        if(sub->editor()->saveAs()) {
-            sub->setWindowTitle(sub->editor()->title());
-            emit savedFile(QDir::toNativeSeparators(sub->editor()->file().canonicalFilePath()));
-            return true;
-        }
-        else {
-            p->warningSaveFailed(sub->editor()->title());
-        }
+        sub->editor()->saveAs();
+        //sub->setWindowTitle(sub->editor()->title());
+        return true;
     }
     return false;
 }

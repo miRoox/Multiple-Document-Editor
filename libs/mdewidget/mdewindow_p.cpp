@@ -59,6 +59,12 @@ void MdeWindowPrivate::installGeneralSettings()
             this,MdeWindowPrivate::loadHistoryOption);
 }
 
+void MdeWindowPrivate::initBasicConnection()
+{
+    connect(w,MdeWindow::openFailed,this,MdeWindowPrivate::warningOpenFailed);
+    connect(w,MdeWindow::saveFailed,this,MdeWindowPrivate::warningSaveFailed);
+}
+
 void MdeWindowPrivate::initActions()
 {
     ui->actionNew->setShortcut(QKeySequence::New);
@@ -98,7 +104,7 @@ void MdeWindowPrivate::initActions()
             genSettings,GeneralSettings::clearHistory);
     connect(ui->actionOpenAllTheHistoryFiles,QAction::triggered,[this]{
         foreach (QString file, genSettings->history()) {
-            openHistoryFile(file);
+            w->openFile(file)
         }
     });
     connect(ui->actionSave,QAction::triggered,w,MdeWindow::save);
@@ -195,17 +201,6 @@ bool MdeWindowPrivate::loadStyleSheet(QString fileName)
     return true;
 }
 
-void MdeWindowPrivate::openHistoryFile(QString fileName)
-{
-    if(!w->openFile(fileName)) {
-        if(QMessageBox::Yes==QMessageBox::warning(w,tr("Cannot open file %1").arg(fileName),
-                                                  tr("Delete the record?"),
-                                                  QMessageBox::Yes,QMessageBox::No)) {
-            genSettings->removeFromHistory(fileName);
-        }
-    }
-}
-
 void MdeWindowPrivate::loadHistory(QStringList history)
 {
     foreach (QAction * action, historyGroup->actions()) {
@@ -287,8 +282,6 @@ MdiSubWindow *MdeWindowPrivate::addToSubWindow(IEditor *editor)
     ui->mdiArea->addSubWindow(tab);
     connect(ui->mdiArea,QMdiArea::subWindowActivated,
             tab,MdiSubWindow::slotSubWindowActivated);
-    connect(tab,MdiSubWindow::closedFile,
-            w,MdeWindow::closedFile);
     return tab;
 }
 
@@ -341,8 +334,17 @@ void MdeWindowPrivate::warningNoEditor(bool noEditor)
 void MdeWindowPrivate::warningOpenFailed(QString fileName)
 {
     qWarning() << "Cannot open" << fileName;
-    QMessageBox::warning(w,tr("Open file failed!"),
-                         tr("Cannot open %1 ").arg(fileName));
+    if(genSettings->history().contains(fileName)) {
+        if(QMessageBox::Yes==QMessageBox::warning(w,tr("Cannot open file %1").arg(fileName),
+                                                  tr("Delete the record?"),
+                                                  QMessageBox::Yes,QMessageBox::No)) {
+            genSettings->removeFromHistory(fileName);
+        }
+    }
+    else {
+        QMessageBox::warning(w,tr("Open file failed!"),
+                             tr("Cannot open %1 ").arg(fileName));
+    }
 }
 
 void MdeWindowPrivate::warningSaveFailed(QString fileName)
