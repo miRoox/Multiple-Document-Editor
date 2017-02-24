@@ -1,6 +1,6 @@
 {
     "name" :  "Hello World",
-    "version" : "0.1",
+    "version" : "1.0",
     "vendor" : "miroox",
     "platforms" : "all"
 }

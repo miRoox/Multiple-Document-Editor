@@ -4,15 +4,15 @@
 <context>
     <name>HelloWorld</name>
     <message>
-        <location filename="helloworld.cpp" line="26"/>
-        <location filename="helloworld.cpp" line="27"/>
+        <location filename="helloworld.cpp" line="55"/>
+        <location filename="helloworld.cpp" line="58"/>
         <source>Hello World</source>
         <translation>你好，世界</translation>
     </message>
     <message>
-        <location filename="helloworld.cpp" line="27"/>
-        <source>This is a hello world plugin.</source>
-        <translation>这是一个hello world插件。</translation>
+        <location filename="helloworld.cpp" line="59"/>
+        <source>This is an example plugin.</source>
+        <translation>这是一个示例插件。</translation>
     </message>
 </context>
 </TS>

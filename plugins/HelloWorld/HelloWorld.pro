@@ -21,3 +21,6 @@ DISTFILES += \
 TRANSLATIONS += \
     helloworld_en.ts  \
     helloworld_zh_CN.ts
+
+RESOURCES += \
+    src.qrc

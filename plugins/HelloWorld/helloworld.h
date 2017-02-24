@@ -5,6 +5,8 @@
 #include <QtPlugin>
 #include <extensionsystem/ipluginbase.h>
 
+#include <QString>
+
 class HelloWorld : public QObject,
                    public IPluginBase
 {
@@ -20,6 +22,7 @@ public:
 
 private:
     MdeWindow * win;
+    QString src;
 };
 
 #endif // HELLOWORLD_H

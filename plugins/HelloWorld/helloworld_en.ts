@@ -4,14 +4,14 @@
 <context>
     <name>HelloWorld</name>
     <message>
-        <location filename="helloworld.cpp" line="26"/>
-        <location filename="helloworld.cpp" line="27"/>
+        <location filename="helloworld.cpp" line="55"/>
+        <location filename="helloworld.cpp" line="58"/>
         <source>Hello World</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="helloworld.cpp" line="27"/>
-        <source>This is a hello world plugin.</source>
+        <location filename="helloworld.cpp" line="59"/>
+        <source>This is an example plugin.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -44,6 +44,7 @@ open-dir.png
   * etc.
 * 历史记录
 * 自动保存
+* Hello World 示例插件
 
 ##TODO：
 
@@ -52,9 +53,6 @@ open-dir.png
 * 文件关联设置
 * 拖放
 * 主界面设置
-
-###hello world 示例插件
-* 显示源码
 
 ###纯文本编辑器插件
 * 撤销/恢复
