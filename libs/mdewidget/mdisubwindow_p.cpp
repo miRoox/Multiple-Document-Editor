@@ -17,7 +17,7 @@ MdiSubWindowPrivate::~MdiSubWindowPrivate()
 
 }
 
-void MdiSubWindowPrivate::save()
+void MdiSubWindowPrivate::autoSave()
 {
     static bool nolonger = false;
     static int choice = QMessageBox::Cancel;
@@ -35,13 +35,13 @@ void MdiSubWindowPrivate::save()
         msgBox.setCheckBox(checkBox);
         choice = msgBox.exec();
         if(choice == QMessageBox::Save) {
-            editor->saveAs();
+            w->saveAs();
         }
         if (checkBox->isChecked()) {
             nolonger = true;
         }
     }
     else if (choice == QMessageBox::Save) {
-        editor->saveAs();
+        w->saveAs();
     }
 }

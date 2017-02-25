@@ -165,14 +165,7 @@ bool MdeWindow::save()
     QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
     if(active) {
         auto sub = qobject_cast<MdiSubWindow*>(active);
-        QFileInfo file = sub->editor()->file();
-        if(file.exists()) {
-            sub->editor()->save();
-            return true;
-        }
-        else {
-            return saveAs();
-        }
+        return sub->save();
     }
     return false;
 }
@@ -182,9 +175,7 @@ bool MdeWindow::saveAs()
     QMdiSubWindow * active = p->ui->mdiArea->activeSubWindow();
     if(active) {
         auto sub = qobject_cast<MdiSubWindow*>(active);
-        sub->editor()->saveAs();
-        //sub->setWindowTitle(sub->editor()->title());
-        return true;
+        return sub->saveAs();
     }
     return false;
 }

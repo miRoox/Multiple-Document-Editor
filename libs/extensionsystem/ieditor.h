@@ -27,7 +27,7 @@ public:
     virtual void loadFile(QString fileName) = 0;
     virtual void reload() = 0;
     virtual void save() = 0;
-    virtual void saveAs() = 0;
+    virtual void saveAs(QString fileName) = 0;
     virtual QString title() const = 0;
     virtual QFileInfo file() const = 0;
     virtual bool close() = 0;

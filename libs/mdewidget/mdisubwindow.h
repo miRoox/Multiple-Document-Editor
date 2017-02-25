@@ -24,6 +24,8 @@ public:
 
 public slots:
     void slotSubWindowActivated(QMdiSubWindow*);
+    bool save();
+    bool saveAs();
 
 protected:
     void mousePressEvent(QMouseEvent * event);//TODO: drag & drop
