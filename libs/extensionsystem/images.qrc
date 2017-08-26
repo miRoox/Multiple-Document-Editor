@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/icons">
-        <file>images/enable.png</file>
-        <file>images/disable.png</file>
-    </qresource>
-</RCC>
