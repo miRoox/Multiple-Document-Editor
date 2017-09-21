@@ -1,5 +1,7 @@
+#include "mdeapplication.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    return 0;
+    MdeApplication app(argc,argv);
+    return app.run();
 }
