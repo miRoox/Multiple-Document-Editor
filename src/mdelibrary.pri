@@ -9,7 +9,7 @@ TARGET = $$LIB_NAME
 
 include(../mdeuniversal.pri)
 
-DESTDIR = MDE_LIBRARY_PATH
+DESTDIR = $$MDE_LIBRARY_PATH
 
 TARGET = $$qtLibraryTarget($$TARGET)
 

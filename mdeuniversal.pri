@@ -3,7 +3,7 @@ MDE_UNIVERSAL_PRI_INCLUDED = 1
 
 include(mdeinfo.pri)
 
-VERSION = $$MDE_VERSION
+isEmpty(VERSION): VERSION = $$MDE_VERSION
 CONFIG += c++14
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000 # disables all the APIs deprecated before Qt 6.0.0
 
@@ -37,6 +37,17 @@ DEFINES += $$shell_quote(RELATIVE_DATA_PATH=\"$$RELATIVE_DATA_PATH\")
 DEFINES += $$shell_quote(RELATIVE_DOC_PATH=\"$$RELATIVE_DOC_PATH\")
 DEFINES += $$shell_quote(RELATIVE_TRANSLATION_PATH=\"$$RELATIVE_TRANSLATION_PATH\")
 
+defineReplace(qtLibraryName) {
+   RET = $$qtLibraryTarget($$1)
+   win32 {
+      VER = $$2
+      isEmpty(VER): VER = $$VERSION
+      VERSION_LIST = $$split(VER, .)
+      RET = $$RET$$first(VERSION_LIST)
+   }
+   return($$RET)
+}
+
 # recursively resolve plugin deps
 # usage: PLUGIN_DEPENDS 
 done_plugins =
@@ -46,7 +57,7 @@ for(ever) {
     done_plugins += $$PLUGIN_DEPENDS
     for(dep, PLUGIN_DEPENDS) {
         include($$MDE_SOURCE_ROOT/src/plugins/$$dep/$${dep}_dependencies.pri)
-        LIBS += -l$$qtLibraryTarget($$PLUGIN_NAME)
+        LIBS += -l$$qtLibraryName($$PLUGIN_NAME, $$PLUGIN_VERSION)
     }
     PLUGIN_DEPENDS = $$unique(PLUGIN_DEPENDS)
     PLUGIN_DEPENDS -= $$unique(done_plugins)
@@ -61,7 +72,7 @@ for(ever) {
     done_libs += $$LIB_DEPENDS
     for(dep, LIB_DEPENDS) {
         include($$MDE_SOURCE_ROOT/src/libs/$$dep/$${dep}_dependencies.pri)
-        LIBS += -l$$qtLibraryTarget($$LIB_NAME)
+        LIBS += -l$$qtLibraryName($$LIB_NAME)
     }
     LIB_DEPENDS = $$unique(LIB_DEPENDS)
     LIB_DEPENDS -= $$unique(done_libs)

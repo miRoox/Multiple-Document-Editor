@@ -3,7 +3,9 @@ include(../../mdeuniversal.pri)
 TEMPLATE  = subdirs
 CONFIG   += ordered
 
-SUBDIRS   = 
+SUBDIRS   = \
+    utils \
+    extensionsystem
 
 
 # resolve dependencies
