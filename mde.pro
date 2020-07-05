@@ -1,7 +1,13 @@
-include(mdeuniversal.pri)
+TEMPLATE = subdirs
+CONFIG += ordered
+SUBDIRS = libs\
+          app \
+          plugins
 
-TEMPLATE  = subdirs
-CONFIG   += ordered
+app.depends = libs
+plugins.depends = libs
 
-SUBDIRS = src
 
+TRANSLATIONS += \
+    mde_en.ts  \
+    mde_zh_CN.ts

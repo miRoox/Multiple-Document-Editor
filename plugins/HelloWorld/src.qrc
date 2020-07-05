@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/src">
+        <file>HelloWorld.pro</file>
+        <file>helloworld.h</file>
+        <file>helloworld.cpp</file>
+        <file>helloworld.json</file>
+        <file>src.qrc</file>
+    </qresource>
+</RCC>
