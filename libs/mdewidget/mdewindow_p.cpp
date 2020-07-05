@@ -104,7 +104,7 @@ void MdeWindowPrivate::initActions()
             genSettings,GeneralSettings::clearHistory);
     connect(ui->actionOpenAllTheHistoryFiles,QAction::triggered,[this]{
         foreach (QString file, genSettings->history()) {
-            w->openFile(file)
+            w->openFile(file);
         }
     });
     connect(ui->actionSave,QAction::triggered,w,MdeWindow::save);
@@ -208,7 +208,7 @@ void MdeWindowPrivate::loadHistory(QStringList history)
     }
     foreach (QString file, history) {
         QAction * action = ui->menuHistory->addAction(file,[this,file]{
-            openHistoryFile(file);
+            w->openFile(file);
         });
         action->setActionGroup(historyGroup);
     }

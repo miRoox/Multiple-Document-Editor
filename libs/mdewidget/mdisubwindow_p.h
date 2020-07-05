@@ -13,7 +13,7 @@ private:
     ~MdiSubWindowPrivate();
 
 private slots:
-    void save();
+    void autoSave();
 
 private:
     MdiSubWindow * w;
