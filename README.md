@@ -3,35 +3,6 @@
 ## 构建：
 使用 Qt 5.8.0 是可行的
 
-## 关于资源：
-
-需要在根目录下添加“notepad.ico”图标
-
-并在“libs\mdewidget\images”目录中添加如下图片:
-
-new.png
-
-open.png
-
-save.png
-
-saveAs.png
-
-exit.png
-
-newwindow.png
-
-next.png
-
-previous.png
-
-about.png
-
-qt.png
-
-open-dir.png
-
-
 ## 已完成的功能：
 
 * 单例化
