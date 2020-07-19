@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     win.installPluginManager(&plugManager);
     win.show();
     app.setActivationWindow(&win);
-    QApplication::connect(&app,SharedTools::QtSingleApplication::messageReceived,
+    QApplication::connect(&app,&SharedTools::QtSingleApplication::messageReceived,
                           [&win](QString args){
         QCommandLineParser remoteParser;
         initRemoteCmdlParser(remoteParser);

@@ -136,20 +136,20 @@ void PluginManagerPrivate::initPluginManagerDialog()
 //    connect(headerView,QHeaderView::sortIndicatorChanged,[](int logicalIndex, Qt::SortOrder order){
 //        qDebug() << "sort indicator change" << logicalIndex << static_cast<int>(order);
 //    });
-    connect(headerView,QHeaderView::sortIndicatorChanged,
-            proxyModel,QSortFilterProxyModel::sort);
+    connect(headerView,&QHeaderView::sortIndicatorChanged,
+            proxyModel,&QSortFilterProxyModel::sort);
 
     QLineEdit * filter = new QLineEdit(pluginManagerDialog);
     filter->setPlaceholderText(tr("Filter"));
-    connect(filter,QLineEdit::textChanged,
+    connect(filter,&QLineEdit::textChanged,
             proxyModel,
             static_cast<void(QSortFilterProxyModel::*)(const QString &)>(&QSortFilterProxyModel::setFilterRegExp));
 
     QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok,
                                                         pluginManagerDialog);
-    connect(buttonBox->button(QDialogButtonBox::Cancel),QPushButton::clicked,
-            pluginManagerDialog,QDialog::close);
-    connect(buttonBox->button(QDialogButtonBox::Ok),QPushButton::clicked,[=]{
+    connect(buttonBox->button(QDialogButtonBox::Cancel),&QPushButton::clicked,
+            pluginManagerDialog,&QDialog::close);
+    connect(buttonBox->button(QDialogButtonBox::Ok),&QPushButton::clicked,[=]{
         for (int row = 0; row < sourceModel->rowCount(); ++row) {
             PluginSpec spec = specFromIndex(sourceModel,sourceModel->index(row,0));
             if(sourceModel->item(row)->checkState()==Qt::Checked) {
@@ -192,15 +192,15 @@ PluginManagerPrivate::PluginSpec PluginManagerPrivate::execEditorSelectorDialog(
 
     QLineEdit * filter = new QLineEdit(dialog);
     filter->setPlaceholderText(tr("Filter"));
-    connect(filter,QLineEdit::textChanged,
+    connect(filter,&QLineEdit::textChanged,
             proxyModel,
             static_cast<void(QSortFilterProxyModel::*)(const QString &)>(&QSortFilterProxyModel::setFilterRegExp));
 
     QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok,
                                                         dialog);
-    connect(buttonBox->button(QDialogButtonBox::Cancel),QPushButton::clicked,
-            dialog,QDialog::close);
-    connect(buttonBox->button(QDialogButtonBox::Ok),QPushButton::clicked,[=,&spec]{
+    connect(buttonBox->button(QDialogButtonBox::Cancel),&QPushButton::clicked,
+            dialog,&QDialog::close);
+    connect(buttonBox->button(QDialogButtonBox::Ok),&QPushButton::clicked,[=,&spec]{
         auto rows = view->selectionModel()->selectedRows();
         if(rows.isEmpty()) {
             qWarning() << "No selected editor";

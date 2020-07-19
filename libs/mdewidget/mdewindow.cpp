@@ -29,7 +29,7 @@ MdeWindow::MdeWindow(GeneralSettings * settings, QWidget *parent) :
     p->initPreferrence();
     p->loadSettings();
     setAcceptDrops(true);
-    connect(p->ui->mdiArea,QMdiArea::subWindowActivated,[this](QMdiSubWindow * active){
+    connect(p->ui->mdiArea,&QMdiArea::subWindowActivated,[this](QMdiSubWindow * active){
             if(active) setWindowTitle(active->windowTitle());
             else setWindowTitle("");
     });
@@ -40,8 +40,8 @@ void MdeWindow::installPluginManager(PluginManager *pm)
     if(p->plugManager==nullptr) {
         p->plugManager = pm;
         p->plugManager->setMDE(this);
-        connect(p->ui->actionPluginManager,QAction::triggered,
-                p->plugManager,PluginManager::execPluginSelectionDialog);
+        connect(p->ui->actionPluginManager,&QAction::triggered,
+                p->plugManager,&PluginManager::execPluginSelectionDialog);
     }
 }
 

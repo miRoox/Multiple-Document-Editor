@@ -7,10 +7,10 @@ GeneralSettingsPrivate::GeneralSettingsPrivate(GeneralSettings *parent)
       p(parent)
 {
     loadSettings();
-    connect(parent,GeneralSettings::maxHistoryChanged,
-            this,GeneralSettingsPrivate::checkHistory);
-    connect(this,GeneralSettingsPrivate::historyChange,
-            parent,GeneralSettings::historyChange);
+    connect(parent,&GeneralSettings::maxHistoryChanged,
+            this,&GeneralSettingsPrivate::checkHistory);
+    connect(this,&GeneralSettingsPrivate::historyChange,
+            parent,&GeneralSettings::historyChange);
 }
 
 GeneralSettingsPrivate::~GeneralSettingsPrivate()

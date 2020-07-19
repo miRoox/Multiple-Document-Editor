@@ -33,17 +33,17 @@ void MdiSubWindow::setEditor(IEditor *editor)
 
 #define _min *60*1000/*msec*/
     QTimer * autoSaveTimer = new QTimer(this);
-    connect(p->genSettings,GeneralSettings::autoSaveChanged,
+    connect(p->genSettings,&GeneralSettings::autoSaveChanged,
             autoSaveTimer,[autoSaveTimer,this](bool sav){
-        if(sav) connect(autoSaveTimer,QTimer::timeout,p,MdiSubWindowPrivate::autoSave);
-        else disconnect(autoSaveTimer,QTimer::timeout,p,MdiSubWindowPrivate::autoSave);
+        if(sav) connect(autoSaveTimer,&QTimer::timeout,p,&MdiSubWindowPrivate::autoSave);
+        else disconnect(autoSaveTimer,&QTimer::timeout,p,&MdiSubWindowPrivate::autoSave);
     });
-    connect(p->genSettings,GeneralSettings::autoSaveIntervalChanged,
+    connect(p->genSettings,&GeneralSettings::autoSaveIntervalChanged,
             autoSaveTimer,[autoSaveTimer](int tmin){
         autoSaveTimer->setInterval(tmin _min);
     });
     if(p->genSettings->autoSave()) {
-        connect(autoSaveTimer,QTimer::timeout,p,MdiSubWindowPrivate::autoSave);
+        connect(autoSaveTimer,&QTimer::timeout,p,&MdiSubWindowPrivate::autoSave);
         autoSaveTimer->start(p->genSettings->autoSaveInterval() _min);
     }
 #undef _min
@@ -90,7 +90,7 @@ bool MdiSubWindow::saveAs()
     }
     filter.chop(2);
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save as"),
-                                                    p->defaultDir(),filter);
+                                                    p->genSettings->defDir(),filter);
     if(fileName.isEmpty())
         return false;
     p->editor->saveAs(fileName);

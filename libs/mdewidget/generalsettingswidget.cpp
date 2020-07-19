@@ -82,9 +82,9 @@ void GeneralSettingsWidget::initConnections()
 {
     //override language
     connect(ui->langComboBox,static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this,GeneralSettingsWidget::warningNeedRestart);
+            this,&GeneralSettingsWidget::warningNeedRestart);
     //style sheet
-    connect(ui->qssToolButton,QToolButton::clicked,[this]{
+    connect(ui->qssToolButton,&QToolButton::clicked,[this]{
         QString file = QFileDialog::getOpenFileName(this,
                                                     tr("Select style sheet file"),
                                                     "../qss",
@@ -93,19 +93,19 @@ void GeneralSettingsWidget::initConnections()
             ui->qssLineEdit->setText(QDir::toNativeSeparators(QFileInfo(file).canonicalFilePath()));
     });
     //auto-log
-    connect(ui->autoLogCheckBox,QCheckBox::toggled,
-            this,GeneralSettingsWidget::warningNeedRestart);
+    connect(ui->autoLogCheckBox,&QCheckBox::toggled,
+            this,&GeneralSettingsWidget::warningNeedRestart);
     //auto-save
-    connect(ui->autoSaveCheckBox,QCheckBox::toggled,
-            ui->autoSaveLabel,QLabel::setEnabled);
-    connect(ui->autoSaveCheckBox,QCheckBox::toggled,
-            ui->autoSaveSpinBox,QSpinBox::setEnabled);
+    connect(ui->autoSaveCheckBox,&QCheckBox::toggled,
+            ui->autoSaveLabel,&QLabel::setEnabled);
+    connect(ui->autoSaveCheckBox,&QCheckBox::toggled,
+            ui->autoSaveSpinBox,&QSpinBox::setEnabled);
     //default directory
-    connect(ui->customButton,QRadioButton::toggled,
-            ui->defDirLineEdit,QLineEdit::setEnabled);
-    connect(ui->customButton,QRadioButton::toggled,
-            ui->defDirToolButton,QToolButton::setEnabled);
-    connect(ui->defDirToolButton,QToolButton::clicked,[this]{
+    connect(ui->customButton,&QRadioButton::toggled,
+            ui->defDirLineEdit,&QLineEdit::setEnabled);
+    connect(ui->customButton,&QRadioButton::toggled,
+            ui->defDirToolButton,&QToolButton::setEnabled);
+    connect(ui->defDirToolButton,&QToolButton::clicked,[this]{
         QString dir = QFileDialog::getExistingDirectory(this,
                                                         tr("Select directory"),
                                                         ".",
@@ -117,10 +117,10 @@ void GeneralSettingsWidget::initConnections()
     //history option
     //max history
     //buttons
-    connect(ui->buttonBox->button(QDialogButtonBox::Apply),QPushButton::clicked,
-            this,GeneralSettingsWidget::apply);
-    connect(ui->buttonBox->button(QDialogButtonBox::Reset),QPushButton::clicked,
-            this,GeneralSettingsWidget::loadSettings);
+    connect(ui->buttonBox->button(QDialogButtonBox::Apply),&QPushButton::clicked,
+            this,&GeneralSettingsWidget::apply);
+    connect(ui->buttonBox->button(QDialogButtonBox::Reset),&QPushButton::clicked,
+            this,&GeneralSettingsWidget::loadSettings);
 }
 
 void GeneralSettingsWidget::apply()
